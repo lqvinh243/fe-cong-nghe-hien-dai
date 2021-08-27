@@ -16,7 +16,9 @@ export default {
 
     // Global CSS (https://go.nuxtjs.dev/config-css)
     css: [
-        '~/assets/scss/main.scss'
+        '~/assets/scss/main.scss',
+        'element-ui/lib/theme-chalk/index.css',
+        'element-ui/lib/theme-chalk/reset.css',
     ],
 
     // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
@@ -24,7 +26,8 @@ export default {
         { src: '~/plugins/axios' },
         { src: '~/plugins/auth' },
         { src: '~/plugins/event-bus', mode: 'client' },
-        { src: '~/plugins/vee-validate', mode: 'client' }
+        { src: '~/plugins/vee-validate', mode: 'client' },
+        { src: '~/plugins/element-ui' }
     ],
 
     // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -72,6 +75,7 @@ export default {
     // Build Configuration (https://go.nuxtjs.dev/config-build)
     build: {
         vendor: [
+            'element-ui',
             'jquery'
         ],
         babel: {

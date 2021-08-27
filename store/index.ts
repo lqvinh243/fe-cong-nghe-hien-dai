@@ -24,7 +24,7 @@ export const actions: ActionTree<IRootState, IRootState> = {
         if (token) {
             try {
                 const authResult = await authService.authenticate(token);
-                dispatch(`${authNamespace}/updateAuthentication`, authResult.data);
+                dispatch(`${authNamespace}/updateAuthentication`, { ...authResult.data, token });
 
                 const profileResult = await meService.getProfile();
                 dispatch(`${authNamespace}/updateProfile`, profileResult.data);

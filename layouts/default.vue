@@ -6,9 +6,10 @@
                     <menu-left />
                 </div>
             </div>
-            <div class="col-right">
-                <nuxt />
-            </div>
+        </div>
+
+        <div class="col-right">
+            <nuxt />
         </div>
     </div>
 </template>

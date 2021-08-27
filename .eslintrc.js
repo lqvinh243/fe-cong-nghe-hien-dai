@@ -18,6 +18,7 @@ module.exports = {
     ],
     // add your custom rules here
     rules: {
+        'no-console': 'off',
         indent: ['error', 4],
         semi: ['error', 'always'],
         'one-var': ['error', 'never'],
