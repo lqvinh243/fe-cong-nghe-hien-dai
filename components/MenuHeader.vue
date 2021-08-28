@@ -22,7 +22,7 @@
                         v-for="(item, index) in items"
                         :key="index"
                     >
-                        <v-list-item-title>{{ item.title }}</v-list-item-title>
+                        <v-list-item-title> {{ item.title }} </v-list-item-title>
                     </v-list-item>
                 </v-list>
             </v-menu>
@@ -31,25 +31,21 @@
                 <v-icon>mdi-heart</v-icon>
             </v-btn>
 
-            <v-btn icon>
-                <v-avatar>
-                    <img
-                        src="https://cdn.vuetifyjs.com/images/john.jpg"
-                        alt="John"
-                    >
-                </v-avatar>
-            </v-btn>
-
-            <v-menu left bottom>
+            <v-menu bottom>
                 <template #activator="{ on, attrs }">
                     <v-btn icon v-bind="attrs" v-on="on">
-                        <v-icon>mdi-dots-vertical</v-icon>
+                        <v-avatar>
+                            <img
+                                src="https://cdn.vuetifyjs.com/images/john.jpg"
+                                alt="John"
+                            >
+                        </v-avatar>
                     </v-btn>
                 </template>
 
                 <v-list>
-                    <v-list-item v-for="n in 5" :key="n" @click="() => {}">
-                        <v-list-item-title>Option {{ n }}</v-list-item-title>
+                    <v-list-item v-for="n in profiles" :key="n.id" @click="() => {}">
+                        <v-list-item-title>{{ n.title }}</v-list-item-title>
                     </v-list-item>
                 </v-list>
             </v-menu>
@@ -64,11 +60,10 @@ import Vue from 'vue';
 export default Vue.extend({
     data: () => ({
         items: [
-            { title: 'Click Me' },
-            { title: 'Click Me' },
-            { title: 'Click Me' },
-            { title: 'Click Me 2' }
+            { title: 'Điện thoại di động' },
+            { title: 'Máy tính xách tay' }
         ],
+        profiles: [{ title: 'Profile', id: 'profile' }, { title: 'Logout', id: 'logout' }]
     }),
     methods: {
     // ...mapActions('auth', [

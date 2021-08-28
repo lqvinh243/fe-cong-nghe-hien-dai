@@ -27,7 +27,8 @@ export default {
         { src: '~/plugins/auth' },
         { src: '~/plugins/event-bus', mode: 'client' },
         { src: '~/plugins/vee-validate', mode: 'client' },
-        { src: '~/plugins/element-ui' }
+        { src: '~/plugins/element-ui' },
+        { src: '~/plugins/vuetify' }
     ],
 
     // Auto import components (https://go.nuxtjs.dev/config-components)

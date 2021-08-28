@@ -1,42 +1,15 @@
 <template>
-    <div class="container">
-        <div>
-            <Logo
-                class="home-logo"
-                width="245"
-                height="180"
-            />
-            <br>
-            <h1 class="title">
-                {{ title }}
-            </h1>
-            <br>
-            <div class="links">
-                <a
-                    href="https://typescript.nuxtjs.org/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="button-green"
-                >
-                    Documentation
-                </a>
-                <a
-                    href="https://github.com/nuxt/nuxt.js"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="button-green"
-                >
-                    GitHub
-                </a>
-            </div>
-        </div>
+    <div>
+        <product />
     </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import product from '~/pages/product/index.vue';
 
 export default Vue.extend({
+    components: { product },
     data: () => ({
         title: 'Frontend Seed'
     })
