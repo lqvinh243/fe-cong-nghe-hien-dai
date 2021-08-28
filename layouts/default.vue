@@ -1,6 +1,9 @@
 <template>
     <div class="theme-default">
         <div class="main-content">
+            <div>
+                <menu-header />
+            </div>
             <div class="col-left row no-gutters">
                 <div class="col-auto">
                     <menu-left />
@@ -8,17 +11,22 @@
             </div>
         </div>
 
-        <div class="col-right">
-            <nuxt />
+        <!-- <div class="col-right">
+            <nuxt /> -->
+        <div>
+            <home />
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import Home from '~/components/home.vue';
+import MenuHeader from '~/components/MenuHeader.vue';
 import { connectWS } from '~/utils/socket';
 
 export default Vue.extend({
+    components: { MenuHeader, Home },
     mounted() {
         if (this.$auth.isAuthenticated()) {
             const socket = connectWS(this.$config.wsUrl, 'chat', this.$store.state.auth.accessToken);
