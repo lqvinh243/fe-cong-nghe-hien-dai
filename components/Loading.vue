@@ -1,6 +1,6 @@
 <template>
     <div
-        v-if="isShowLoading"
+        v-if="loading"
         class="loading"
     >
         <div

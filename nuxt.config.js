@@ -50,6 +50,7 @@ export default {
         'nuxt-healthcheck'
     ],
 
+    loading: '~/components/Loading.vue',
     // Axios module configuration: https://go.nuxtjs.dev/config-axios
     axios: {
         baseURL: process.env.API_URL
