@@ -22,7 +22,11 @@
                         v-for="(item, index) in items"
                         :key="index"
                     >
-                        <v-list-item-title> {{ item.title }} </v-list-item-title>
+                        <v-list-item-title>
+                            <NuxtLink :to="item.id">
+                                {{ item.title }}
+                            </NuxtLink>
+                        </v-list-item-title>
                     </v-list-item>
                 </v-list>
             </v-menu>
@@ -60,8 +64,8 @@ import Vue from 'vue';
 export default Vue.extend({
     data: () => ({
         items: [
-            { title: 'Điện thoại di động' },
-            { title: 'Máy tính xách tay' }
+            { title: 'Điện thoại di động', id: 'mobile' },
+            { title: 'Máy tính xách tay', id: 'laptop' }
         ],
         profiles: [{ title: 'Profile', id: 'profile' }, { title: 'Logout', id: 'logout' }]
     }),
