@@ -2,11 +2,10 @@
     <div>
         <b-container style="max-width:70%">
             <b-row class="page-controls" style="padding:5rem 0rem">
-                <b-col :style="{ backgroundImage: 'url(' + require('~/assets/images/land.jpg') + ')' }" />
                 <b-col h-100 cols="5" style="background-color:#fff">
                     <b-container action="#" style="margin-top:30%">
                         <h1 class="text-center">
-                            Sign in
+                            Sign up
                         </h1>
                         <div style="margin-top:1rem">
                             <span>
@@ -21,21 +20,24 @@
                             </span>
                             <el-input placeholder="Please input" />
                         </div>
-                        <div class="text-right mt-2">
-                            <a href="#"> Forget password</a>
+                        <div style="margin-top:1rem">
+                            <span>
+                                Address
+                            </span>
+                            <el-input placeholder="Please input" />
                         </div>
                         <el-button style="width: 100%;margin-top:1rem" type="primary" :loading="loading">
                             Loading
                         </el-button>
-
                         <div style="width: 100%;margin-top:1rem">
-                            Not registered yet?
-                            <nuxt-link to="/register">
-                                Create an Account
+                            Already have an Account?
+                            <nuxt-link to="/login">
+                                Sign in
                             </nuxt-link>
                         </div>
                     </b-container>
                 </b-col>
+                <b-col :style="{ backgroundImage: 'url(' + require('~/assets/images/land.jpg') + ')' }" />
             </b-row>
         </b-container>
     </div>

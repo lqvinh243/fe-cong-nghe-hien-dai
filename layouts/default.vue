@@ -4,11 +4,6 @@
             <div data-app>
                 <menu-header />
             </div>
-            <div class="col-left row no-gutters">
-                <div class="col-auto">
-                    <menu-left />
-                </div>
-            </div>
             <div class="col-right">
                 <nuxt />
             </div>

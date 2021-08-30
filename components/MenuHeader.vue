@@ -23,7 +23,7 @@
                         :key="index"
                     >
                         <v-list-item-title>
-                            <NuxtLink :to="item.id">
+                            <NuxtLink :to="`/${item.id}`">
                                 {{ item.title }}
                             </NuxtLink>
                         </v-list-item-title>
