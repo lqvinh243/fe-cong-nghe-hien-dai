@@ -11,5 +11,9 @@ export const authService = {
 
     login(email: string, password: string) {
         return $axios.$post('/api/v1/auths/login', { email, password });
+    },
+
+    updatePassword(oldPassword: string, password: string) {
+        return $axios.$patch('/api/v1/auths/password', { oldPassword, password });
     }
 };

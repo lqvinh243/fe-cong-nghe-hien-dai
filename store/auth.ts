@@ -55,7 +55,6 @@ export const actions: ActionTree<IAuthState, IRootState> = {
         commit(mutationType.ACCESS_TOKEN, userAuth.token);
         commit(mutationType.USER_ID, userAuth.userId);
         commit(mutationType.ROLE_ID, userAuth.roleId);
-        console.log(userAuth.token);
         if (process.client)
             setCookie('token', userAuth.token, 24 * 60 * 60);
     },

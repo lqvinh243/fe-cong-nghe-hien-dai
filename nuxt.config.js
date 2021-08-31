@@ -45,7 +45,6 @@ export default {
     modules: [
         // https://go.nuxtjs.dev/bootstrap
         'bootstrap-vue/nuxt',
-        'nuxt-validate',
         '@nuxtjs/axios',
         'nuxt-healthcheck'
     ],
