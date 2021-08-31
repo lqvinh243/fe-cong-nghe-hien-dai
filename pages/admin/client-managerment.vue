@@ -9,6 +9,7 @@
             reserve-keyword
             :remote-method="remoteMethod"
             :loading="loadingRemote"
+            @change="handleSelect"
         >
             <el-option
                 v-for="option in options"
@@ -19,34 +20,37 @@
         </el-select>
         <el-table
             :data="tableData"
+            :lazy="true"
             style="width: 100%"
         >
             <el-table-column
                 fixed
-                prop="date"
-                label="Date"
+                label="Date created"
+            >
+                <template slot-scope="scope">
+                    <span>{{ formatDate(scope.row.createdAt) }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column
+                fixed
+                prop="email"
+                label="Email"
             />
             <el-table-column
-                prop="name"
-                label="Name"
+                fixed
+                prop="firstName"
+                label="First Name"
             />
             <el-table-column
-                prop="state"
-                label="State"
+                fixed
+                prop="lastName"
+                label="Last Name"
             />
             <el-table-column
-                prop="city"
-                label="City"
-            />
-            <el-table-column
+                fixed
                 prop="address"
                 label="Address"
             />
-            <el-table-column
-                prop="zip"
-                label="Zip"
-            />
-
             <el-table-column
                 fixed="right"
                 label="Operations"
@@ -79,57 +83,40 @@
 </template>
 
 <script lang="ts">
+import momment from 'moment';
+import { clientService } from '~/services/client';
 export default {
     data() {
         return {
-            tableData: [{
-                date: '2016-05-03',
-                name: 'Tom',
-                state: 'California',
-                city: 'Los Angeles',
-                address: 'No. 189, Grove St, Los Angeles',
-                zip: 'CA 90036',
-                tag: 'Home'
-            }, {
-                date: '2016-05-02',
-                name: 'Tom',
-                state: 'California',
-                city: 'Los Angeles',
-                address: 'No. 189, Grove St, Los Angeles',
-                zip: 'CA 90036',
-                tag: 'Office'
-            }, {
-                date: '2016-05-04',
-                name: 'Tom',
-                state: 'California',
-                city: 'Los Angeles',
-                address: 'No. 189, Grove St, Los Angeles',
-                zip: 'CA 90036',
-                tag: 'Home'
-            }, {
-                date: '2016-05-01',
-                name: 'Tom',
-                state: 'California',
-                city: 'Los Angeles',
-                address: 'No. 189, Grove St, Los Angeles',
-                zip: 'CA 90036',
-                tag: 'Office'
-            }],
+            tableData: [],
             options: [
-                { key: 1, name: 'Seller' },
-                { key: 2, name: 'Bidder' },
+                { key: '476c11d2-31cf-4a20-8392-514225ae54b2', name: 'Seller' },
+                { key: '476c11d2-31cf-5a20-8392-614225ae54b3', name: 'Bidder' },
                 { key: 3, name: 'Upgrage request' }
             ],
             selectKey: '' as any,
             page: 1,
             total: 10,
-            perPage: 5,
+            perPage: 10,
             loadingRemote: false
         };
+    },
+    mounted() {
+        this.$nextTick(async () => {
+            this.$nuxt.$loading.start();
+            await this.getClients();
+            this.$nuxt.$loading.finish();
+        });
     },
     methods: {
         handleClick() {
             console.log('click');
+        },
+        handleSelect() {
+            this.$nuxt.$loading.start();
+            if (this.selectKey !== 3)
+                this.getClients(this.selectKey);
+            this.$nuxt.$loading.finish();
         },
         remoteMethod(query: string) {
             console.log(query);
@@ -139,6 +126,22 @@ export default {
         },
         deleteRow(index:number, rows:any) {
             rows.splice(index, 1);
+        },
+        async getClients(key: string = '') {
+            const query = `roleId=${key}&skip=${(this.page - 1) * this.perPage}`;
+            const result = await clientService.getClients(query).catch(error => {
+                this.$notify.error({
+                    title: 'Error',
+                    message: error.message || 'Cannot get client!'
+                });
+            });
+            if (result) {
+                this.total = result.pagination.total;
+                this.tableData = result.data;
+            }
+        },
+        formatDate(date:any) {
+            return momment(date).format('k:mm D-M-Y');
         }
     }
 };

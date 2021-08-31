@@ -1,14 +1,12 @@
 <template>
-    <div class="container bootstrap snippet">
-        <div class="row mt-4">
+    <b-container>
+        <div class="row">
             <div class="col-sm-3">
-                <!--left col-->
-
                 <div class="text-center mb-4">
-                    <b-img :src="myProfile.avatar" rounded="circle" alt="Circle image" style="max-width:250px;border:1px solid black" />
-                    <input type="file" class="text-center center-block file-upload">
+                    <b-img id="avatar" :src="myProfile.avatar" rounded="circle" alt="Circle image" style="max-width:250px;border:1px solid black" />
+                    <input type="file" @change="handleChangeImage">
                 </div>
-            </div><!--/col-3-->
+            </div>
             <div class="col-sm-9">
                 <el-row :gutter="0">
                     <el-col :span="12">
@@ -42,10 +40,12 @@
                     </div>
 
                     <hr>
-                    <el-button>Save change</el-button>
-                </div><!--/tab-pane-->
-            </div><!--/tab-pane-->
-        </div><!--/col-9-->
+                    <el-button @click="handleSave">
+                        Save change
+                    </el-button>
+                </div>
+            </div>
+        </div>
         <el-dialog
             title="Update password"
             :visible.sync="dialogVisible"
@@ -80,12 +80,13 @@
                 </el-form-item>
             </el-form>
         </el-dialog>
-    </div>
+    </b-container>
 </template>
 
 <script lang="ts">
 import { mapGetters } from 'vuex';
 import { authService } from '~/services/auth';
+import { meService } from '~/services/me';
 export default {
     middleware: ['authentication'],
     data() {
@@ -128,7 +129,7 @@ export default {
                 firstName: '',
                 lastName: '',
                 email: '',
-                avatar: ''
+                avatar: '',
             },
             dialogVisible: false,
             passwordForm: {
@@ -139,25 +140,30 @@ export default {
             rules: {
                 oldPassword: [
                     {
-                        validator: validateOldPass, trigger: 'change'
+                        validator: validateOldPass, trigger: 'blur'
                     }
                 ],
                 password: [
-                    { validator: validatePass, trigger: 'change' }
+                    { validator: validatePass, trigger: 'blur' }
                 ],
                 rePassword: [
                     {
-                        validator: validateRePass, trigger: 'change'
+                        validator: validateRePass, trigger: 'blur'
                     }
                 ]
             },
+            avatarUpload: null as File | null,
         };
     },
     computed: {
         ...mapGetters('auth', ['profile'])
     },
     mounted() {
-        this.myProfile = this.profile;
+        this.$nextTick(() => {
+            this.$nuxt.$loading.start();
+            this.myProfile = this.profile;
+            this.$nuxt.$loading.finish();
+        });
     },
     methods: {
         handleClick() {
@@ -193,6 +199,33 @@ export default {
         resetForm(formName: string) {
             this.$refs[formName].resetFields();
             this.dialogVisible = false;
+        },
+        handleChangeImage(e:any) {
+            if (e.target.files && e.target.files.length) {
+                const file = e.target.files[0];
+                const urlCreator = window.URL || window.webkitURL;
+                const imageUrl = urlCreator.createObjectURL(file);
+                const image :any = document.getElementById('avatar');
+                if (image)
+                    image.src = imageUrl;
+                this.avatarUpload = file;
+            }
+        },
+        async handleSave() {
+            this.$nuxt.$loading.start();
+            if (this.avatarUpload) {
+                const formData = new FormData();
+                formData.append('avatar', this.avatarUpload);
+                const result = await meService.uploadAvatar(formData).catch(error => {
+                    this.$notify.error({
+                        title: 'Error',
+                        message: error.message || 'Cannot update avatar'
+                    });
+                });
+                if (result)
+                    console.log(result);
+            }
+            this.$nuxt.$loading.finish();
         }
     }
 };

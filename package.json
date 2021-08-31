@@ -20,6 +20,7 @@
         "core-js": "^3.11.0",
         "element-ui": "^2.15.5",
         "jquery": "^3.6.0",
+        "moment": "^2.29.1",
         "nuxt": "^2.15.4",
         "nuxt-healthcheck": "^1.0.1",
         "nuxt-validate": "^1.0.1",
