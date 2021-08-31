@@ -50,30 +50,32 @@
             title="Update password"
             :visible.sync="dialogVisible"
             width="30%"
+            :show-close="false"
         >
             <el-form
-                ref="ruleForm"
-                :model="ruleForm"
+                ref="passwordForm"
+                :model="passwordForm"
                 status-icon
                 :rules="rules"
                 label-width="120px"
                 class="demo-ruleForm"
             >
-                <el-form-item label="Password" prop="pass">
-                    <el-input v-model="ruleForm.pass" type="password" autocomplete="off" />
+                <el-form-item label="Old Password" prop="oldPassword">
+                    <el-input v-model="passwordForm.oldPassword" type="password" autocomplete="off" />
                 </el-form-item>
-                <el-form-item label="Confirm" prop="checkPass">
-                    <el-input v-model="ruleForm.checkPass" type="password" autocomplete="off" />
+                <el-form-item label="Password" prop="password">
+                    <el-input v-model="passwordForm.password" type="password" autocomplete="off" />
                 </el-form-item>
-                <el-form-item label="Age" prop="age">
-                    <el-input v-model.number="ruleForm.age" />
+                <el-form-item label="Confirm" prop="rePassword">
+                    <el-input v-model="passwordForm.rePassword" type="password" autocomplete="off" />
                 </el-form-item>
+
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm('ruleForm')">
+                    <el-button type="primary" @click="submitForm('passwordForm')">
                         Submit
                     </el-button>
-                    <el-button @click="resetForm('ruleForm')">
-                        Reset
+                    <el-button @click="resetForm('passwordForm')">
+                        Cannel
                     </el-button>
                 </el-form-item>
             </el-form>
@@ -83,29 +85,34 @@
 
 <script lang="ts">
 import { mapGetters } from 'vuex';
+import { authService } from '~/services/auth';
 export default {
     middleware: ['authentication'],
     data() {
-        // const validatePass = (_rule:any, value:string, callback:any) => {
-        //     if (value === '')
-        //         callback(new Error('Please input the password'));
-        //     else {
-        //         const ref = <ElForm>this.$refs.ruleForm as any;
-        //         const that =  this as any;
-        //         if (that.ruleForm.checkPass !== '')
-        //             ref.validateField('checkPass');
-
-        //         callback();
-        //     }
-        // };
+        const validateOldPass = (_rule:any, value:string, callback:any) => {
+            if (value === '')
+                callback(new Error('Please input the password'));
+            callback();
+        };
         const validatePass = (_rule:any, value:string, callback:any) => {
             if (value === '')
                 callback(new Error('Please input the password'));
             else {
-                const ref = this.$refs.ruleForm as any;
+                const ref = this.$refs.passwordForm as any;
                 const that = this as any;
-                if (that.ruleForm.checkPass !== '')
-                    ref.validateField('checkPass');
+                if (that.passwordForm.rePassword !== '')
+                    ref.validateField('rePassword');
+
+                callback();
+            }
+        };
+        const validateRePass = (_rule:any, value:string, callback:any) => {
+            if (value === '')
+                callback(new Error('Please input the re-password'));
+            else {
+                const that = this as any;
+                if (that.passwordForm.rePassword !== that.passwordForm.password)
+                    callback(new Error('Two inputs don\'t match!'));
 
                 callback();
             }
@@ -124,22 +131,26 @@ export default {
                 avatar: ''
             },
             dialogVisible: false,
-            formPassword: {
+            passwordForm: {
                 oldPassword: '',
                 password: '',
                 rePassword: ''
             },
-            oldPassword: '',
-            ruleForm: {
-                pass: '',
-                checkPass: '',
-                age: ''
-            },
             rules: {
-                pass: [
-                    { validator: validatePass, trigger: 'blur' }
+                oldPassword: [
+                    {
+                        validator: validateOldPass, trigger: 'change'
+                    }
                 ],
-            }
+                password: [
+                    { validator: validatePass, trigger: 'change' }
+                ],
+                rePassword: [
+                    {
+                        validator: validateRePass, trigger: 'change'
+                    }
+                ]
+            },
         };
     },
     computed: {
@@ -161,8 +172,27 @@ export default {
         showChangePassword() {
             this.dialogVisible = true;
         },
-        handleChangePassword() {
-
+        submitForm(formName: string) {
+            this.$refs[formName].validate(async (valid:boolean) => {
+                if (valid) {
+                    const result = await authService.updatePassword(this.passwordForm.oldPassword, this.passwordForm.password).catch(error => {
+                        this.$notify.error({
+                            title: 'Error',
+                            message: error.message || 'Cannot update password'
+                        });
+                    });
+                    if (result) {
+                        this.$notify.success({
+                            title: 'Success',
+                            message: 'Update password successfully!'
+                        });
+                    }
+                }
+            });
+        },
+        resetForm(formName: string) {
+            this.$refs[formName].resetFields();
+            this.dialogVisible = false;
         }
     }
 };

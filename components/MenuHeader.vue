@@ -49,7 +49,11 @@
 
                 <v-list>
                     <v-list-item v-for="n in profiles" :key="n.id" @click="() => {}">
-                        <v-list-item-title>{{ n.title }}</v-list-item-title>
+                        <v-list-item-title>
+                            <NuxtLink :to="`/${n.id}`">
+                                {{ n.title }}
+                            </NuxtLink>
+                        </v-list-item-title>
                     </v-list-item>
                 </v-list>
             </v-menu>
@@ -67,7 +71,7 @@ export default Vue.extend({
             { title: 'Điện thoại di động', id: 'mobile' },
             { title: 'Máy tính xách tay', id: 'laptop' }
         ],
-        profiles: [{ title: 'Profile', id: 'profile' }, { title: 'Logout', id: 'logout' }]
+        profiles: [{ title: 'Profile', id: 'my-profile' }, { title: 'Logout', id: 'logout' }]
     }),
     methods: {
     // ...mapActions('auth', [
