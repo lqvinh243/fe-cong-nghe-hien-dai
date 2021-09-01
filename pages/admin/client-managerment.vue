@@ -86,6 +86,7 @@
 import momment from 'moment';
 import { clientService } from '~/services/client';
 export default {
+    middleware: ['authentication'],
     data() {
         return {
             tableData: [],

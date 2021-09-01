@@ -60,14 +60,14 @@
                 label-width="120px"
                 class="demo-ruleForm"
             >
-                <el-form-item label="Old Password" prop="oldPassword">
-                    <el-input v-model="passwordForm.oldPassword" type="password" autocomplete="off" />
+                <el-form-item label-width="auto" prop="oldPassword">
+                    <el-input v-model="passwordForm.oldPassword" placeholder="Old Password" type="password" autocomplete="off" />
                 </el-form-item>
-                <el-form-item label="Password" prop="password">
-                    <el-input v-model="passwordForm.password" type="password" autocomplete="off" />
+                <el-form-item label-width="auto" prop="password">
+                    <el-input v-model="passwordForm.password" placeholder="Password" type="password" autocomplete="off" />
                 </el-form-item>
-                <el-form-item label="Confirm" prop="rePassword">
-                    <el-input v-model="passwordForm.rePassword" type="password" autocomplete="off" />
+                <el-form-item label-width="auto" prop="rePassword">
+                    <el-input v-model="passwordForm.rePassword" placeholder="Re-Password" type="password" autocomplete="off" />
                 </el-form-item>
 
                 <el-form-item>

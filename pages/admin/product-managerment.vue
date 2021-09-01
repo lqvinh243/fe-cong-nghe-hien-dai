@@ -76,6 +76,7 @@
 
 <script lang="ts">
 export default {
+    middleware: ['authentication'],
     data() {
         return {
             tableData: [
