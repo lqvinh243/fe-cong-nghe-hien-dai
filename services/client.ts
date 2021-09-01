@@ -6,5 +6,8 @@ export const clientService = {
     },
     register(data: any) {
         return $axios.$post('/api/v1/clients/register', data);
+    },
+    active(email: string, activeKey: string) {
+        return $axios.$post('/api/v1/clients/active', { email, activeKey });
     }
 };
