@@ -31,9 +31,9 @@
                 </v-list>
             </v-menu>
 
-            <v-btn icon>
+            <!-- <v-btn icon>
                 <v-icon>mdi-heart</v-icon>
-            </v-btn>
+            </v-btn> -->
 
             <v-menu bottom>
                 <template #activator="{ on, attrs }">

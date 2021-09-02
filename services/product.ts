@@ -16,5 +16,9 @@ export const productService = {
 
     findProduct(query: string = '') {
         return $axios.$get(`/api/v1/products?${query}`);
+    },
+
+    getProductDetailById(query: string = '') {
+        return $axios.$get(`/api/v1/products/${query}`);
     }
 };

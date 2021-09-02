@@ -1,5 +1,5 @@
 <template>
-    <v-container grid-list-lg row wrap fluid class="home-app-wrapper statistics pt-2">
+    <v-container grid-list-lg row wrap fluid ml-3>
         <v-layout row wrap>
             <h2>Top 5 sản phẩm gần kết thúc</h2>
         </v-layout>
@@ -11,93 +11,10 @@
                 v-for="(item, index) in listProductLastEnd"
                 :key="index"
                 md3
+                sm6
+                xs12
             >
-                <v-card
-                    :key="item.id"
-                    :loading="loading"
-                    class="mx-auto my-12 md3"
-                    @click="showProductDetail()"
-                >
-                    <template slot="progress">
-                        <v-progress-linear
-                            color="deep-purple"
-                            height="10"
-                            indeterminate
-                        />
-                    </template>
-
-                    <v-img
-                        height="250"
-                        :src="item.url"
-                    />
-
-                    <v-card-title>
-                        <div class="text-name-product">
-                            {{ item.name }}
-                        </div>
-                    </v-card-title>
-
-                    <v-card-text>
-                        <v-row
-                            align="center"
-                            class="mx-0"
-                        >
-                            <v-rating
-                                :value="4.5"
-                                color="amber"
-                                dense
-                                half-increments
-                                readonly
-                                size="14"
-                            />
-
-                            <div class="grey--text ms-4">
-                                4.5 (413)
-                            </div>
-                        </v-row>
-
-                        <div align="left" class="my-4 text-subtitle-1">
-                            $ • Price current: {{ item.bidPrice }}
-                        </div>
-
-                        <div align="left">
-                            • Time expried: {{ item.expiredAt }}
-                        </div>
-
-                        <div align="left">
-                            Category: {{ item.category.name }}
-                        </div>
-                    </v-card-text>
-
-                    <v-divider class="mx-4" />
-
-                    <!-- <v-card-title>Tonight's availability</v-card-title> -->
-
-                    <!-- <v-card-text>
-                        <v-chip-group
-                            v-model="selection"
-                            active-class="deep-purple accent-4 white--text"
-                            column
-                        >
-                            <v-chip>5:30PM</v-chip>
-
-                            <v-chip>7:30PM</v-chip>
-
-                            <v-chip>8:00PM</v-chip>
-
-                            <v-chip>9:00PM</v-chip>
-                        </v-chip-group>
-                    </v-card-text> -->
-
-                    <!-- <v-card-actions>
-                        <v-btn
-                            color="deep-purple lighten-2"
-                            text
-                        >
-                            Get detail
-                        </v-btn>
-                    </v-card-actions> -->
-                </v-card>
+                <product :product="item" />
             </v-flex>
         </v-layout>
         <v-layout row wrap>
@@ -111,66 +28,10 @@
                 v-for="(item, index) in listProductAuction"
                 :key="index"
                 md3
+                sm6
+                xs12
             >
-                <v-card
-                    :key="item.id"
-                    :loading="loading"
-                    class="mx-auto my-12 md3"
-                    @click="showProductDetail()"
-                >
-                    <template slot="progress">
-                        <v-progress-linear
-                            color="deep-purple"
-                            height="10"
-                            indeterminate
-                        />
-                    </template>
-
-                    <v-img
-                        height="250"
-                        :src="item.url"
-                    />
-
-                    <v-card-title>
-                        <div class="text-name-product">
-                            {{ item.name }}
-                        </div>
-                    </v-card-title>
-
-                    <v-card-text>
-                        <v-row
-                            align="center"
-                            class="mx-0"
-                        >
-                            <v-rating
-                                :value="4.5"
-                                color="amber"
-                                dense
-                                half-increments
-                                readonly
-                                size="14"
-                            />
-
-                            <div class="grey--text ms-4">
-                                4.5 (413)
-                            </div>
-                        </v-row>
-
-                        <div align="left" class="my-4 text-subtitle-1">
-                            $ • Price current: {{ item.bidPrice }}
-                        </div>
-
-                        <div align="left">
-                            • Time expried: {{ item.expiredAt }}
-                        </div>
-
-                        <div align="left">
-                            Category: {{ item.category.name }}
-                        </div>
-                    </v-card-text>
-
-                    <v-divider class="mx-4" />
-                </v-card>
+                <product :product="item" />
             </v-flex>
         </v-layout>
         <v-layout row wrap>
@@ -184,66 +45,10 @@
                 v-for="(item, index) in listProductHighPrice"
                 :key="index"
                 md3
+                sm6
+                xs12
             >
-                <v-card
-                    :key="item.id"
-                    :loading="loading"
-                    class="mx-auto my-12 md3"
-                    @click="showProductDetail()"
-                >
-                    <template slot="progress">
-                        <v-progress-linear
-                            color="deep-purple"
-                            height="10"
-                            indeterminate
-                        />
-                    </template>
-
-                    <v-img
-                        height="250"
-                        :src="item.url"
-                    />
-
-                    <v-card-title>
-                        <div class="text-name-product">
-                            {{ item.name }}
-                        </div>
-                    </v-card-title>
-
-                    <v-card-text>
-                        <v-row
-                            align="center"
-                            class="mx-0"
-                        >
-                            <v-rating
-                                :value="4.5"
-                                color="amber"
-                                dense
-                                half-increments
-                                readonly
-                                size="14"
-                            />
-
-                            <div class="grey--text ms-4">
-                                4.5 (413)
-                            </div>
-                        </v-row>
-
-                        <div align="left" class="my-4 text-subtitle-1">
-                            $ • Price current: {{ item.bidPrice }}
-                        </div>
-
-                        <div align="left">
-                            • Time expried: {{ item.expiredAt }}
-                        </div>
-
-                        <div align="left">
-                            Category: {{ item.category.name }}
-                        </div>
-                    </v-card-text>
-
-                    <v-divider class="mx-4" />
-                </v-card>
+                <product :product="item" />
             </v-flex>
         </v-layout>
     </v-container>
@@ -251,10 +56,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import product from '~/components/product.vue';
 // import { mapActions } from 'vuex';
 import { productService } from '~/services/product';
 
 export default Vue.extend({
+    components: { product },
     data: () => ({
         selection: null,
         loading: false,
