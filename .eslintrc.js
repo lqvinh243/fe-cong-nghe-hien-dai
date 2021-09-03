@@ -16,6 +16,9 @@ module.exports = {
         'vue',
         'import'
     ],
+    settings: {
+        'import/core-modules': ['vue', 'vuex'] // these modules are included in nuxt.js
+    },
     // add your custom rules here
     rules: {
         'no-console': 'off',

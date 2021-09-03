@@ -1,5 +1,5 @@
-import * as VeeValidate from 'vee-validate';
 import Vue from 'vue';
+import * as VeeValidate from 'vee-validate';
 
 const config = {
     errorBagName: 'abc', // change if property conflicts.
