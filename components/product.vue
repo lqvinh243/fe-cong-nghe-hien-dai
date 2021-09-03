@@ -85,3 +85,14 @@ export default Vue.extend({
     }
 });
 </script>
+
+<style>
+.text-name-product {
+    line-height: 1.5em;
+    height: 3em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+</style>

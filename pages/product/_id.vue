@@ -2,7 +2,7 @@
     <div grid-list-lg fluid class="container-fluid ml-4 mt-5">
         <v-layout row>
             <v-flex>
-                <h2>{{ title }}</h2>
+                <h1>{{ title }}</h1>
             </v-flex>
             <v-flex md1>
                 <v-btn
@@ -18,6 +18,7 @@
                 </v-btn>
             </v-flex>
         </v-layout>
+        <v-divider />
         <v-layout row wrap>
             <v-flex md5>
                 <v-carousel :show-arrows="false">
@@ -30,16 +31,24 @@
             </v-flex>
             <v-flex md1 />
             <v-flex md5 mt-4>
+                <v-card
+                    elevation="24"
+                    max-width="444"
+                    class="mx-auto"
+                />
                 <v-layout>
                     <v-flex class="text-center">
                         Thông tin chi tiết
                     </v-flex>
                 </v-layout>
                 <v-layout md12 mt-1>
-                    Giá Khởi điểm: <span class="color-primary">{{ priceOrigin }} VNĐ</span>
+                    <h1 class="color-primary">
+                        {{ formatPrice(priceOrigin) }} VNĐ
+                    </h1>
+                    <!-- Giá Khởi điểm: <span class="color-primary">{{ formatPrice(priceOrigin) }} VNĐ</span> -->
                 </v-layout>
                 <v-layout md12 mt-1>
-                    Giá Hiện tại: <span class="color-primary">{{ priceCurrent }} VNĐ</span>
+                    Giá Hiện tại: <span class="color-primary">{{ formatPrice(priceCurrent) }} VNĐ</span>
                 </v-layout>
                 <v-layout md12 mt-1>
                     Thời gian đấu giá: <span class="color-primary">{{ priceCurrent }}</span>
@@ -52,6 +61,19 @@
                 </v-layout>
                 <v-layout md12 mt-1>
                     Mô tả: {{ description }}
+                </v-layout>
+                <v-layout class="my-2">
+                    <v-flex>
+                        <v-btn
+                            color="error"
+                            dark
+                            block
+                            large
+                            md12
+                        >
+                            Đấu giá
+                        </v-btn>
+                    </v-flex>
                 </v-layout>
             </v-flex>
         </v-layout>
@@ -99,7 +121,12 @@ export default Vue.extend({
             this.description = result.data.productDescription + '';
             // this.timeExpire = momment(result.data.expiredAt);
             this.seller = `${result.data.seller.firstName} ${result.data.seller.lastName == null ? '' : result.data.seller.lastName}`;
-        }
+        },
+
+        formatPrice(value: any) {
+            const val = (value / 1).toFixed(0).replace(',', '.');
+            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        },
 
     }
 });
@@ -113,5 +140,10 @@ export default Vue.extend({
         color: brown;
         font-weight: bold;
         margin-left: 5px;
+    }
+
+    h1 {
+        color: #0f0f0f;
+        font-weight: bold;
     }
 </style>
