@@ -23,9 +23,20 @@
                             <el-form-item label-width="auto" prop="Password">
                                 <el-input v-model="registerModel.password" type="password" placeholder="Password" />
                             </el-form-item>
-                            <el-button style="width: 100%;margin-top:1rem" type="primary" :loading="loading" @click="handleResiter('ruleForm')">
-                                Register
-                            </el-button>
+                            <vue-recaptcha
+                                ref="recaptcha"
+                                :sitekey="sitekey"
+                                @verify="onVerify"
+                                @expired="onExpired"
+                            />
+                            <vue-recaptcha
+                                ref="invisibleRecaptcha"
+                                :sitekey="sitekey"
+                            >
+                                <el-button style="width: 100%;margin-top:1rem" type="primary" :loading="loading" @click="handleResiter('ruleForm')">
+                                    Register
+                                </el-button>
+                            </vue-recaptcha>
                         </el-form>
                         <div style="width: 100%;margin-top:1rem">
                             Already have an Account?
@@ -54,13 +65,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { clientService } from '~/services/client';
 
 export default Vue.extend({
     layout: 'blank',
     middleware: ['non-authentication'],
 
     data: () => ({
+        sitekey: '6LfaCkEcAAAAAPGCQhVzPjQcF5ABYAlZe2XjTA4o',
         title: 'Register',
         email: '',
         password: '',
@@ -103,28 +114,47 @@ export default Vue.extend({
                 class: 'theme-default page-login',
                 'data-layout': 'blank',
             },
+            script: [
+                { once: true, src: 'https://www.google.com/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit', async: 'defer' }
+            ]
+            // script:'https://www.google.com/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit" async defer'
         };
     },
 
     methods: {
         handleResiter(formName: string) {
             this.loading = true;
-            this.$refs[formName].validate(async (valid:boolean) => {
+            this.$refs[formName].validate((valid:boolean) => {
                 if (valid) {
-                    const result = await clientService.register(this.registerModel).catch(error => {
-                        this.$notify.error({
-                            title: 'Error',
-                            message: error.message || 'Cannot register!'
-                        });
-                    });
-                    if (result) {
-                        this.$refs[formName].resetFields();
-                        this.dialogVisible = true;
-                    }
+                    console.log(valid);
+                    this.$refs.invisibleRecaptcha.execute();
                 }
+                // const result = await clientService.register(this.registerModel).catch(error => {
+                //     this.$notify.error({
+                //         title: 'Error',
+                //         message: error.message || 'Cannot register!'
+                //     });
+                // });
+                // if (result) {
+                //     this.$refs[formName].resetFields();
+                //     this.dialogVisible = true;
+                // }
+
                 this.loading = false;
             });
-        }
+        },
+        onSubmit() {
+            this.$refs.invisibleRecaptcha.execute();
+        },
+        onVerify(response:any) {
+            console.log('Verify: ' + response);
+        },
+        onExpired() {
+            console.log('Expired');
+        },
+        resetRecaptcha() {
+            this.$refs.recaptcha.reset(); // Direct call reset method
+        },
     }
 });
 </script>

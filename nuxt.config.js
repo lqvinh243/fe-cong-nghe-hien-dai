@@ -28,7 +28,8 @@ export default {
         { src: '~/plugins/event-bus', mode: 'client' },
         // { src: '~/plugins/vee-validate', mode: 'client' },
         { src: '~/plugins/element-ui' },
-        { src: '~/plugins/vuetify' }
+        { src: '~/plugins/vuetify' },
+        { src: '~/plugins/vue-recapcha' }
     ],
 
     // Auto import components (https://go.nuxtjs.dev/config-components)
