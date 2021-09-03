@@ -15,5 +15,9 @@ export const authService = {
 
     updatePassword(oldPassword: string, password: string) {
         return $axios.$patch('/api/v1/auths/password', { oldPassword, password });
+    },
+
+    verifyCapcha(response: string) {
+        return $axios.$post('/api/v1/auths/verify-capcha', { response });
     }
 };

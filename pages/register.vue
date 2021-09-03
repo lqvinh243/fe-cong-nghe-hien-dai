@@ -29,14 +29,10 @@
                                 @verify="onVerify"
                                 @expired="onExpired"
                             />
-                            <vue-recaptcha
-                                ref="invisibleRecaptcha"
-                                :sitekey="sitekey"
-                            >
-                                <el-button style="width: 100%;margin-top:1rem" type="primary" :loading="loading" @click="handleResiter('ruleForm')">
-                                    Register
-                                </el-button>
-                            </vue-recaptcha>
+
+                            <el-button :disabled="!verifyCapcha" style="width: 100%;margin-top:1rem" type="primary" :loading="loading" @click="handleResiter('ruleForm')">
+                                Register
+                            </el-button>
                         </el-form>
                         <div style="width: 100%;margin-top:1rem">
                             Already have an Account?
@@ -65,13 +61,15 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { authService } from '~/services/auth';
+import { clientService } from '~/services/client';
 
 export default Vue.extend({
     layout: 'blank',
     middleware: ['non-authentication'],
 
     data: () => ({
-        sitekey: '6LfaCkEcAAAAAPGCQhVzPjQcF5ABYAlZe2XjTA4o',
+        sitekey: '6LeqPkEcAAAAADQ9itOzqznCafxpgKCqfzFWEJve',
         title: 'Register',
         email: '',
         password: '',
@@ -104,7 +102,9 @@ export default Vue.extend({
                 { required: true, message: 'Please input address!', trigger: 'blur' },
             ]
         },
-        dialogVisible: false
+        dialogVisible: false,
+        verifyCapcha: false
+
     }),
     head(): object {
         return {
@@ -116,44 +116,50 @@ export default Vue.extend({
             },
             script: [
                 { once: true, src: 'https://www.google.com/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit', async: 'defer' }
-            ]
-            // script:'https://www.google.com/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit" async defer'
+            ],
         };
     },
 
     methods: {
         handleResiter(formName: string) {
             this.loading = true;
-            this.$refs[formName].validate((valid:boolean) => {
-                if (valid) {
-                    console.log(valid);
-                    this.$refs.invisibleRecaptcha.execute();
-                }
-                // const result = await clientService.register(this.registerModel).catch(error => {
-                //     this.$notify.error({
-                //         title: 'Error',
-                //         message: error.message || 'Cannot register!'
-                //     });
-                // });
-                // if (result) {
-                //     this.$refs[formName].resetFields();
-                //     this.dialogVisible = true;
-                // }
-
+            if (this.verifyCapcha) {
+                this.$refs[formName].validate(async (valid:boolean) => {
+                    if (valid) {
+                        const result = await clientService.register(this.registerModel).catch(error => {
+                            this.$notify.error({
+                                title: 'Error',
+                                message: error.message || 'Cannot register!'
+                            });
+                        });
+                        if (result) {
+                            this.$refs[formName].resetFields();
+                            this.dialogVisible = true;
+                        }
+                    }
+                    this.loading = false;
+                });
+            }
+            else {
                 this.loading = false;
+                this.$notify.error({
+                    title: 'Error',
+                    message: 'Please verify capcha!'
+                });
+            }
+        },
+        async onVerify(response:any) {
+            const result = await authService.verifyCapcha(response).catch(error => {
+                this.$refs.recaptcha.reset();
+                this.$notify.error({
+                    title: 'Error',
+                    message: error.message || 'Please verity capcha again!'
+                });
+                if (result)
+                    this.verifyCapcha = result;
+                else
+                    this.$refs.recaptcha.reset();
             });
-        },
-        onSubmit() {
-            this.$refs.invisibleRecaptcha.execute();
-        },
-        onVerify(response:any) {
-            console.log('Verify: ' + response);
-        },
-        onExpired() {
-            console.log('Expired');
-        },
-        resetRecaptcha() {
-            this.$refs.recaptcha.reset(); // Direct call reset method
         },
     }
 });
