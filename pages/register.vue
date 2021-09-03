@@ -155,12 +155,15 @@ export default Vue.extend({
                     title: 'Error',
                     message: error.message || 'Please verity capcha again!'
                 });
-                if (result)
-                    this.verifyCapcha = result;
-                else
-                    this.$refs.recaptcha.reset();
             });
+            if (result)
+                this.verifyCapcha = result;
+            else
+                this.$refs.recaptcha.reset();
         },
+        onExpired() {
+            this.verifyCapcha = false;
+        }
     }
 });
 </script>
