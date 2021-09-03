@@ -5,17 +5,8 @@
                 <h1>{{ title }}</h1>
             </v-flex>
             <v-flex md1>
-                <v-btn
-                    class="mx-2 text-right"
-                    fab
-                    dark
-                    small
-                    color="pink"
-                >
-                    <v-icon dark>
-                        mdi-heart
-                    </v-icon>
-                </v-btn>
+                <i v-if="likeProduct" class="el-icon-star-on icon-like-product" @click="likeProduct = false" />
+                <i v-if="!likeProduct" style="font-size: 2rem; cursor: pointer" class="el-icon-star-off" @click="likeProduct = true" />
             </v-flex>
         </v-layout>
         <v-divider />
@@ -36,53 +27,100 @@
                     max-width="444"
                     class="mx-auto"
                 />
-                <v-layout>
-                    <v-flex class="text-center">
-                        Thông tin chi tiết
-                    </v-flex>
-                </v-layout>
                 <v-layout md12 mt-1>
-                    <h1 class="color-primary">
-                        {{ formatPrice(priceOrigin) }} VNĐ
-                    </h1>
-                    <!-- Giá Khởi điểm: <span class="color-primary">{{ formatPrice(priceOrigin) }} VNĐ</span> -->
+                    <span class="color-primary-header">
+                        {{ formatPrice(priceBidder) }} đ
+                    </span>
                 </v-layout>
-                <v-layout md12 mt-1>
-                    Giá Hiện tại: <span class="color-primary">{{ formatPrice(priceCurrent) }} VNĐ</span>
-                </v-layout>
-                <v-layout md12 mt-1>
-                    Thời gian đấu giá: <span class="color-primary">{{ priceCurrent }}</span>
-                </v-layout>
-                <v-layout md12 mt-1>
-                    Tình trạng: {{ status }}
-                </v-layout>
-                <v-layout md12 mt-1>
-                    Người Bán: {{ seller }}
-                </v-layout>
-                <v-layout md12 mt-1>
-                    Mô tả: {{ description }}
-                </v-layout>
-                <v-layout class="my-2">
-                    <v-flex>
-                        <v-btn
-                            color="error"
-                            dark
-                            block
-                            large
-                            md12
-                        >
-                            Đấu giá
-                        </v-btn>
-                    </v-flex>
-                </v-layout>
+                <v-card
+                    style="padding: 0 auto"
+                    class="mx-auto"
+                    outlined
+                >
+                    <v-list-item three-line>
+                        <v-list-item-content>
+                            <div class="text-overline">
+                                <h3>Thông tin Đấu giá</h3>
+                                <v-divider />
+                            </div>
+                            <v-list-item-title class="text-h5 mb-1">
+                                <v-layout md12 my-2>
+                                    Giá hiện tại: <span class="ml-2 color-primary">{{ stepPrice }} đ</span>
+                                </v-layout>
+                                <v-layout md12 my-2>
+                                    Giá Mua ngay: <span class="ml-2 color-primary">{{ formatPrice(priceCurrent) }} đ</span>
+                                </v-layout>
+                                <v-layout md12 my-2>
+                                    Tình trạng: {{ status }}
+                                </v-layout>
+                                <v-layout md12 my-2>
+                                    Thời gian đấu giá: <span>{{ timeExpire }}</span>
+                                </v-layout>
+                                <v-layout md12 my-2>
+                                    Bước nhảy: <span>{{ stepPrice }}</span>
+                                </v-layout>
+                                <v-layout md12 my-2>
+                                    Thông tin bidder đang đặt giá cao nhất: <span>{{ stepPrice }}</span>
+                                </v-layout>
+                                <v-layout md12 my-2>
+                                    Ngày đăng sản phẩm: <span class="ml-2 text-info-auction">{{ formatDate(createdAt) }}</span>
+                                </v-layout>
+                                <v-layout md12 my-2>
+                                    Số lượt ra giá hiện tại: <span class="ml-2 text-info-auction">{{ stepPrice }}</span>
+                                </v-layout>
+                            </v-list-item-title>
+                        </v-list-item-content>
+                        <v-list-item-avatar
+                            tile
+                            size="80"
+                            color="grey"
+                        />
+                    </v-list-item>
+                    <v-card-actions>
+                        <el-button style="width: 100%;margin-top:1rem; font-weight: bold;" type="primary" :loading="loading" @click="auctionProduct">
+                            ĐẤU GIÁ
+                        </el-button>
+                        <el-button style="width: 100%;margin-top:1rem; font-weight: bold;" type="danger" :loading="loading" @click="auctionProduct">
+                            MUA NGAY
+                        </el-button>
+                    </v-card-actions>
+                </v-card>
+
+                <v-card
+                    style="padding: 0 auto"
+                    class="mx-auto mt-4"
+                    outlined
+                >
+                    <v-list-item three-line>
+                        <v-list-item-content>
+                            <div class="text-overline">
+                                <h3>Thông tin Sản phẩm</h3>
+                                <v-divider />
+                            </div>
+
+                            <v-list-item-title class="text-h5 mb-1">
+                                <v-layout md12 mt-1>
+                                    Danh mục: {{ category }}
+                                </v-layout>
+                                <v-layout md12 mt-1>
+                                    Người Bán: {{ seller }}
+                                </v-layout>
+                                <v-layout md12 mt-1>
+                                    Mô tả: {{ description }}
+                                </v-layout>
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-card-actions />
+                </v-card>
             </v-flex>
         </v-layout>
     </div>
 </template>
 
 <script lang="ts">
+import momment from 'moment';
 import Vue from 'vue';
-// import momment from 'moment';
 import { productService } from '~/services/product';
 
 export default Vue.extend({
@@ -93,10 +131,14 @@ export default Vue.extend({
         title: '' as any,
         priceCurrent: 0,
         status: '' as any,
-        priceOrigin: 0,
+        priceBidder: 0,
         description: '' as any,
         timeExpire: 0,
-        seller: '' as any
+        seller: '' as any,
+        likeProduct: false as boolean,
+        stepPrice: 0 as number,
+        category: '' as string,
+        createdAt: null
     }),
     mounted() {
         console.log(this.$route.params.id);
@@ -104,6 +146,10 @@ export default Vue.extend({
     },
 
     methods: {
+        auctionProduct() {
+
+        },
+
         async loadProductDetail() {
             const result = await productService.getProductDetailById(this.$route.params.id)
                 .catch(error => {
@@ -117,10 +163,13 @@ export default Vue.extend({
             this.title = result.data.name;
             this.priceCurrent = result.data.priceNow;
             this.status = result.data.status;
-            this.priceOrigin = result.data.bidPrice;
+            this.priceBidder = result.data.bidPrice;
             this.description = result.data.productDescription + '';
             // this.timeExpire = momment(result.data.expiredAt);
             this.seller = `${result.data.seller.firstName} ${result.data.seller.lastName == null ? '' : result.data.seller.lastName}`;
+            this.stepPrice = result.data.stepPrice;
+            this.category = result.data.category.name;
+            this.createdAt = result.data.createdAt;
         },
 
         formatPrice(value: any) {
@@ -128,6 +177,9 @@ export default Vue.extend({
             return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         },
 
+        formatDate(date:any) {
+            return momment(date).format('k:mm D-M-Y');
+        }
     }
 });
 </script>
@@ -136,14 +188,30 @@ export default Vue.extend({
         margin: 0 auto;
     }
 
-    .color-primary {
-        color: brown;
-        font-weight: bold;
-        margin-left: 5px;
+    .color-primary-header {
+        font-weight: 700;
+        color: #cb1c22;
+        margin-right: 10px;
+        font-size: 32px;
     }
 
-    h1 {
+    .color-primary {
+        font-weight: 700;
+        color: #cb1c22;
+    }
+
+    h1, h3, v-layout {
         color: #0f0f0f;
+        font-weight: bold;
+    }
+
+    .icon-like-product {
+        font-size: 2rem;
+        cursor: pointer;
+        color: red;
+    }
+
+    .text-info-auction {
         font-weight: bold;
     }
 </style>
