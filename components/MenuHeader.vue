@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-app-bar color="deep-purple accent-4" dense dark>
-            <v-app-bar-nav-icon />
+            <v-app-bar-nav-icon @click="handleDrawer()" />
 
             <v-toolbar-title>
                 <NuxtLink :to="`/`">
@@ -159,6 +159,9 @@ export default Vue.extend({
     },
 
     methods: {
+        handleDrawer() {
+            this.$emit('emitDrawer');
+        },
         querySelections(v: any) {
             this.loading = true;
             // Simulated ajax query

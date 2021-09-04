@@ -28,3 +28,16 @@
         }
     }
 }
+
+::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+}
+
+.v-list-item__icon {
+    margin: 6px 16px 6px 0 !important;
+}
+
+.v-list-item__content {
+    margin: 6px 16px 6px 0 !important;
+}

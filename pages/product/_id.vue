@@ -38,7 +38,7 @@
                     outlined
                 >
                     <v-list-item three-line>
-                        <v-list-item-content>
+                        <v-list-item-content style="margin-right:0 !important">
                             <div class="text-overline">
                                 <h3>Thông tin Đấu giá</h3>
                                 <v-divider />
@@ -70,17 +70,12 @@
                                 </v-layout>
                             </v-list-item-title>
                         </v-list-item-content>
-                        <v-list-item-avatar
-                            tile
-                            size="80"
-                            color="grey"
-                        />
                     </v-list-item>
                     <v-card-actions>
-                        <el-button style="width: 100%;margin-top:1rem; font-weight: bold;" type="primary" :loading="loading" @click="auctionProduct">
+                        <el-button style="width: 100%;margin-top:1rem; font-weight: bold; color:white" type="primary" :loading="loading" @click="auctionProduct">
                             ĐẤU GIÁ
                         </el-button>
-                        <el-button style="width: 100%;margin-top:1rem; font-weight: bold;" type="danger" :loading="loading" @click="auctionProduct">
+                        <el-button style="width: 100%;margin-top:1rem; font-weight: bold; color:white" type="danger" :loading="loading" @click="auctionProduct">
                             MUA NGAY
                         </el-button>
                     </v-card-actions>
@@ -92,7 +87,7 @@
                     outlined
                 >
                     <v-list-item three-line>
-                        <v-list-item-content>
+                        <v-list-item-content style="margin-right:0 !important">
                             <div class="text-overline">
                                 <h3>Thông tin Sản phẩm</h3>
                                 <v-divider />
@@ -119,8 +114,8 @@
 </template>
 
 <script lang="ts">
-import momment from 'moment';
 import Vue from 'vue';
+import momment from 'moment';
 import { productService } from '~/services/product';
 
 export default Vue.extend({

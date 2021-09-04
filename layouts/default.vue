@@ -2,11 +2,17 @@
     <div class="theme-default">
         <div class="main-content">
             <div data-app>
-                <menu-header />
+                <menu-header @emitDrawer="getDrawer" />
+                <menu-left :drawer="drawer">
+                    <div class="col-right" style="overflow: auto;height:calc(100vh - 48px)">
+                        <nuxt />
+                    </div>
+                </menu-left>
             </div>
-            <div class="col-right">
+
+            <!-- <div class="col-right">
                 <nuxt />
-            </div>
+            </div> -->
         </div>
     </div>
 </template>
@@ -14,10 +20,20 @@
 <script lang="ts">
 import Vue from 'vue';
 import MenuHeader from '~/components/MenuHeader.vue';
+import MenuLeft from '~/components/MenuLeft.vue';
 // import { connectWS } from '~/utils/socket';
 
 export default Vue.extend({
-    components: { MenuHeader },
+    components: { MenuHeader, MenuLeft },
+
+    data: () => ({
+        drawer: null,
+        items: [
+            { title: 'Home', icon: 'mdi-view-dashboard' },
+            { title: 'About', icon: 'mdi-forum' }
+        ],
+    }),
+
     mounted() {
         // if (this.$auth.isAuthenticated()) {
         //     const socket = connectWS(this.$config.wsUrl, 'chat', this.$store.state.auth.accessToken);
@@ -60,6 +76,12 @@ export default Vue.extend({
         //     // eslint-disable-next-line no-console
         //     console.log('connect_error', err);
         // });
+    },
+
+    methods: {
+        getDrawer() {
+            this.drawer = !this.drawer;
+        }
     }
 });
 </script>
