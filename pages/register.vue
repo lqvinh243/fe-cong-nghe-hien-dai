@@ -3,10 +3,13 @@
         <el-container style="max-width:70%;margin:0 auto">
             <b-row class="page-controls" style="padding:5rem 0rem">
                 <b-col cols="8" style="background-color:#fff">
-                    <div action="#" style="max-width:80%;margin:0 auto;margin-top:30%;">
-                        <h1 class="text-center">
+                    <div class="section-header" action="#" style="max-width:80%;margin:0 auto;margin-top:10%;">
+                        <h1 class="text-center title mb-3">
                             Sign up
                         </h1>
+                        <p>
+                            We're happy you're here!
+                        </p>
                         <el-form ref="ruleForm" :model="registerModel" :rules="rules" label-width="120px" class="demo-ruleForm">
                             <el-form-item label-width="auto" prop="firstName">
                                 <el-input v-model="registerModel.firstName" placeholder="First name" />
@@ -30,19 +33,32 @@
                                 @expired="onExpired"
                             />
 
-                            <el-button :disabled="!verifyCapcha" style="width: 100%;margin-top:1rem" type="primary" :loading="loading" @click="handleResiter('ruleForm')">
+                            <el-button
+                                :disabled="!verifyCapcha"
+                                class="custom-button"
+                                style="width: 40%;margin-top:1rem; margin-left:10%"
+                                type="primary"
+                                :loading="loading"
+                                @click="handleResiter('ruleForm')"
+                            >
                                 Register
                             </el-button>
                         </el-form>
-                        <div style="width: 100%;margin-top:1rem">
-                            Already have an Account?
-                            <nuxt-link to="/login">
-                                Sign in
-                            </nuxt-link>
-                        </div>
                     </div>
                 </b-col>
-                <b-col :style="{ backgroundImage: 'url(' + require('~/assets/images/land.jpg') + ')' }" />
+                <b-col class="right-side">
+                    <div style="max-width: 100%">
+                        <h1 class="text-center mb-3 title">
+                            ALREADY HAVE AN ACCOUNT?
+                        </h1>
+                        <p class="text-center">
+                            Log in and go to your Dashboard
+                        </p>
+                        <nuxt-link to="/login" style="color: #fff" class="custom-button transparent">
+                            Login
+                        </nuxt-link>
+                    </div>
+                </b-col>
             </b-row>
         </el-container>
         <el-dialog
@@ -185,6 +201,63 @@ export default Vue.extend({
   top: 0;
   left: 0;
   right: 0;
+}
+
+.section-header {
+  margin-bottom: 55px;
+  margin: 0 auto 35px;
+  text-align: center;
+}
+
+.section-header h1 {
+  color: #171d1c;
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  font-size: 2rem;
+}
+.right-side {
+  background: -webkit-linear-gradient(
+    90deg,
+    #5140fe 0%,
+    #7757f7 56%,
+    #9d6ef0 100%
+  );
+  color: #ffffff;
+}
+
+.right-side h1 {
+  color: #ffffff;
+}
+
+.right-side .title{
+    margin-top: 50%;
+    text-transform: capitalize;
+    font-family: "Roboto", sans-serif;
+    font-size: 1.75rem;
+}
+.transparent {
+    background: transparent !important;
+    border-radius: 30px;
+    padding: 12px 30px 10px;
+    font-size: 18px;
+}
+
+.custom-button {
+  margin-left: 30%;
+  font-size: 16px;
+  height: 50px;
+  color: #ffffff;
+  -webkit-border-radius: 30px;
+  -moz-border-radius: 30px;
+  border-radius: 30px;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 18px;
+  background: -moz-linear-gradient(90deg, #3da9f5 0%, #683df5 100%);
+  background: -ms-linear-gradient(90deg, #3da9f5 0%, #683df5 100%);
+  background: -webkit-linear-gradient(90deg, #3da9f5 0%, #683df5 100%);
+  box-shadow: -1.04px 4.891px 20px 0px rgb(69 49 183 / 50%);
+  font-family: "Roboto", sans-serif;
 }
 </style>
 
