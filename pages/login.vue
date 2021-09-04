@@ -1,66 +1,67 @@
 <template>
-    <!-- <div> -->
-    <el-container style="max-width: 70%; margin: 0 auto">
-        <b-row class="page-controls" style="padding: 5rem 0rem">
-            <b-col h-100 cols="8" style="background-color: #fff">
-                <div style="max-width: 80%">
-                    <div class="section-header">
-                        <h1 class="text-center mb-3 title">
-                            SIGN UP
-                        </h1>
-                        <p>We are happy you're here!</p>
-                    </div>
-                    <el-form
-                        ref="ruleForm"
-                        :model="loginModel"
-                        :rules="rules"
-                        label-width="120px"
-                        class="demo-ruleForm"
-                    >
-                        <el-form-item label-width="auto" prop="email">
-                            <el-input
-                                v-model="loginModel.email"
-                                placeholder="Email Address"
-                            />
-                        </el-form-item>
-
-                        <el-form-item label-width="auto" prop="password">
-                            <el-input
-                                v-model="loginModel.password"
-                                type="password"
-                                placeholder="Password"
-                            />
-                        </el-form-item>
-                        <div class="text-right mt-2">
-                            <a href="#"> Forgot password</a>
+    <div :style="{backgroundImage: 'url(' + require('~/assets/images/hero-bg.png') + ')',}" class="bg_img hero-bg">
+        <el-container style="max-width: 70%; margin: 0 auto">
+            <b-row class="page-controls" style="padding: 5rem 0rem">
+                <b-col h-100 cols="8" style="background-color: #fff">
+                    <div style="max-width: 80%">
+                        <div class="section-header">
+                            <h1 class="text-center mb-3 title" style="margin-top:10%">
+                                HI, THERE
+                            </h1>
+                            <p>You can log in to your account here.</p>
                         </div>
-                        <el-button
-                            class="custom-button mb-3"
-                            style="width: 40%; margin-top: 1rem"
-                            type="primary"
-                            :loading="loading"
-                            @click="login('ruleForm')"
+                        <el-form
+                            ref="ruleForm"
+                            :model="loginModel"
+                            :rules="rules"
+                            label-width="120px"
+                            class="demo-ruleForm text-box"
                         >
-                            Log in
-                        </el-button>
-                    </el-form>
-                    <div class="text-center" style="width: 100%; margin-top: 1rem">
-                        New here?
-                        <nuxt-link to="/register">
-                            Create an Account
+                            <el-form-item label-width="auto" prop="email">
+                                <el-input
+                                    v-model="loginModel.email"
+                                    placeholder="Email Address"
+                                />
+                            </el-form-item>
+
+                            <el-form-item label-width="auto" prop="password">
+                                <el-input
+                                    v-model="loginModel.password"
+                                    type="password"
+                                    placeholder="Password"
+                                />
+                            </el-form-item>
+                            <div class="text-center mt-2">
+                                <a href="#"> Forgot password</a>
+                            </div>
+                            <el-button
+                                class="custom-button mb-3"
+                                style="width: 40%; margin-top: 1rem"
+                                type="primary"
+                                :loading="loading"
+                                @click="login('ruleForm')"
+                            >
+                                Log in
+                            </el-button>
+                        </el-form>
+                    </div>
+                </b-col>
+                <b-col class="right-side">
+                    <div style="max-width: 100%">
+                        <h1 class="text-center mb-3 title">
+                            NEW HERE
+                        </h1>
+                        <p class="text-center">
+                            Sign up and create your Account
+                        </p>
+                        <nuxt-link to="/register" style="color: #fff" class="custom-button transparent">
+                            Sign up
                         </nuxt-link>
                     </div>
-                </div>
-            </b-col>
-            <b-col
-                :style="{
-                    backgroundImage:
-                        'url(' + require('~/assets/images/hero-bg.png') + ')',
-                }"
-            />
-        </b-row>
-    </el-container>
-    <!-- </div> -->
+                </b-col>
+            </b-row>
+        </el-container>
+    </div>
 </template>
 
 <script lang="ts">
@@ -183,5 +184,49 @@ export default Vue.extend({
   background: -webkit-linear-gradient(90deg, #3da9f5 0%, #683df5 100%);
   box-shadow: -1.04px 4.891px 20px 0px rgb(69 49 183 / 50%);
   font-family: "Roboto", sans-serif;
+}
+.right-side {
+  background: -webkit-linear-gradient(
+    90deg,
+    #5140fe 0%,
+    #7757f7 56%,
+    #9d6ef0 100%
+  );
+  color: #ffffff;
+}
+
+.right-side h1 {
+  color: #ffffff;
+}
+
+.bg_img {
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-position: bottom center;
+}
+.hero-bg {
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+.text-box {
+  margin-left: 10%;
+}
+
+.right-side .title{
+    margin-top: 40%;
+    text-transform: capitalize;
+    font-family: "Roboto", sans-serif;
+    font-size: 1.75rem;
+}
+
+.transparent {
+    background: transparent !important;
+    border-radius: 30px;
+    padding: 12px 30px 10px;
+    font-size: 18px;
 }
 </style>

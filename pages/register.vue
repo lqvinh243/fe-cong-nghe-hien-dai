@@ -1,8 +1,8 @@
 <template>
-    <div>
+    <div :style="{ backgroundImage: 'url(' + require('~/assets/images/hero-bg.png') + ')',}" class="bg_img hero-bg">
         <el-container style="max-width:70%;margin:0 auto">
             <b-row class="page-controls" style="padding:5rem 0rem">
-                <b-col cols="5" style="background-color:#fff">
+                <b-col cols="8" style="background-color:#fff">
                     <div action="#" style="max-width:80%;margin:0 auto;margin-top:30%;">
                         <h1 class="text-center">
                             Sign up
@@ -171,6 +171,20 @@ export default Vue.extend({
 >::placeholder {
   color: black;
   opacity: 1; /* Firefox */
+}
+
+.bg_img {
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-position: bottom center;
+}
+.hero-bg {
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 </style>
 
