@@ -140,7 +140,12 @@ export default Vue.extend({
                         });
                         if (profile) {
                             this.updateProfile(profile.data);
-                            this.$router.push('/');
+                            const urlRedirect = this.$router.query.redirect;
+                            if (urlRedirect)
+                                this.$router.push(`/${urlRedirect}`);
+
+                            else
+                                this.$router.push('/');
                         }
                     }
                 }
