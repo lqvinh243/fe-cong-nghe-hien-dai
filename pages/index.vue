@@ -77,11 +77,8 @@ export default Vue.extend({
         },
         listProductExpried: [] as any
     }),
-    created() {
-        this.loadData();
-    },
     async mounted() {
-        await this.getProductExpriedAsc();
+        await this.loadData();
     },
     methods: {
         loadData() {

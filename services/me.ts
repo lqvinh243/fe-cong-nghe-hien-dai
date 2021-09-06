@@ -7,5 +7,9 @@ export const meService = {
 
     uploadAvatar(data: any) {
         return $axios.$post('/api/v1/me/avatar', data);
+    },
+
+    updateProfile(data: any) {
+        return $axios.$post('/api/v1/me', data);
     }
 };

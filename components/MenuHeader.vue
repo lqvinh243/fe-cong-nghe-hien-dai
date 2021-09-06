@@ -61,11 +61,9 @@
                 </template>
 
                 <v-list>
-                    <v-list-item v-for="n in profiles" :key="n.id" @click="() => {}">
+                    <v-list-item v-for="n in profiles" :key="n.id" @click="handleRedirect(n.id)">
                         <v-list-item-title>
-                            <NuxtLink :to="`/${n.id}`">
-                                {{ n.title }}
-                            </NuxtLink>
+                            {{ n.title }}
                         </v-list-item-title>
                     </v-list-item>
                 </v-list>
@@ -76,7 +74,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-// import { mapActions } from 'vuex';
+import { mapActions } from 'vuex';
 
 export default Vue.extend({
     data: () => ({
@@ -84,7 +82,7 @@ export default Vue.extend({
             { title: 'Điện thoại di động', id: 'mobile' },
             { title: 'Máy tính xách tay', id: 'laptop' }
         ],
-        profiles: [{ title: 'Profile', id: 'my-profile' }, { title: 'Logout', id: 'logout' }],
+        profiles: [{ title: 'Profile', id: 'my-profile' }, { title: 'Logout', id: 'logout', }],
         listSearch: [],
         loading: false,
         search: null,
@@ -98,6 +96,9 @@ export default Vue.extend({
     },
 
     methods: {
+        ...mapActions('auth', [
+            'clearAuthentication',
+        ]),
         handleDrawer() {
             this.$emit('emitDrawer');
         },
@@ -110,6 +111,17 @@ export default Vue.extend({
                 });
                 this.loading = false;
             }, 500);
+        },
+        handleRedirect(path: string) {
+            switch (path) {
+            case 'logout':
+                this.clearAuthentication();
+                this.$router.push('/login');
+                break;
+            case 'my-profile':
+                this.$router.push(`/${path}`);
+                break;
+            }
         }
     }
 });

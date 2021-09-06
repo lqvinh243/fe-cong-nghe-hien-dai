@@ -5,8 +5,9 @@
                 <h1>{{ title }}</h1>
             </v-flex>
             <v-flex md1>
-                <i v-if="likeProduct" class="el-icon-star-on icon-like-product" @click="likeProduct = false" />
-                <i v-if="!likeProduct" style="font-size: 2rem; cursor: pointer" class="el-icon-star-off" @click="likeProduct = true" />
+                <i v-if="showFavouriteIcon" style="font-size: 2rem; cursor: pointer" :class="isFavourite ? 'el-icon-star-on icon-like-product' :'el-icon-star-off'" @click="handleFavourite" />
+                <!-- <i v-if="likeProduct" class="el-icon-star-on icon-like-product" @click="likeProduct = false" />
+                <i v-if="!likeProduct" style="font-size: 2rem; cursor: pointer" class="el-icon-star-off" @click="likeProduct = true" /> -->
             </v-flex>
         </v-layout>
         <v-divider />
@@ -116,10 +117,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import momment from 'moment';
+import { ROLE_ID } from '~/commom/enum';
 import { productService } from '~/services/product';
+import { productFavouriteService } from '~/services/product-favourite';
 
 export default Vue.extend({
     data: () => ({
+        id: null as string | null,
         selection: null,
         loading: false,
         listProductImage: [],
@@ -133,11 +137,21 @@ export default Vue.extend({
         likeProduct: false as boolean,
         stepPrice: 0 as number,
         category: '' as string,
-        createdAt: null
+        createdAt: null,
+        isFavourite: false
     }),
+
+    computed: {
+        showFavouriteIcon():boolean {
+            return this.$auth.isRoles(ROLE_ID.BIDDER);
+        }
+    },
     mounted() {
-        console.log(this.$route.params.id);
+        this.id = this.$route.params.id;
+        if (!this.id)
+            return this.$router.push('/404');
         this.loadProductDetail();
+        this.checkFavourite();
     },
 
     methods: {
@@ -146,7 +160,7 @@ export default Vue.extend({
         },
 
         async loadProductDetail() {
-            const result = await productService.getProductDetailById(this.$route.params.id)
+            const result = await productService.getProductDetailById(this.id)
                 .catch(error => {
                     this.$notify.error({
                         title: 'Error',
@@ -174,6 +188,37 @@ export default Vue.extend({
 
         formatDate(date:any) {
             return momment(date).format('k:mm D-M-Y');
+        },
+
+        async checkFavourite() {
+            if (this.$auth.isRoles(ROLE_ID.BIDDER)) {
+                const result = await productFavouriteService.getByBidder(this.id).catch(error => {
+                    this.$notify.error({
+                        title: 'Error',
+                        message: error.message || 'Cannot check favourite product'
+                    });
+                });
+                this.isFavourite = result.data;
+            }
+        },
+
+        async handleFavourite() {
+            if (!this.$auth.isAuthenticated())
+                return this.$router.push('/login?redirect=' + this.$router.currentRoute.path);
+
+            const result = await productService.favouriteProduct(this.id).catch(error => {
+                this.$notify.error({
+                    title: 'Error',
+                    message: error.message || 'Cannot favourite product!'
+                });
+            });
+            if (result) {
+                this.$notify.success({
+                    title: 'Success',
+                    message: !this.isFavourite ? 'Favourite product successfully!' : 'Unfavourite product successfully!'
+                });
+                this.isFavourite = !this.isFavourite;
+            }
         }
     }
 });
