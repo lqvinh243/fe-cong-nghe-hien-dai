@@ -1,8 +1,8 @@
 <template>
-    <b-container>
+    <div style="max-width:80%;margin:0 auto">
         <el-select
             v-model="selectKey"
-            class="w-25"
+            class="w-25 my-4"
             placeholder="Please select role!"
             filterable
             remote
@@ -71,7 +71,7 @@
                 <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>
             </span>
         </el-dialog>
-    </b-container>
+    </div>
 </template>
 
 <script lang="ts">

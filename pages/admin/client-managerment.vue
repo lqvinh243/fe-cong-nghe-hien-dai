@@ -1,8 +1,8 @@
 <template>
-    <b-container style="min-width:80%">
+    <div style="max-width:80%;margin:0 auto">
         <el-select
             v-model="selectKey"
-            class="w-25"
+            class="w-25 my-4"
             placeholder="Please select role!"
             filterable
             remote
@@ -70,7 +70,7 @@
         </el-table>
         <div class="text-center mt-4">
             <el-pagination
-                class="mx-auto"
+                class="mx-auto mt-2"
                 background
                 layout="prev, pager, next"
                 :total="total"
@@ -79,7 +79,7 @@
                 @current-change="handleChangePage()"
             />
         </div>
-    </b-container>
+    </div>
 </template>
 
 <script lang="ts">

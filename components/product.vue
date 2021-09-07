@@ -14,7 +14,7 @@
         </template>
 
         <v-img
-            height="250"
+            height="200"
             :src="product.url"
         />
 
@@ -80,7 +80,7 @@ export default Vue.extend({
     }),
     methods: {
         showProductDetail(idProduct: Object) {
-            this.$router.push(`product/${idProduct}`);
+            this.$router.push(`/product/${idProduct}`);
         }
     }
 });

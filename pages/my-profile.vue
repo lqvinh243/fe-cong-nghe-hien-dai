@@ -1,5 +1,5 @@
 <template>
-    <b-container>
+    <el-container style="max-width:80%;margin:0 auto" class="mt-4">
         <div class="row">
             <div class="col-sm-3">
                 <div class="text-center mb-4">
@@ -18,31 +18,29 @@
                         </el-button>
                     </el-col>
                 </el-row>
-                <div id="home" class="tab-pane active">
+                <div>
                     <hr>
-                    <div style="margin-top:1rem">
-                        <span>
-                            First name
-                        </span>
-                        <el-input v-model="myProfile.firstName" placeholder="Please input" />
-                    </div>
-                    <div style="margin-top:1rem">
-                        <span>
-                            Last name
-                        </span>
-                        <el-input v-model="myProfile.lastName" placeholder="Please input" />
-                    </div>
-                    <div style="margin-top:1rem">
-                        <span>
-                            Address
-                        </span>
-                        <el-input v-model="myProfile.address" placeholder="Please input" />
-                    </div>
-
-                    <hr>
-                    <el-button @click="handleSave">
-                        Save change
-                    </el-button>
+                    <el-form
+                        ref="rulesProfile"
+                        :model="myProfile"
+                        status-icon
+                        :rules="rulesProfile"
+                        label-width="120px"
+                    >
+                        <el-form-item label-width="auto" prop="firstName">
+                            <el-input v-model="myProfile.firstName" placeholder="First name" />
+                        </el-form-item>
+                        <el-form-item label-width="auto" prop="lastName">
+                            <el-input v-model="myProfile.lastName" placeholder="Last name" />
+                        </el-form-item>
+                        <el-form-item v-if="showAddressInput" label-width="auto" prop="address">
+                            <el-input v-model="myProfile.address" placeholder="Address" />
+                        </el-form-item>
+                        <hr>
+                        <el-button @click="handleSave('rulesProfile')">
+                            Save change
+                        </el-button>
+                    </el-form>
                 </div>
             </div>
         </div>
@@ -58,7 +56,6 @@
                 status-icon
                 :rules="rules"
                 label-width="120px"
-                class="demo-ruleForm"
             >
                 <el-form-item label-width="auto" prop="oldPassword">
                     <el-input v-model="passwordForm.oldPassword" placeholder="Old Password" type="password" autocomplete="off" />
@@ -80,11 +77,12 @@
                 </el-form-item>
             </el-form>
         </el-dialog>
-    </b-container>
+    </el-container>
 </template>
 
 <script lang="ts">
 import { mapGetters } from 'vuex';
+import { ROLE_ID } from '~/commom/enum';
 import { authService } from '~/services/auth';
 import { meService } from '~/services/me';
 export default {
@@ -152,16 +150,35 @@ export default {
                     }
                 ]
             },
+            rulesProfile: {
+                firstName: [
+                    {
+                        required: true,
+                        message: 'Please input First name!',
+                        trigger: 'blur',
+                    }
+                ],
+                address: [
+                    {
+                        required: true,
+                        message: 'Please input Address!',
+                        trigger: 'blur',
+                    }
+                ]
+            },
             avatarUpload: null as File | null,
         };
     },
     computed: {
-        ...mapGetters('auth', ['profile'])
+        ...mapGetters('auth', ['profile']),
+        showAddressInput():boolean {
+            return !this.$auth.isRoles(ROLE_ID.SUPER_ADMIN);
+        }
     },
     mounted() {
         this.$nextTick(() => {
             this.$nuxt.$loading.start();
-            this.myProfile = this.profile;
+            this.myProfile = { ...this.profile };
             this.$nuxt.$loading.finish();
         });
     },
@@ -211,22 +228,44 @@ export default {
                 this.avatarUpload = file;
             }
         },
-        async handleSave() {
+        handleSave(formName: string) {
             this.$nuxt.$loading.start();
-            if (this.avatarUpload) {
-                const formData = new FormData();
-                formData.append('avatar', this.avatarUpload);
-                const result = await meService.uploadAvatar(formData).catch(error => {
-                    this.$notify.error({
-                        title: 'Error',
-                        message: error.message || 'Cannot update avatar'
+            this.$refs[formName].validate(async (valid:boolean) => {
+                if (valid) {
+                    if (this.avatarUpload) {
+                        const formData = new FormData();
+                        formData.append('avatar', this.avatarUpload);
+                        await meService.uploadAvatar(formData).catch(error => {
+                            this.$notify.error({
+                                title: 'Error',
+                                message: error.message || 'Cannot update avatar'
+                            });
+                        });
+                    }
+                    console.log(this.myProfile);
+
+                    const result = await meService.updateProfile(this.myProfile).catch(error => {
+                        this.$notify.error({
+                            title: 'Error',
+                            message: error.message || 'Cannot update profile'
+                        });
                     });
-                });
-                if (result)
-                    console.log(result);
-            }
+                    if (result) {
+                        this.$notify.success({
+                            title: 'Success',
+                            message: 'Update profile successfully!'
+                        });
+                    }
+                }
+            });
             this.$nuxt.$loading.finish();
         }
     }
 };
 </script>
+<style lang="scss" scoped>
+> ::placeholder {
+  color: black;
+  opacity: 1; /* Firefox */
+}
+</style>

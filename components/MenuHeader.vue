@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-app-bar color="deep-purple accent-4" dense dark>
-            <v-app-bar-nav-icon />
+            <v-app-bar-nav-icon @click="handleDrawer()" />
 
             <v-toolbar-title>
                 <NuxtLink :to="`/`">
@@ -61,11 +61,9 @@
                 </template>
 
                 <v-list>
-                    <v-list-item v-for="n in profiles" :key="n.id" @click="() => {}">
+                    <v-list-item v-for="n in profiles" :key="n.id" @click="handleRedirect(n.id)">
                         <v-list-item-title>
-                            <NuxtLink :to="`/${n.id}`">
-                                {{ n.title }}
-                            </NuxtLink>
+                            {{ n.title }}
                         </v-list-item-title>
                     </v-list-item>
                 </v-list>
@@ -76,7 +74,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-// import { mapActions } from 'vuex';
+import { mapActions } from 'vuex';
 
 export default Vue.extend({
     data: () => ({
@@ -84,72 +82,11 @@ export default Vue.extend({
             { title: 'Điện thoại di động', id: 'mobile' },
             { title: 'Máy tính xách tay', id: 'laptop' }
         ],
-        profiles: [{ title: 'Profile', id: 'my-profile' }, { title: 'Logout', id: 'logout' }],
+        profiles: [{ title: 'Profile', id: 'my-profile' }, { title: 'Logout', id: 'logout', }],
         listSearch: [],
         loading: false,
         search: null,
         select: null,
-        states: [
-            'Alabama',
-            'Alaska',
-            'American Samoa',
-            'Arizona',
-            'Arkansas',
-            'California',
-            'Colorado',
-            'Connecticut',
-            'Delaware',
-            'District of Columbia',
-            'Federated States of Micronesia',
-            'Florida',
-            'Georgia',
-            'Guam',
-            'Hawaii',
-            'Idaho',
-            'Illinois',
-            'Indiana',
-            'Iowa',
-            'Kansas',
-            'Kentucky',
-            'Louisiana',
-            'Maine',
-            'Marshall Islands',
-            'Maryland',
-            'Massachusetts',
-            'Michigan',
-            'Minnesota',
-            'Mississippi',
-            'Missouri',
-            'Montana',
-            'Nebraska',
-            'Nevada',
-            'New Hampshire',
-            'New Jersey',
-            'New Mexico',
-            'New York',
-            'North Carolina',
-            'North Dakota',
-            'Northern Mariana Islands',
-            'Ohio',
-            'Oklahoma',
-            'Oregon',
-            'Palau',
-            'Pennsylvania',
-            'Puerto Rico',
-            'Rhode Island',
-            'South Carolina',
-            'South Dakota',
-            'Tennessee',
-            'Texas',
-            'Utah',
-            'Vermont',
-            'Virgin Island',
-            'Virginia',
-            'Washington',
-            'West Virginia',
-            'Wisconsin',
-            'Wyoming',
-        ]
     }),
 
     watch: {
@@ -159,6 +96,12 @@ export default Vue.extend({
     },
 
     methods: {
+        ...mapActions('auth', [
+            'clearAuthentication',
+        ]),
+        handleDrawer() {
+            this.$emit('emitDrawer');
+        },
         querySelections(v: any) {
             this.loading = true;
             // Simulated ajax query
@@ -168,6 +111,17 @@ export default Vue.extend({
                 });
                 this.loading = false;
             }, 500);
+        },
+        handleRedirect(path: string) {
+            switch (path) {
+            case 'logout':
+                this.clearAuthentication();
+                this.$router.push('/login');
+                break;
+            case 'my-profile':
+                this.$router.push(`/${path}`);
+                break;
+            }
         }
     }
 });

@@ -1,5 +1,12 @@
 <template>
-    <v-container grid-list-lg row wrap fluid ml-3>
+    <v-container
+        grid-list-lg
+        row
+        wrap
+        ml-3
+        class="mx-auto mt-4"
+        style="max-width:80%"
+    >
         <v-layout row wrap>
             <h2>Top 5 sản phẩm gần kết thúc</h2>
         </v-layout>
@@ -87,30 +94,10 @@ export default Vue.extend({
         await this.getProductExpriedAsc();
     },
     methods: {
-        // ...mapActions('product', ['getTop5productNearEnd']),
-
         loadData() {
             this.loadTop5ProductLastEnd();
             this.loadTop5ProductAuctionMost();
             this.loadTop5ProductHighPrice();
-        },
-
-        async loadTop5ProductLastEnd() {
-            const { data } = await productService.getTop5productNearEnd();
-            if (data)
-                this.listProductLastEnd = data;
-        },
-
-        async loadTop5ProductAuctionMost() {
-            const { data } = await productService.getTop5productAuctionMost();
-            if (data)
-                this.listProductAuction = data;
-        },
-
-        async loadTop5ProductHighPrice() {
-            const { data } = await productService.getTop5productHighPrice();
-            if (data)
-                this.listProductHighPrice = data;
         },
 
         showProductDetail() {

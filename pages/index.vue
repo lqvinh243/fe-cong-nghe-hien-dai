@@ -1,5 +1,12 @@
 <template>
-    <v-container grid-list-lg row wrap fluid ml-3>
+    <v-container
+        grid-list-lg
+        row
+        wrap
+        ml-3
+        class="mx-auto mt-4"
+        style="max-width:80%"
+    >
         <v-layout row wrap>
             <h2>Top 5 sản phẩm gần kết thúc</h2>
         </v-layout>
@@ -29,6 +36,7 @@
                 :key="index"
                 md3
                 sm6
+                xs12
             >
                 <product :product="item" />
             </v-flex>
@@ -56,8 +64,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import product from '~/components/product.vue';
+// import { mapActions } from 'vuex';
 import { productService } from '~/services/product';
-
 export default Vue.extend({
     components: { product },
     data: () => ({
@@ -89,43 +97,9 @@ export default Vue.extend({
             this.loadTop5ProductAuctionMost();
             this.loadTop5ProductHighPrice();
         },
-
-        async loadTop5ProductLastEnd() {
-            const query = `limit=5&sortType=${this.sortType.EXPIRED_ASC}`;
-            const result = await productService.findProduct(query)
-                .catch(error => {
-                    this.$notify.error({
-                        title: 'Error',
-                        message: error.message || 'Cannot get products!'
-                    });
-                });
-            this.listProductLastEnd = result.data;
+        showProductDetail() {
+            this.$router.push('product/3');
         },
-
-        async loadTop5ProductAuctionMost() {
-            const query = `limit=5&sortType=${this.sortType.AUCTIONS_DESC}`;
-            const result = await productService.findProduct(query)
-                .catch(error => {
-                    this.$notify.error({
-                        title: 'Error',
-                        message: error.message || 'Cannot get products!'
-                    });
-                });
-            this.listProductAuction = result.data;
-        },
-
-        async loadTop5ProductHighPrice() {
-            const query = `limit=5&sortType=${this.sortType.PRICE_DESC}`;
-            const result = await productService.findProduct(query)
-                .catch(error => {
-                    this.$notify.error({
-                        title: 'Error',
-                        message: error.message || 'Cannot get products!'
-                    });
-                });
-            this.listProductHighPrice = result.data;
-        },
-
         async getProductExpriedAsc() {
             const query = `limit=5&sortType=${this.sortType.EXPIRED_ASC}`;
             const result = await productService.findProduct(query)
@@ -140,50 +114,11 @@ export default Vue.extend({
     }
 });
 </script>
-
 <style>
-.home-logo {
-    animation: 1s appear;
-    margin: auto;
-}
-
-@keyframes appear {
-    0% {
-        opacity: 0;
-    }
-}
-
-.container {
-    margin: 0 auto;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-.title {
-    display: block;
-    font-weight: 300;
-    font-size: 100px;
-    color: #35495e;
-    letter-spacing: 1px;
-}
-
-.subtitle {
-    font-weight: 300;
-    font-size: 42px;
-    color: #526488;
-    word-spacing: 5px;
-    padding-bottom: 15px;
-}
-
-.links {
-    padding-top: 15px;
-}
-
-.button-green {
-    color: rgb(24, 182, 245) !important;
-    margin: 20px;
+.text-name-product {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 </style>
