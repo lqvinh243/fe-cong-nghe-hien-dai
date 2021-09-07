@@ -3,8 +3,23 @@
         <div class="row">
             <div class="col-sm-3">
                 <div class="text-center mb-4">
-                    <b-img id="avatar" :src="myProfile.avatar" rounded="circle" alt="Circle image" style="max-width:250px;border:1px solid black" />
-                    <input type="file" @change="handleChangeImage">
+                    <!-- <b-img id="avatar" :src="myProfile.avatar" rounded="circle" alt="Circle image" style="max-width:250px;border:1px solid black" /> -->
+                    <div class="dashboard-widget mb-30  sticky-menu">
+                        <div class="user">
+                            <div class="thumb-area">
+                                <div class="thumb">
+                                    <img :src="myProfile.avatar" alt="user" style="max-width:100px;max-height:100px;">
+                                </div>
+                            </div>
+                            <div class="content">
+                                <input type="file" @change="handleChangeImage">
+                                <p class="username">
+                                    ABC
+                                </p>
+                                <span class="email">abc@gmail.com</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-sm-9">
@@ -268,4 +283,48 @@ export default {
   color: black;
   opacity: 1; /* Firefox */
 }
+
+.dashboard-widget {
+    border-radius: 20px;
+    background-color: #ffffff;
+    box-shadow: 0px 6px 18px 0px rgb(16 5 54 / 17%);
+    padding: 30px 20px;
+}
+.sticky-menu {
+    position: sticky;
+}
+
+.username{
+    color: #37406f;
+    font-size: 24px;
+    line-height: 28px;
+    margin-top: 20px;
+    margin-bottom: 0%;
+}
+
+.email{
+    text-align: center;
+    font-family: "Open Sans", sans-serif;
+    font-size: 16px;
+    color: #52606d;
+    line-height: 26px;
+}
+
+.thumb-area {
+    width: 100px;
+    margin: 0 auto 30px;
+    position: relative;
+}
+
+.dashboard-widget .user .thumb-area .thumb {
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    overflow: hidden;
+}
+.dashboard-widget .user {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
 </style>
