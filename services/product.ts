@@ -11,5 +11,13 @@ export const productService = {
 
     favouriteProduct(id: string) {
         return $axios.$post(`/api/v1/products/${id}/favourite`);
+    },
+
+    buyProduct(id: string) {
+        return $axios.$post(`/api/v1/products/${id}/buy`);
+    },
+
+    bidProduct(data: any) {
+        return $axios.$post('/api/v1/bidder-products', data);
     }
 };
