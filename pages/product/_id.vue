@@ -119,8 +119,8 @@
 </template>
 
 <script lang="ts">
-import momment from 'moment';
 import Vue from 'vue';
+import momment from 'moment';
 import { productService } from '~/services/product';
 
 export default Vue.extend({
