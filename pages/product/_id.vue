@@ -167,6 +167,7 @@ export default Vue.extend({
             return this.$router.push('/404');
         this.loadProductDetail();
         this.checkFavourite();
+        momment.locale('vi');
     },
 
     methods: {
