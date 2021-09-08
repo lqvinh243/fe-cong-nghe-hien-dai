@@ -29,9 +29,7 @@
                     class="mx-auto"
                 />
                 <v-layout md12 mt-1>
-                    <span class="color-primary-header">
-                        {{ formatPrice(priceBid) }} đ
-                    </span>
+                    <span class="color-primary-header" />
                 </v-layout>
                 <v-card
                     style="padding: 0 auto"
@@ -52,7 +50,7 @@
                                     Giá Mua ngay: <span class="ml-2 color-primary">{{ priceBid }}$</span>
                                 </v-layout>
                                 <v-layout md12 my-2>
-                                    Tình trạng: <span class="ml-2 color-primary">{{ status }}</span>
+                                    Tình trạng: <span class="ml-2 color-primary">{{ mapStatusProduct(status) }}</span>
                                 </v-layout>
                                 <v-layout md12 my-2>
                                     Thời gian con lai: <span class="ml-2 color-primary">{{ timeExpire }}</span>
@@ -73,7 +71,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-card-actions>
-                        <el-button style="width: 100%;margin-top:1rem; font-weight: bold; color:white" type="primary" :loading="loading" @click="handleBidProduct">
+                        <el-button :disabled="!isAuthenticated" style="width: 100%;margin-top:1rem; font-weight: bold; color:white" type="primary" :loading="loading" @click="handleBidProduct">
                             ĐẤU GIÁ
                         </el-button>
                         <el-button
@@ -81,11 +79,20 @@
                             style="width: 100%;margin-top:1rem; font-weight: bold; color:white"
                             type="danger"
                             :loading="loading"
+                            :disabled="!isAuthenticated"
                             @click="handleBuyProduct"
                         >
                             MUA NGAY
                         </el-button>
                     </v-card-actions>
+                    <p v-if="!isAuthenticated" class="text-center" style="font-size:1rem">
+                        Please <nuxt-link to="/login">
+                            login
+                        </nuxt-link>
+                        or <nuxt-link to="/register">
+                            register
+                        </nuxt-link> to bidding!
+                    </p>
                 </v-card>
 
                 <v-card
@@ -150,7 +157,7 @@ export default Vue.extend({
         isFavourite: false,
         dialogBidVisible: false,
         bidderName: '',
-        totalAuc: 0
+        totalAuc: 0,
     }),
 
     computed: {
@@ -159,6 +166,9 @@ export default Vue.extend({
         },
         showBuyNow():boolean {
             return !!this.priceBid;
+        },
+        isAuthenticated():boolean {
+            return this.$auth.isAuthenticated();
         }
     },
     mounted() {
@@ -247,6 +257,18 @@ export default Vue.extend({
 
         closeBidDialog() {
             this.dialogBidVisible = false;
+        },
+
+        mapStatusProduct(status: string) {
+            switch (status) {
+            case 'process':
+                return 'Dang dien ra';
+            case 'end':
+            case 'cancel':
+                return 'Da ket thuc';
+            default:
+                return 'Chua tien hanh';
+            }
         }
     }
 });
