@@ -1,6 +1,6 @@
 <template>
-    <v-container grid-list-lg row wrap fluid ml-3>
-        <v-layout row wrap>
+    <v-container grid-list-lg row fluid ml-3 mt-2>
+        <v-layout row>
             <h2>Top 5 sản phẩm gần kết thúc</h2>
         </v-layout>
         <v-layout

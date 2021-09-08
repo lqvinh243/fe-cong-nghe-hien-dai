@@ -3,7 +3,6 @@
         :key="product.id"
         :loading="loading"
         class="mx-auto my-12 md3"
-        @click="showProductDetail(product.id)"
     >
         <template slot="progress">
             <v-progress-linear
@@ -53,6 +52,11 @@
 
             <div align="left">
                 Category: {{ product.category.name }}
+            </div>
+            <div>
+                <el-button round style="width: 100%;margin-top:1rem; font-weight: bold; color:white" type="primary" :loading="loading" @click="showProductDetail(product.id)">
+                    Chi tiết
+                </el-button>
             </div>
         </v-card-text>
 
