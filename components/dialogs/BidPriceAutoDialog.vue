@@ -18,8 +18,8 @@
             <h1 class="my-4">
                 Price now: {{ priceNow }}$
             </h1>
-            <el-form-item label-width="auto" prop="price">
-                <el-input-number v-model="bidPriceAutoForm.price" :min="price" />
+            <el-form-item label-width="auto" prop="maxPrice">
+                <el-input-number v-model="bidPriceAutoForm.maxPrice" :min="price" />
             </el-form-item>
 
             <el-form-item label-width="auto">
@@ -63,26 +63,26 @@ export default Vue.extend({
             formName: 'bidPriceAutoForm',
             bidPriceAutoForm: {
                 productId: this.productId,
-                price: this.price
+                maxPrice: this.price
             },
             rules: {
-                price: [
+                maxPrice: [
                     { required: true, message: 'Please input price!', trigger: 'blur' },
                 ]
             },
             submitForm(formName: string) {
                 this.$refs[formName].validate(async (valid:boolean) => {
                     if (valid) {
-                        const result = await productService.bidProduct(this.bidPriceAutoForm).catch(error => {
+                        const result = await productService.bidProductAuto(this.bidPriceAutoForm).catch(error => {
                             this.$notify.error({
                                 title: 'Error',
-                                message: error.message || 'Cannot bid product!'
+                                message: error.message || 'Cannot bid product auto!'
                             });
                         });
                         if (result) {
                             this.$notify.success({
                                 title: 'Success',
-                                message: 'Bid product successfully!'
+                                message: 'Bid product auto successfully!'
                             });
                             this.$emit('handelCloseBid', formName);
                         }
@@ -101,7 +101,7 @@ export default Vue.extend({
             this.bidPriceAutoForm.productId = val;
         },
         price(val:number) {
-            this.bidPriceAutoForm.price = val;
+            this.bidPriceAutoForm.maxPrice = val;
         }
     },
     mounted() {

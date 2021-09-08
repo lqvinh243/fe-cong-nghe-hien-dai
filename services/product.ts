@@ -19,5 +19,9 @@ export const productService = {
 
     bidProduct(data: any) {
         return $axios.$post('/api/v1/bidder-products', data);
+    },
+
+    bidProductAuto(data: any) {
+        return $axios.$post('/api/v1/bidder-product-autos', data);
     }
 };
