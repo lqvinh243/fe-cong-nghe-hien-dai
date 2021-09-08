@@ -57,7 +57,6 @@
 import Vue from 'vue';
 import product from '~/components/product.vue';
 import { productService } from '~/services/product';
-
 export default Vue.extend({
     components: { product },
     data: () => ({
@@ -86,7 +85,6 @@ export default Vue.extend({
             this.loadTop5ProductAuctionMost();
             this.loadTop5ProductHighPrice();
         },
-
         async loadTop5ProductLastEnd() {
             const query = `limit=5&sortType=${this.sortType.EXPIRED_ASC}`;
             const result = await productService.findProduct(query)
@@ -98,7 +96,6 @@ export default Vue.extend({
                 });
             this.listProductLastEnd = result.data;
         },
-
         async loadTop5ProductAuctionMost() {
             const query = `limit=5&sortType=${this.sortType.AUCTIONS_DESC}`;
             const result = await productService.findProduct(query)
@@ -110,7 +107,6 @@ export default Vue.extend({
                 });
             this.listProductAuction = result.data;
         },
-
         async loadTop5ProductHighPrice() {
             const query = `limit=5&sortType=${this.sortType.PRICE_DESC}`;
             const result = await productService.findProduct(query)
@@ -122,7 +118,6 @@ export default Vue.extend({
                 });
             this.listProductHighPrice = result.data;
         },
-
         async getProductExpriedAsc() {
             const query = `limit=5&sortType=${this.sortType.EXPIRED_ASC}`;
             const result = await productService.findProduct(query)
@@ -143,13 +138,11 @@ export default Vue.extend({
     animation: 1s appear;
     margin: auto;
 }
-
 @keyframes appear {
     0% {
         opacity: 0;
     }
 }
-
 .container {
     margin: 0 auto;
     min-height: 100vh;
@@ -158,7 +151,6 @@ export default Vue.extend({
     align-items: center;
     text-align: center;
 }
-
 .title {
     display: block;
     font-weight: 300;
@@ -166,7 +158,6 @@ export default Vue.extend({
     color: #35495e;
     letter-spacing: 1px;
 }
-
 .subtitle {
     font-weight: 300;
     font-size: 42px;
@@ -174,11 +165,9 @@ export default Vue.extend({
     word-spacing: 5px;
     padding-bottom: 15px;
 }
-
 .links {
     padding-top: 15px;
 }
-
 .button-green {
     color: rgb(24, 182, 245) !important;
     margin: 20px;
