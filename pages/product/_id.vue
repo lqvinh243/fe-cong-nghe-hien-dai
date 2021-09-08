@@ -39,7 +39,19 @@
                     <v-list-item three-line>
                         <v-list-item-content style="margin-right:0 !important">
                             <div class="text-overline">
-                                <h3>Thông tin Đấu giá</h3>
+                                <el-row :gutter="20">
+                                    <el-col :span="12">
+                                        <h3 class="pt-3">
+                                            Thông tin Đấu giá
+                                        </h3>
+                                    </el-col>
+                                    <el-col :span="6" :offset="6">
+                                        <el-button class="mr-0" @click="handleBidProductAuto">
+                                            Dau gia tu dong
+                                        </el-button>
+                                    </el-col>
+                                </el-row>
+
                                 <v-divider />
                             </div>
                             <v-list-item-title class="text-h5 mb-1">
@@ -125,6 +137,7 @@
             </v-flex>
         </v-layout>
         <DialogBidPrice :product-id="id" :price-now="priceCurrent" :price="priceCurrent + stepPrice" :dialog-visible="dialogBidVisible" @handelCloseBid="closeBidDialog" />
+        <BidPriceAutoDialog :product-id="id" :price-now="priceCurrent" :price="priceCurrent + stepPrice" :dialog-visible-auto="dialogBidAutoVisible" @handelCloseBid="closeBidDialog" />
     </div>
 </template>
 
@@ -132,12 +145,13 @@
 import Vue from 'vue';
 import momment from 'moment';
 import { ROLE_ID } from '~/commom/enum';
+import BidPriceAutoDialog from '~/components/dialogs/BidPriceAutoDialog.vue';
 import DialogBidPrice from '~/components/dialogs/BidPriceDialog.vue';
 import { productService } from '~/services/product';
 import { productFavouriteService } from '~/services/product-favourite';
 
 export default Vue.extend({
-    components: { DialogBidPrice },
+    components: { DialogBidPrice, BidPriceAutoDialog },
     data: () => ({
         id: null as string | null,
         selection: null,
@@ -156,13 +170,14 @@ export default Vue.extend({
         createdAt: null,
         isFavourite: false,
         dialogBidVisible: false,
+        dialogBidAutoVisible: false,
         bidderName: '',
         totalAuc: 0,
     }),
 
     computed: {
         showFavouriteIcon():boolean {
-            return this.$auth.isRoles(ROLE_ID.BIDDER);
+            return this.$auth.isRoles(ROLE_ID.BIDDER, ROLE_ID.SELLER);
         },
         showBuyNow():boolean {
             return !!this.priceBid;
@@ -181,12 +196,24 @@ export default Vue.extend({
     },
 
     methods: {
+        handleAuthenticated() {
+            if (!this.$auth.isAuthenticated())
+                return this.$router.push('/login?redirect=' + this.$router.currentRoute.path);
+        },
+
         handleBidProduct() {
+            this.handleAuthenticated();
             this.dialogBidVisible = true;
         },
 
         handleBuyProduct() {
+            this.handleAuthenticated();
             this.dialogBidVisible = true;
+        },
+
+        handleBidProductAuto() {
+            this.handleAuthenticated();
+            this.dialogBidAutoVisible = true;
         },
 
         async loadProductDetail() {
@@ -225,7 +252,7 @@ export default Vue.extend({
         },
 
         async checkFavourite() {
-            if (this.$auth.isRoles(ROLE_ID.BIDDER)) {
+            if (this.$auth.isRoles(ROLE_ID.BIDDER, ROLE_ID.SELLER)) {
                 const result = await productFavouriteService.getByBidder(this.id).catch(error => {
                     this.$notify.error({
                         title: 'Error',
@@ -237,8 +264,7 @@ export default Vue.extend({
         },
 
         async handleFavourite() {
-            if (!this.$auth.isAuthenticated())
-                return this.$router.push('/login?redirect=' + this.$router.currentRoute.path);
+            this.handleAuthenticated();
 
             const result = await productService.favouriteProduct(this.id).catch(error => {
                 this.$notify.error({
@@ -255,8 +281,11 @@ export default Vue.extend({
             }
         },
 
-        closeBidDialog() {
-            this.dialogBidVisible = false;
+        closeBidDialog(formName: string) {
+            if (formName === 'bidPriceForm')
+                this.dialogBidVisible = false;
+            else if (formName === 'bidPriceAutoForm')
+                this.dialogBidAutoVisible = false;
         },
 
         mapStatusProduct(status: string) {

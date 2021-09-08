@@ -1,7 +1,7 @@
 <template>
     <el-dialog
-        title="Bid Price"
-        :visible.sync="dialogVisible"
+        title="Bid Price Auto"
+        :visible.sync="dialogVisibleAuto"
         width="30%"
         :show-close="false"
         :close-on-click-modal="false"
@@ -10,7 +10,7 @@
     >
         <el-form
             :ref="formName"
-            :model="bidPriceForm"
+            :model="bidPriceAutoForm"
             status-icon
             :rules="rules"
             label-width="120px"
@@ -19,7 +19,7 @@
                 Price now: {{ priceNow }}$
             </h1>
             <el-form-item label-width="auto" prop="price">
-                <el-input-number v-model="bidPriceForm.price" />
+                <el-input-number v-model="bidPriceAutoForm.price" :min="price" />
             </el-form-item>
 
             <el-form-item label-width="auto">
@@ -53,15 +53,15 @@ export default Vue.extend({
             type: Number,
             default: 0
         },
-        dialogVisible: {
+        dialogVisibleAuto: {
             type: Boolean,
             default: false
         }
     },
     data() {
         return {
-            formName: 'bidPriceForm',
-            bidPriceForm: {
+            formName: 'bidPriceAutoForm',
+            bidPriceAutoForm: {
                 productId: this.productId,
                 price: this.price
             },
@@ -73,7 +73,7 @@ export default Vue.extend({
             submitForm(formName: string) {
                 this.$refs[formName].validate(async (valid:boolean) => {
                     if (valid) {
-                        const result = await productService.bidProduct(this.bidPriceForm).catch(error => {
+                        const result = await productService.bidProduct(this.bidPriceAutoForm).catch(error => {
                             this.$notify.error({
                                 title: 'Error',
                                 message: error.message || 'Cannot bid product!'
@@ -91,16 +91,17 @@ export default Vue.extend({
             },
             resetForm(formName: string) {
                 this.$refs[formName].resetFields();
+                console.log('abc');
                 this.$emit('handelCloseBid', formName);
             }
         };
     },
     watch: {
         productId(val: string) {
-            this.bidPriceForm.productId = val;
+            this.bidPriceAutoForm.productId = val;
         },
         price(val:number) {
-            this.bidPriceForm.price = val;
+            this.bidPriceAutoForm.price = val;
         }
     },
     mounted() {
