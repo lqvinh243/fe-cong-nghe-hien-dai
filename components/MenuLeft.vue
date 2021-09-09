@@ -43,9 +43,10 @@ export default Vue.extend({
         items: [
             { title: 'Home', icon: 'mdi-view-dashboard', url: '', roleIds: [ROLE_ID.BIDDER] },
             { title: 'Product Favourite', icon: 'mdi-view-dashboard', url: 'product/favourite', roleIds: [ROLE_ID.BIDDER] },
-            { title: 'Client Managerment', icon: 'mdi-forum', url: 'admin/client-managerment', roleIds: [ROLE_ID.SUPER_ADMIN] },
-            { title: 'Category Managerment', icon: 'mdi-forum', url: 'admin/category-managerment', roleIds: [ROLE_ID.SUPER_ADMIN] },
-            { title: 'Product Managerment', icon: 'mdi-forum', url: 'admin/product-managerment', roleIds: [ROLE_ID.SUPER_ADMIN] },
+            { title: 'Client Managerment', icon: 'mdi-forum', url: 'admin/client-management', roleIds: [ROLE_ID.SUPER_ADMIN] },
+            { title: 'Category Managerment', icon: 'mdi-forum', url: 'admin/category-management', roleIds: [ROLE_ID.SUPER_ADMIN] },
+            { title: 'Product Managerment', icon: 'mdi-forum', url: 'admin/product-management', roleIds: [ROLE_ID.SUPER_ADMIN] },
+            { title: 'Upgrade Request Managerment', icon: 'mdi-forum', url: 'admin/upgrade-request-management', roleIds: [ROLE_ID.SUPER_ADMIN] },
 
         ],
     }),

@@ -17,6 +17,12 @@
                                     ABC
                                 </p>
                                 <span class="email">abc@gmail.com</span>
+                                <p>
+                                    {{ mapRoleDisplay() }}
+                                </p>
+                                <p v-if="isAlreadyRq && isBidder">
+                                    Ban dang cho duyet len nguoi ban!
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -28,6 +34,9 @@
                         <h1>Profile</h1>
                     </el-col>
                     <el-col :span="12" class="text-right">
+                        <el-button v-if="isBidder" :disabled="isAlreadyRq" @click="handleRequestUpgrade">
+                            Yeu cau duoc ban
+                        </el-button>
                         <el-button @click="showChangePassword">
                             Change password
                         </el-button>
@@ -112,6 +121,7 @@ import { mapGetters } from 'vuex';
 import { ROLE_ID } from '~/commom/enum';
 import { authService } from '~/services/auth';
 import { meService } from '~/services/me';
+import { upgradeRequestService } from '~/services/upgrade-request';
 export default {
     middleware: ['authentication'],
     data() {
@@ -221,21 +231,28 @@ export default {
                 ]
             },
             avatarUpload: null as File | null,
+            isAlreadyRq: false
         };
     },
     computed: {
-        ...mapGetters('auth', ['profile']),
+        ...mapGetters('auth', ['profile', 'roleId']),
         showAddressInput():boolean {
             return !this.$auth.isRoles(ROLE_ID.SUPER_ADMIN);
         },
         avatarUrl(): string {
             return this.myProfile.avatar ?? '';
         },
+        isBidder():boolean {
+            return this.$auth.isRoles(ROLE_ID.BIDDER);
+        }
     },
     mounted() {
         this.$nextTick(() => {
             this.$nuxt.$loading.start();
             this.myProfile = { ...this.profile };
+            if (this.$auth.isRoles(ROLE_ID.BIDDER))
+                this.handleChecKUpgrade();
+
             this.$nuxt.$loading.finish();
         });
     },
@@ -319,6 +336,42 @@ export default {
         },
         replaceByDefault(e:any) {
             e.target.src = require('~/assets/images/avatar-default.png');
+        },
+        mapRoleDisplay() {
+            switch (this.roleId) {
+            case ROLE_ID.SUPER_ADMIN:
+                return 'Quan tri vien';
+            case ROLE_ID.SELLER:
+                return 'Nguoi ban';
+            case ROLE_ID.BIDDER:
+                return 'Nguoi mua';
+            default:
+                return 'Du lieu bi loi';
+            }
+        },
+        async handleRequestUpgrade() {
+            const result = await upgradeRequestService.create().catch(error => {
+                this.$notify.error({
+                    title: 'Error',
+                    message: error.message || 'Cannot request upgrade!'
+                });
+            });
+            if (result) {
+                this.$notify.success({
+                    title: 'Success',
+                    message: 'Request upgrade to seller successfully!'
+                });
+                this.isAlreadyRq = true;
+            }
+        },
+        async handleChecKUpgrade() {
+            const result = await upgradeRequestService.check().catch(error => {
+                this.$notify.error({
+                    title: 'Error',
+                    message: error.message || 'Cannot check request upgrade!'
+                });
+            });
+            this.isAlreadyRq = result.data;
         }
     }
 };
