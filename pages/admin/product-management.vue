@@ -43,7 +43,7 @@
                         <b-button squared variant="success" style="font-weight: bold; color:white" @click.native.prevent="editRow(scope.row.id)">
                             Edit
                         </b-button>
-                        <b-button squared variant="danger" style="font-weight: bold; color:white" @click.native.prevent="deleteRow(scope.$index, tableData)">
+                        <b-button squared variant="danger" style="font-weight: bold; color:white" @click="handleClick">
                             Remove
                         </b-button>
                     </b-button-group>
@@ -123,8 +123,8 @@ export default {
         deleteRow(index: number, rows: any) {
             rows.splice(index, 1);
         },
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         editRow(id: string) {
+            console.log(id);
             this.dialogVisible = true;
         },
         async getProducts(key: string = '') {
