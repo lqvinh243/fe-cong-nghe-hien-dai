@@ -61,7 +61,7 @@
                 </template>
 
                 <v-list>
-                    <v-list-item v-for="n in profiles" :key="n.id" @click="handleRedirect(n.id)">
+                    <v-list-item v-for="n in dropdownSelection" :key="n.id" @click="handleRedirect(n.id)">
                         <v-list-item-title>
                             {{ n.title }}
                         </v-list-item-title>
@@ -82,19 +82,23 @@ export default Vue.extend({
             { title: 'Điện thoại di động', id: 'mobile' },
             { title: 'Máy tính xách tay', id: 'laptop' }
         ],
-        profiles: [{ title: 'Profile', id: 'my-profile' }, { title: 'Logout', id: 'logout', }],
+        profiles: [{ title: 'Login', id: 'login', isAuth: false }, { title: 'Profile', id: 'my-profile', isAuth: true }, { title: 'Logout', id: 'logout', isAuth: true }],
         listSearch: [],
         loading: false,
         search: null,
         select: null,
     }),
+    computed: {
+        dropdownSelection():any {
+            return this.profiles.filter((item:any) => item.isAuth === this.$auth.isAuthenticated());
+        }
+    },
 
     watch: {
         search(val) {
             val && val !== this.select && this.querySelections(val);
         },
     },
-
     methods: {
         ...mapActions('auth', [
             'clearAuthentication',
@@ -119,6 +123,7 @@ export default Vue.extend({
                 this.$router.push('/login');
                 break;
             case 'my-profile':
+            case 'login':
                 this.$router.push(`/${path}`);
                 break;
             }

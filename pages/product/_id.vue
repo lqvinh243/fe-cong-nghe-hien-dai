@@ -46,7 +46,7 @@
                                         </h3>
                                     </el-col>
                                     <el-col :span="6" :offset="6">
-                                        <el-button class="mr-0" @click="handleBidProductAuto">
+                                        <el-button class="mr-0" :disabled="!isAuthenticated" @click="handleBidProductAuto">
                                             Dau gia tu dong
                                         </el-button>
                                     </el-col>
@@ -298,7 +298,8 @@ export default Vue.extend({
             default:
                 return 'Chua tien hanh';
             }
-        }
+        },
+
     }
 });
 </script>

@@ -8,7 +8,7 @@
                         <div class="user">
                             <div class="thumb-area">
                                 <div class="thumb">
-                                    <img :src="myProfile.avatar" alt="user" style="max-width:100px;max-height:100px;">
+                                    <img :src="avatarUrl" alt="user" style="max-width:100px;max-height:100px;" @error="replaceByDefault">
                                 </div>
                             </div>
                             <div class="content">
@@ -48,6 +48,18 @@
                         <el-form-item label-width="auto" prop="lastName">
                             <el-input v-model="myProfile.lastName" placeholder="Last name" />
                         </el-form-item>
+                        <el-form-item label-width="auto" prop="email">
+                            <el-input v-model="myProfile.email" placeholder="Email" />
+                        </el-form-item>
+                        <el-form-item label-width="auto" prop="birthday">
+                            <el-date-picker
+                                v-model="myProfile.birthday"
+                                type="date"
+                                placeholder="Birthday"
+                                :picker-options="pickerOptions"
+                            />
+                        </el-form-item>
+
                         <el-form-item v-if="showAddressInput" label-width="auto" prop="address">
                             <el-input v-model="myProfile.address" placeholder="Address" />
                         </el-form-item>
@@ -132,6 +144,11 @@ export default {
             }
         };
         return {
+            pickerOptions: {
+                disabledDate(time:Date) {
+                    return time.getTime() > Date.now();
+                }
+            },
             options: [
                 { key: 1, value: 'Seller' },
                 { key: 2, value: 'Bidder' }
@@ -142,7 +159,8 @@ export default {
                 firstName: '',
                 lastName: '',
                 email: '',
-                avatar: '',
+                avatar: require('~/assets/images/avatar-default.png'),
+                birthday: new Date()
             },
             dialogVisible: false,
             passwordForm: {
@@ -152,17 +170,13 @@ export default {
             },
             rules: {
                 oldPassword: [
-                    {
-                        validator: validateOldPass, trigger: 'blur'
-                    }
+                    { validator: validateOldPass, trigger: 'blur' }
                 ],
                 password: [
                     { validator: validatePass, trigger: 'blur' }
                 ],
                 rePassword: [
-                    {
-                        validator: validateRePass, trigger: 'blur'
-                    }
+                    { validator: validateRePass, trigger: 'blur' }
                 ]
             },
             rulesProfile: {
@@ -179,6 +193,31 @@ export default {
                         message: 'Please input Address!',
                         trigger: 'blur',
                     }
+                ],
+                email: [
+                    {
+                        required: true,
+                        message: 'Please input Email!',
+                        trigger: 'blur',
+                    },
+                    {
+                        type: 'email',
+                        message: 'Email is invalid!',
+                        trigger: 'blur',
+                    }
+                ],
+                birthday: [
+                    {
+                        required: true,
+                        message: 'Please select birthday!',
+                        trigger: 'blur',
+                    },
+                    {
+                        type: 'date',
+                        max: new Date(),
+                        message: 'Please select birthday!',
+                        trigger: 'blur',
+                    },
                 ]
             },
             avatarUpload: null as File | null,
@@ -188,7 +227,10 @@ export default {
         ...mapGetters('auth', ['profile']),
         showAddressInput():boolean {
             return !this.$auth.isRoles(ROLE_ID.SUPER_ADMIN);
-        }
+        },
+        avatarUrl(): string {
+            return this.myProfile.avatar ?? '';
+        },
     },
     mounted() {
         this.$nextTick(() => {
@@ -274,6 +316,9 @@ export default {
                 }
             });
             this.$nuxt.$loading.finish();
+        },
+        replaceByDefault(e:any) {
+            e.target.src = require('~/assets/images/avatar-default.png');
         }
     }
 };

@@ -12,10 +12,11 @@
             />
         </template>
 
-        <v-img
+        <img
             height="200"
-            :src="product.url"
-        />
+            :src="logoUrl"
+            @error="replaceByDefault"
+        >
 
         <v-card-title>
             <div class="text-name-product">
@@ -77,16 +78,25 @@ export default Vue.extend({
             }
         }
     },
-
     data: () => ({
         selection: null,
         loading: false
     }),
+    computed: {
+        logoUrl(): string {
+            return this.product.url ?? '';
+        }
+    },
     methods: {
         showProductDetail(idProduct: Object) {
             this.$router.push(`/product/${idProduct}`);
+        },
+
+        replaceByDefault(e:any) {
+            e.target.src = require('~/assets/images/logo-default.png');
         }
-    }
+    },
+
 });
 </script>
 
