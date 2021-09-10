@@ -65,7 +65,12 @@ export default {
         wsUrl: process.env.WS_URL,
         axios: {
             baseURL: process.env.API_URL
-        }
+        },
+
+    },
+    env: {
+        agoliaApp: process.env.AGOLIA_APP,
+        agoliaApiKey: process.env.AGOLIA_API_KEY
     },
 
     privateRuntimeConfig: {

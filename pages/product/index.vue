@@ -1,80 +1,29 @@
 <template>
-    <v-container
-        grid-list-lg
-        row
-        wrap
-        ml-3
-        class="mx-auto mt-4"
-        style="max-width:80%"
-    >
-        <v-layout row wrap>
-            <h2>Top 5 sản phẩm gần kết thúc</h2>
-        </v-layout>
-        <v-layout
-            row
-            wrap
-        >
-            <v-flex
-                v-for="(item, index) in listProductLastEnd"
-                :key="index"
-                md3
-                sm6
-                xs12
-            >
+    <div class="text-center">
+        <el-row :gutter="20" class="mx-auto mt-4" style="max-width:80%">
+            <el-col v-for="item in products" :key="item.id" :span="6">
                 <product :product="item" />
-            </v-flex>
-        </v-layout>
-        <v-layout row wrap>
-            <h2>Top 5 sản phẩm có nhiều lượt ra giá nhất</h2>
-        </v-layout>
-        <v-layout
-            row
-            wrap
-        >
-            <v-flex
-                v-for="(item, index) in listProductAuction"
-                :key="index"
-                md3
-                sm6
-                xs12
-            >
-                <product :product="item" />
-            </v-flex>
-        </v-layout>
-        <v-layout row wrap>
-            <h2>Top 5 sản phẩm có giá cao nhất</h2>
-        </v-layout>
-        <v-layout
-            row
-            wrap
-        >
-            <v-flex
-                v-for="(item, index) in listProductHighPrice"
-                :key="index"
-                md3
-                sm6
-                xs12
-            >
-                <product :product="item" />
-            </v-flex>
-        </v-layout>
-    </v-container>
+            </el-col>
+        </el-row>
+        <el-button type="primary" style="width:10%">
+            Load more
+        </el-button>
+    </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import algoliasearch from 'algoliasearch';
 import product from '~/components/product.vue';
+import eventBus from '~/plugins/event-bus';
 // import { mapActions } from 'vuex';
-import { productService } from '~/services/product';
 
 export default Vue.extend({
     components: { product },
     data: () => ({
         selection: null,
         loading: false,
-        listProductLastEnd: [],
-        listProductAuction: [],
-        listProductHighPrice: [],
+        products: [] as any,
         limit: 5,
         sortType: {
             EXPIRED_ASC: 'expired_asc',
@@ -84,36 +33,29 @@ export default Vue.extend({
             PRICE_ASC: 'price_asc',
             PRICE_DESC: 'price_desc'
         },
-        listProductExpried: [] as any
+        agoliaIndex: null as any,
+        keyword: ''
     }),
-    created() {
+    mounted() {
+        const agoliaApp = process.env.agoliaApp ?? '';
+        const agoliaApiKey = process.env.agoliaApiKey ?? '';
+        const agoliaClient = algoliasearch(agoliaApp, agoliaApiKey);
+        this.agoliaIndex = agoliaClient.initIndex('product');
+        this.keyword = this.$route.query.query;
         this.loadData();
-    },
-
-    async mounted() {
-        await this.getProductExpriedAsc();
+        eventBus.$on('CHANGE_QUERY_SEARCH', (val:string) => {
+            this.keyword = val;
+            this.loadData();
+        });
     },
     methods: {
         loadData() {
-            this.loadTop5ProductLastEnd();
-            this.loadTop5ProductAuctionMost();
-            this.loadTop5ProductHighPrice();
+            this.agoliaIndex.search(this.keyword).then(({ hits }:any) => {
+                this.products = hits;
+            });
         },
-
         showProductDetail() {
-            this.$router.push('product/3');
         },
-        async getProductExpriedAsc() {
-            const query = `limit=5&sortType=${this.sortType.EXPIRED_ASC}`;
-            const result = await productService.findProduct(query)
-                .catch(error => {
-                    this.$notify.error({
-                        title: 'Error',
-                        message: error.message || 'Cannot get products!'
-                    });
-                });
-            this.listProductExpried = result.data;
-        }
     }
 });
 </script>

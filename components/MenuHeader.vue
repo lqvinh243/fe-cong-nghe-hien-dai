@@ -75,6 +75,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { mapActions } from 'vuex';
+import eventBus from '~/plugins/event-bus';
 
 export default Vue.extend({
     data: () => ({
@@ -96,7 +97,16 @@ export default Vue.extend({
 
     watch: {
         search(val) {
-            val && val !== this.select && this.querySelections(val);
+            if (this.timer) {
+                clearTimeout(this.timer);
+                this.timer = null;
+            }
+            this.timer = setTimeout(() => {
+                if (this.$route.path !== '/product')
+                    this.$router.push('/product');
+                eventBus.$emit('CHANGE_QUERY_SEARCH', val);
+                this.loading = false;
+            }, 2000);
         },
     },
     methods: {
@@ -110,11 +120,11 @@ export default Vue.extend({
             this.loading = true;
             // Simulated ajax query
             setTimeout(() => {
-                this.listSearch = this.states.filter((e: any) => {
-                    return (e || '').toLowerCase().includes((v || '').toLowerCase());
-                });
+                if (this.$route.path !== '/product')
+                    this.$router.push(`/product?query=${v}`);
+
                 this.loading = false;
-            }, 500);
+            }, 2000);
         },
         handleRedirect(path: string) {
             switch (path) {
