@@ -1,5 +1,5 @@
 <template>
-    <div class="text-center">
+    <div class="text-center mx-auto" style="max-width:80%">
         <el-select
             v-model="selectKey"
             class="w-25 my-4"
@@ -16,7 +16,33 @@
                 :value="option.key"
             />
         </el-select>
-        <el-row :gutter="20" class="mx-auto mt-4" style="max-width:80%">
+        <el-select
+            v-model="selectCategory"
+            class="w-25 my-4"
+            placeholder="Danh muc!"
+            filterable
+            remote
+            reserve-keyword
+            @change="handleSelectCategory"
+        >
+            <el-option
+                v-for="option in categories"
+                :key="option.id"
+                :label="option.name"
+                :value="option.id"
+            />
+        </el-select>
+        <el-breadcrumb separator="/">
+            <el-breadcrumb-item :to="{ path: '/product' }">
+                Home
+            </el-breadcrumb-item>
+            <el-breadcrumb-item v-for="(item,index) in breadcrumb" :key="index">
+                {{ item.name }}
+            </el-breadcrumb-item>
+            <!-- <el-breadcrumb-item>promotion list</el-breadcrumb-item>
+            <el-breadcrumb-item>promotion detail</el-breadcrumb-item> -->
+        </el-breadcrumb>
+        <el-row :gutter="20" class=" mt-4">
             <el-col v-for="item in products" :key="item.id" :span="6">
                 <product :product="item" />
             </el-col>
@@ -32,6 +58,7 @@ import Vue from 'vue';
 import algoliasearch from 'algoliasearch';
 import product from '~/components/product.vue';
 import eventBus from '~/plugins/event-bus';
+import { categoryService } from '~/services/category';
 import { productService } from '~/services/product';
 // import { mapActions } from 'vuex';
 
@@ -56,9 +83,12 @@ export default Vue.extend({
                 key: 'asc(priceNow)'
             }
         ],
-        selectKey: null as any
+        selectKey: null as any,
+        categories: [] as any,
+        selectCategory: '',
+        breadcrumb: []
     }),
-    mounted() {
+    async mounted() {
         const agoliaApp = process.env.agoliaApp ?? '';
         const agoliaApiKey = process.env.agoliaApiKey ?? '';
         const agoliaClient = algoliasearch(agoliaApp, agoliaApiKey, { protocol: 'http' } as any);
@@ -71,17 +101,24 @@ export default Vue.extend({
             this.keyword = val;
             this.loadData();
         });
+
+        await this.loadCategory();
     },
     methods: {
-        async loadData() {
+        async loadData(filters: string = '') {
+            console.log(filters);
             let agoliaResult:any[] = [];
             if (this.selectKey === 'asc(priceNow)') {
-                await this.agoliaPriceIndex.search(this.keyword).then(({ hits }:any) => {
+                await this.agoliaPriceIndex.search(this.keyword, {
+                    filters
+                }).then(({ hits }:any) => {
                     agoliaResult = hits;
                 });
             }
             else {
-                await this.agoliaTimeIndex.search(this.keyword).then(({ hits }:any) => {
+                await this.agoliaTimeIndex.search(this.keyword, {
+                    filters
+                }).then(({ hits }:any) => {
                     agoliaResult = hits;
                 });
             }
@@ -111,6 +148,35 @@ export default Vue.extend({
             this.products = [];
             await this.loadData();
             this.$nuxt.$loading.finish();
+        },
+        async  handleSelectCategory() {
+            const item = this.categories.find((item:any) => item.id === this.selectCategory);
+            if (item) {
+                if (this.breadcrumb.length && item.parentId === this.breadcrumb[this.breadcrumb.length - 1].parentId)
+                    this.breadcrumb.pop();
+
+                this.breadcrumb.push(item);
+                if (item.parentId) {
+                    this.products = [];
+                    const filters = `category.id:${item.id}`;
+                    await this.loadData(filters);
+                }
+                await this.loadCategory(this.selectCategory);
+            }
+        },
+        async loadCategory(id: string = '') {
+            let query = '';
+            if (id)
+                query += `parentId=${id}`;
+
+            const result = await categoryService.findCategory(query).catch(error => {
+                this.$notify.error({
+                    title: 'Error',
+                    message: error.message || 'Cannot get category!'
+                });
+            });
+            if (result && result.data.length)
+                this.categories = result.data;
         }
     }
 });

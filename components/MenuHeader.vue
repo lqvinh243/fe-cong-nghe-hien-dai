@@ -23,7 +23,7 @@
                 solo-inverted
             />
             <v-spacer />
-            <v-menu offset-y>
+            <!-- <v-menu offset-y>
                 <template #activator="{ on, attrs }">
                     <v-btn
                         color="primary"
@@ -46,7 +46,7 @@
                         </v-list-item-title>
                     </v-list-item>
                 </v-list>
-            </v-menu>
+            </v-menu> -->
 
             <v-menu bottom>
                 <template #activator="{ on, attrs }">

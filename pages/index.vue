@@ -1,23 +1,95 @@
 <template>
-    <v-container grid-list-lg row fluid ml-3 mt-2>
-        <v-layout row>
+    <v-container
+        row
+        fluid
+        style="max-width:80%"
+        class="mx-auto"
+    >
+        <v-layout row class="m-4 w-100" style="font-weigth:bold">
             <h2>Top 5 sản phẩm gần kết thúc</h2>
+            <el-button type="text" class="ml-auto mr-0" style=" text-decoration: underline;">
+                <nuxt-link to="/product">
+                    Xem them
+                </nuxt-link>
+            </el-button>
         </v-layout>
-        <v-layout
-            row
-            wrap
-        >
-            <v-flex
-                v-for="(item, index) in listProductLastEnd"
-                :key="index"
-                md3
-                sm6
-                xs12
-            >
-                <product :product="item" />
-            </v-flex>
+        <v-layout row>
+            <client-only>
+                <!-- <v-flex
+                        v-for="(item, index) in listProductLastEnd"
+                        :key="index"
+                        md3
+                        sm6
+                        xs12
+                    > -->
+                <swiper class="swiper" :options="swiperOption">
+                    <swiper-slide v-for="(item, index) in listProductLastEnd" :key="index">
+                        <product :product="item" />
+                    </swiper-slide>
+                    <div slot="button-prev" class="swiper-button-prev button-swiper" />
+                    <div slot="button-next" class="swiper-button-next button-swiper" />
+                </swiper>
+                <!-- </v-flex> -->
+            </client-only>
         </v-layout>
-        <v-layout row wrap>
+
+        <v-layout row class="m-4  w-100" style="font-weigth:bold">
+            <h2>Top 5 sản phẩm có nhiều lượt ra giá nhất</h2>
+            <el-button type="text" class="ml-auto mr-0 " style=" text-decoration: underline;">
+                <nuxt-link to="/product">
+                    Xem them
+                </nuxt-link>
+            </el-button>
+        </v-layout>
+        <v-layout row>
+            <client-only>
+                <!-- <v-flex
+                        v-for="(item, index) in listProductLastEnd"
+                        :key="index"
+                        md3
+                        sm6
+                        xs12
+                    > -->
+                <swiper class="swiper" :options="swiperOption">
+                    <swiper-slide v-for="(item, index) in listProductAuction" :key="index">
+                        <product :product="item" />
+                    </swiper-slide>
+                    <div slot="button-prev" class="swiper-button-prev button-swiper" />
+                    <div slot="button-next" class="swiper-button-next button-swiper" />
+                </swiper>
+                <!-- </v-flex> -->
+            </client-only>
+        </v-layout>
+
+        <v-layout row class="m-4  w-100" style="font-weigth:bold">
+            <h2>Top 5 sản phẩm có giá cao nhất</h2>
+            <el-button type="text" class="ml-auto mr-0 " style=" text-decoration: underline;">
+                <nuxt-link to="/product">
+                    Xem them
+                </nuxt-link>
+            </el-button>
+        </v-layout>
+        <v-layout row class="m-4">
+            <client-only>
+                <!-- <v-flex
+                        v-for="(item, index) in listProductLastEnd"
+                        :key="index"
+                        md3
+                        sm6
+                        xs12
+                    > -->
+                <swiper class="swiper" :options="swiperOption">
+                    <swiper-slide v-for="(item, index) in listProductHighPrice" :key="index">
+                        <product :product="item" />
+                    </swiper-slide>
+                    <div slot="button-prev" class="swiper-button-prev button-swiper" />
+                    <div slot="button-next" class="swiper-button-next button-swiper" />
+                </swiper>
+                <!-- </v-flex> -->
+            </client-only>
+        </v-layout>
+
+    <!-- <v-layout row wrap>
             <h2>Top 5 sản phẩm có nhiều lượt ra giá nhất</h2>
         </v-layout>
         <v-layout
@@ -49,7 +121,7 @@
             >
                 <product :product="item" />
             </v-flex>
-        </v-layout>
+        </v-layout> -->
     </v-container>
 </template>
 
@@ -74,7 +146,33 @@ export default Vue.extend({
             PRICE_ASC: 'price_asc',
             PRICE_DESC: 'price_desc'
         },
-        listProductExpried: [] as any
+        listProductExpried: [] as any,
+        swiperOption: {
+            grabCursor: true,
+            slidesPerView: 3,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev'
+            },
+            breakpoints: {
+                1024: {
+                    slidesPerView: 4,
+                    spaceBetween: 10
+                },
+                768: {
+                    slidesPerView: 3,
+                    spaceBetween: 10
+                },
+                640: {
+                    slidesPerView: 2,
+                    spaceBetween: 10
+                },
+                320: {
+                    slidesPerView: 1,
+                    spaceBetween: 10
+                }
+            }
+        }
     }),
     async mounted() {
         await this.loadData();
@@ -133,7 +231,7 @@ export default Vue.extend({
 });
 </script>
 
-<style>
+<style lang="scss" scoped>
 .home-logo {
     animation: 1s appear;
     margin: auto;
@@ -171,5 +269,9 @@ export default Vue.extend({
 .button-green {
     color: rgb(24, 182, 245) !important;
     margin: 20px;
+}
+
+.button-swiper::after {
+    font-size:25px
 }
 </style>
