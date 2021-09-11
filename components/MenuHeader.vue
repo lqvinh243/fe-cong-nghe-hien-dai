@@ -102,8 +102,7 @@ export default Vue.extend({
                 this.timer = null;
             }
             this.timer = setTimeout(() => {
-                console.log(val);
-                if (val || val === '') {
+                if (val || val === '' || val.length) {
                     if (this.$route.path !== '/product')
                         this.$router.push(`/product?query=${val}`);
                     else eventBus.$emit('CHANGE_QUERY_SEARCH', val);

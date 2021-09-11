@@ -114,8 +114,7 @@ export default {
         },
         handleSelect() {
             this.$nuxt.$loading.start();
-            if (this.selectKey !== 3)
-                this.getClients(this.selectKey);
+            this.getClients(this.selectKey);
             this.$nuxt.$loading.finish();
         },
         async handleChangePage() {

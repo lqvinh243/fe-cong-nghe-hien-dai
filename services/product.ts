@@ -23,5 +23,9 @@ export const productService = {
 
     bidProductAuto(data: any) {
         return $axios.$post('/api/v1/bidder-product-autos', data);
+    },
+
+    getBiggestBidByProductIds(productIds: string[]) {
+        return $axios.$post('/api/v1/bidder-products/biggest/productIds', { productIds });
     }
 };

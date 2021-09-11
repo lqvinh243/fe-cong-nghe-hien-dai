@@ -91,7 +91,6 @@ export default Vue.extend({
             },
             resetForm(formName: string) {
                 this.$refs[formName].resetFields();
-                console.log('abc');
                 this.$emit('handelCloseBid', formName);
             }
         };

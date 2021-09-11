@@ -77,7 +77,6 @@ export default Vue.extend({
             return this.$auth.isRoles(roleIds);
         },
         handleGo(url: string) {
-            console.log(url);
             this.$router.push(`/${url}`);
         }
     },

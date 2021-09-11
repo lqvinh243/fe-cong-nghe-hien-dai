@@ -44,7 +44,15 @@
             </v-row>
 
             <div align="left" class="my-4 text-subtitle-1">
-                $ • Price current: {{ product.bidPrice }}
+                Gia hien tai: {{ product.priceNow }}
+            </div>
+
+            <div align="left" class="my-4 text-subtitle-1">
+                Gia mua ngay: {{ product.bidPrice === null ? 'San pham nay khong ban': product.bidPrice }}
+            </div>
+
+            <div align="left" class="my-4 text-subtitle-1">
+                Nguoi giu gia: {{ displayNameBidder }}
             </div>
 
             <div align="left">
@@ -80,7 +88,7 @@ export default Vue.extend({
     },
     data: () => ({
         selection: null,
-        loading: false
+        loading: false,
     }),
     computed: {
         logoUrl(): string {
@@ -92,6 +100,9 @@ export default Vue.extend({
                     return `http://20.51.241.64/node-core/${imagePrimary.url}`;
             }
             return '';
+        },
+        displayNameBidder(): string {
+            return this.product && this.product.bidderProduct && this.product.bidderProduct.bidder ? `${this.product.bidderProduct.bidder.firstName} ${this.product.bidderProduct.bidder.lastName ?? ''}`.trim() : 'Hien khong co nguoi dat';
         }
     },
     methods: {
