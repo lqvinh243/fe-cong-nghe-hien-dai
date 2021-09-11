@@ -79,14 +79,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { fas } from '@fortawesome/free-solid-svg-icons';
-// import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import momment from 'moment';
 import DialogBidPrice from '~/components/dialogs/RemoveProductDialog.vue';
 import { productService } from '~/services/product';
 
-library.add(fas);
 export default Vue.extend({
     components: { DialogBidPrice },
     middleware: ['authentication'],
