@@ -8,20 +8,21 @@
                     <span style="color:white"> Home </span>
                 </NuxtLink>
             </v-toolbar-title>
-
-            <v-autocomplete
-                v-model="select"
-                :loading="loading"
-                :items="listSearch"
-                :search-input.sync="search"
-                cache-items
-                class="mx-4"
-                flat
-                hide-no-data
-                hide-details
-                label="Nhập tên, điện thoại, máy tính..."
-                solo-inverted
-            />
+            <div class="search-header">
+                <v-autocomplete
+                    v-model="select"
+                    :loading="loading"
+                    :items="listSearch"
+                    :search-input.sync="search"
+                    cache-items
+                    class="mx-4"
+                    flat
+                    hide-no-data
+                    hide-details
+                    label="Nhập tên, điện thoại, máy tính..."
+                    solo-inverted
+                />
+            </div>
             <v-spacer />
             <!-- <v-menu offset-y>
                 <template #activator="{ on, attrs }">
@@ -143,3 +144,9 @@ export default Vue.extend({
     }
 });
 </script>
+
+<style scoped>
+    .v-autocomplete__content .v-list__tile{
+        height: auto;
+    }
+</style>

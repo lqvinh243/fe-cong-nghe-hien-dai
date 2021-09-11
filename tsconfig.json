@@ -23,7 +23,8 @@
             "@types/node",
             "@nuxt/types",
             "@nuxtjs/axios",
-            "@nuxtjs/vuetify"
+            "@nuxtjs/vuetify",
+            "@ckeditor/ckeditor5-build-decoupled-document"
         ]
     },
     "exclude": [

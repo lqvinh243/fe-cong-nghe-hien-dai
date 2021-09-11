@@ -11,30 +11,62 @@
                 <v-layout row>
                     <h3>Upload Hình chính Sản phẩm</h3>
                 </v-layout>
-                <v-layout row wrap mt-5>
-                    <v-file-input
-                        label="File input"
-                        filled
-                        prepend-icon="mdi-camera"
-                    />
+                <v-layout>
+                    <div id="preview">
+                        <!-- <v-card
+                            style="padding: 0 auto"
+                            class="mx-auto mt-4"
+                            outlined
+                        >
+                            <img v-if="item.imageUrl" mt-4 :src="item.imageUrl" class="image-upload" />
+                        </v-card> -->
+                        <div class="box-thumbnail-avatar mt-3">
+                            <div v-if="item.imageUrl" class="image-mapper">
+                                <img v-if="item.imageUrl" mt-4 :src="item.imageUrl" class="image-upload">
+                                <div class="btn-default" @click="uploadImageMain">
+                                    EDIT
+                                </div>
+                            </div>
+                            <div v-else class="upload-image">
+                                <button id="addMedia" class="btn-add" @click="uploadImageMain">
+                                    <span>+</span>
+                                </button>
+                                <div class="btn-default">
+                                    UPLOAD A PHOTO
+                                </div>
+                            </div>
+                            <input id="file" ref="inputFileMain" type="file" style="display: none;" @change="onChange($event)">
+                        </div>
+                    </div>
                 </v-layout>
-
-                <v-layout row>
+                <v-layout row mt-5>
                     <h3>Upload Hình phụ Sản phẩm</h3>
                 </v-layout>
                 <v-layout row wrap mt-4>
-                    <v-file-input
-                        label="File input"
-                        filled
-                        prepend-icon="mdi-camera"
-                    />
+                    <div class="box-thumbnail-avatar list-image-sub mr-4">
+                        <div class="upload-image">
+                            <button id="addMedia" class="btn-add" @click="uploadImageSub">
+                                <span>+</span>
+                            </button>
+                            <div class="btn-default">
+                                UPLOAD A PHOTO
+                            </div>
+                        </div>
+                        <input id="file" ref="inputFileSub" type="file" style="display: none;" @change="onChangeImageSub($event)">
+                        <div v-for="(image, index) in listImage" :key="image" class="image-mapper mr-4 mb-4">
+                            <img :src="image.imageUrl" class="image-upload">
+                            <div class="btn-default" @click="deleteImageSub(index)">
+                                DELETE
+                            </div>
+                        </div>
+                    </div>
                 </v-layout>
             </v-flex>
             <v-flex md1 />
             <v-flex md5>
                 <v-card
                     style="padding: 0 auto"
-                    class="mx-auto mt-4"
+                    class="mx-auto"
                     outlined
                 >
                     <v-list-item three-line>
@@ -43,18 +75,29 @@
                                 <h3>Thông tin Sản phẩm</h3>
                                 <v-divider />
                             </div>
-
                             <v-list-item-title class="text-h5 mb-1">
+                                <v-text-field
+                                    v-model="productName"
+                                    label="Tên Sản phẩm"
+                                />
                                 <v-layout md12 mt-1>
                                     <v-text-field
+                                        v-model="startPrice"
                                         label="Giá Khởi điểm"
+                                        prefix="$"
+                                        type="number"
                                     />
                                 </v-layout>
                                 <v-text-field
+                                    v-model="step"
                                     label="Bước giá"
+                                    type="number"
                                 />
                                 <v-text-field
+                                    v-model="priceNow"
                                     label="Giá Mua ngay"
+                                    prefix="$"
+                                    type="number"
                                 />
                                 <v-checkbox
                                     v-model="isExtension"
@@ -62,7 +105,9 @@
                                     :label="`Gia hạn Sản phẩm`"
                                 />
                             </v-list-item-title>
-                            <!-- <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor> -->
+                            <el-button type="primary" style="color:white" @click="handleCreateProduct">
+                                Đăng Sản phẩm
+                            </el-button>
                         </v-list-item-content>
                     </v-list-item>
                     <v-card-actions />
@@ -74,25 +119,75 @@
 
 <script lang="ts">
 import Vue from 'vue';
-// import { mapActions } from 'vuex';
-// import ClassicEditor  from '@ckeditor/ckeditor5-vue';
+import { productService } from '~/services/product';
 
 export default Vue.extend({
     data: () => ({
         selection: null,
         loading: false,
-        // editor: ClassicEditor,
-        editorData: '<p>Content of the editor.</p>',
-        editorConfig: {
-            // The configuration of the editor.
+        isExtension: false,
+        url: null,
+        item: {
+            image: null,
+            imageUrl: null
         },
-        isExtension: false
+        startPrice: null,
+        priceNow: null,
+        listImage: [],
+        productName: '',
+        step: null
     }),
     created() {
         this.loadData();
     },
+
     methods: {
         loadData() {
+        },
+
+        uploadImageMain() {
+            this.$refs.inputFileMain.click();
+        },
+
+        onChange(e: any) {
+            const file = e.target.files[0];
+            this.image = file;
+            this.item.imageUrl = URL.createObjectURL(file);
+        },
+
+        uploadImageSub() {
+            this.$refs.inputFileSub.click();
+        },
+
+        onChangeImageSub(e: any) {
+            const file = e.target.files[0];
+            const fileUrl = URL.createObjectURL(file);
+            this.listImage.push({
+                image: file,
+                imageUrl: fileUrl
+            });
+        },
+
+        deleteImageSub(index: number) {
+            this.listImage.splice(index, 1);
+        },
+
+        async handleCreateProduct() {
+            const form = new FormData();
+            form.append('file', this.image);
+            form.append('name', this.productName);
+            form.append('categoryId', '');
+            form.append('stepPrice', this.step);
+            form.append('expriredAt', '');
+            form.append('bidPrice', this.startPrice);
+            const result = await productService.createProduct(form)
+                .catch(error => {
+                    this.$notify.error({
+                        title: 'Error',
+                        message: error.message || 'Unauthorized!'
+                    });
+                });
+            console.log(result);
         }
     }
 });
@@ -114,5 +209,71 @@ h1, h3, v-layout {
     color: #0f0f0f;
     font-weight: bold;
 }
-</style>
 
+.image-upload {
+    box-shadow: 2px 2px #888888;
+    max-width: 400px;
+    max-height: 400px;
+}
+
+.image-mapper {
+    height: 250px;
+    width: 250px;
+    display: block;
+    position: relative;
+    cursor: pointer;
+}
+
+.image-mapper img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.image-mapper .btn-default {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.box-thumbnail-avatar .upload-image {
+    position: relative;
+    height: 250px;
+    width: 250px;
+}
+
+.btn-add {
+    background-color: transparent;
+    border: 0;
+    font-family: "HKGrotesk-Light";
+    font-size: 80px;
+    color: #d95842;
+    outline: none;
+}
+
+.box-thumbnail-avatar .btn-default {
+    background-color: #fff;
+    border: 0;
+    padding: 7px 18px;
+    font-size: 1rem;
+    line-height: 1rem;
+    letter-spacing: .06rem;
+    color: #d95842;
+    box-shadow: 0 2px 4px 0 hsl(0deg 0% 84% / 50%);
+}
+
+.box-thumbnail-avatar .upload-image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5f5;
+}
+
+.list-image-sub {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+</style>
