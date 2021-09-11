@@ -3,7 +3,7 @@
         <el-select
             v-model="selectKey"
             class="w-25 my-4"
-            placeholder="Please select role!"
+            placeholder="Sắp xếp theo loại..."
             filterable
             remote
             reserve-keyword
@@ -18,35 +18,42 @@
             />
         </el-select>
         <el-table :data="tableData" style="width: 100%">
-            <el-table-column fixed label="Created Date">
+            <el-table-column fixed label="Ngày Lên Sàn">
                 <template slot-scope="scope">
                     <span>{{ formatDate(scope.row.createdAt) }}</span>
                 </template>
             </el-table-column>
 
-            <el-table-column fixed label="Expired Date">
+            <el-table-column fixed label="Ngày Hết Hạn">
                 <template slot-scope="scope">
                     <span>{{ formatDate(scope.row.expiredAt) }}</span>
                 </template>
             </el-table-column>
 
-            <el-table-column fixed prop="name" label="Product Name" />
+            <el-table-column fixed prop="name" label="Tên Sản Phẩm" />
 
-            <el-table-column fixed prop="status" label="Status" />
+            <el-table-column fixed prop="status" label="Trạng Thái" />
 
-            <el-table-column fixed="right" label="Operations">
+            <el-table-column fixed="right" label="Hành Động">
                 <template slot-scope="scope">
-                    <b-button-group size="sm">
-                        <b-button squared variant="info" style="font-weight: bold; color:white" @click="handleClick">
-                            Detail
-                        </b-button>
-                        <b-button squared variant="success" style="font-weight: bold; color:white" @click.native.prevent="editRow(scope.row.id)">
-                            Edit
-                        </b-button>
-                        <b-button squared variant="danger" style="font-weight: bold; color:white" @click="handleClick">
-                            Remove
-                        </b-button>
-                    </b-button-group>
+                    <el-button
+                        round
+                        style="color: white"
+                        type="primary"
+                        :loading="loading"
+                        @click="showProductDetail(scope.row.id)"
+                    >
+                        Xem
+                    </el-button>
+                    <el-button
+                        round
+                        style="color: white"
+                        type="danger"
+                        :loading="loading"
+                        @click="handleRemoveProduct(scope.row.id, scope.row.name)"
+                    >
+                        Xóa
+                    </el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -61,27 +68,27 @@
                 @current-change="handleChangePage()"
             />
         </div>
-        <el-dialog
-            title="Update category"
-            :visible.sync="dialogVisible"
-            width="30%"
-        >
-            <el-input placeholder="Please input" />
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">Cancel</el-button>
-                <el-button
-                    type="primary"
-                    @click="dialogVisible = false"
-                >Confirm</el-button>
-            </span>
-        </el-dialog>
+        <DialogBidPrice
+            :product-id="productId"
+            :product-name="productName"
+            :dialog-visible="dialogRemoveVisible"
+            @handelCloseRemove="closeRemoveDialog"
+        />
     </div>
 </template>
 
 <script lang="ts">
+import Vue from 'vue';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import momment from 'moment';
+import DialogBidPrice from '~/components/dialogs/RemoveProductDialog.vue';
 import { productService } from '~/services/product';
-export default {
+
+library.add(fas);
+export default Vue.extend({
+    components: { DialogBidPrice },
     middleware: ['authentication'],
     data() {
         return {
@@ -95,7 +102,11 @@ export default {
             page: 1,
             total: 10,
             perPage: 10,
-            loadingRemote: false
+            loadingRemote: false,
+            dialogRemoveVisible: false,
+            loading: false,
+            productId: null as string | null,
+            productName: null as string | null,
         };
     },
     mounted() {
@@ -143,6 +154,18 @@ export default {
         formatDate(date: any) {
             return momment(date).format('k:mm D-M-Y');
         },
+        showProductDetail(idProduct: Object) {
+            this.$router.push(`/admin/product-management/${idProduct}`);
+        },
+        handleRemoveProduct(idProduct: Object, nameProduct: String) {
+            console.log('THAT ID: ' + idProduct);
+            this.productId = idProduct;
+            this.productName = nameProduct;
+            this.dialogRemoveVisible = true;
+        },
+        closeRemoveDialog(formName: string) {
+            if (formName === 'removeProductForm') this.dialogRemoveVisible = false;
+        },
     },
-};
+});
 </script>
