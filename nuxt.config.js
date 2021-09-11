@@ -29,7 +29,8 @@ export default {
         // { src: '~/plugins/vee-validate', mode: 'client' },
         { src: '~/plugins/element-ui' },
         { src: '~/plugins/vuetify' },
-        { src: '~/plugins/vue-recapcha' }
+        { src: '~/plugins/vue-recapcha' },
+        { src: '~/plugins/vue-owl-carousel', mode: 'client' }
     ],
 
     // Auto import components (https://go.nuxtjs.dev/config-components)

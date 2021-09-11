@@ -24,7 +24,7 @@
             </div>
         </v-card-title>
 
-        <v-card-text>
+        <v-card-text class="p-0">
             <v-row
                 align="center"
                 class="mx-0"
@@ -63,7 +63,7 @@
                 Category: {{ product.category.name }}
             </div>
             <div>
-                <el-button round style="width: 100%;margin-top:1rem; font-weight: bold; color:white" type="primary" :loading="loading" @click="showProductDetail(product.id)">
+                <el-button round style="width: 80%;margin-top:1rem; font-weight: bold; color:white" type="primary" :loading="loading" @click="showProductDetail(product.id)">
                     Chi tiết
                 </el-button>
             </div>
