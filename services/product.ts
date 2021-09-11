@@ -27,5 +27,9 @@ export const productService = {
 
     getBiggestBidByProductIds(productIds: string[]) {
         return $axios.$post('/api/v1/bidder-products/biggest/productIds', { productIds });
+    },
+
+    createProduct(product: FormData) {
+        return $axios.$post('/api/v1/products', product);
     }
 };

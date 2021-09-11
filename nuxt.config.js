@@ -30,7 +30,8 @@ export default {
         { src: '~/plugins/element-ui' },
         { src: '~/plugins/vuetify' },
         { src: '~/plugins/vue-recapcha' },
-        { src: '~/plugins/vue-owl-carousel', mode: 'client' }
+        { src: '~/plugins/vue-owl-carousel', mode: 'client' },
+        { src: '~plugins/ckeditor', ssr: false }
     ],
 
     // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -85,7 +86,8 @@ export default {
     build: {
         vendor: [
             'element-ui',
-            'jquery'
+            'jquery',
+            'ckeditor'
         ],
         babel: {
             compact: true
