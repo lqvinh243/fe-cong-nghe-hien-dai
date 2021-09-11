@@ -1,119 +1,126 @@
 <template>
-    <el-container style="max-width:80%;margin:0 auto" class="mt-4">
-        <div class="row">
-            <div class="col-sm-3">
-                <div class="text-center mb-4">
-                    <!-- <b-img id="avatar" :src="myProfile.avatar" rounded="circle" alt="Circle image" style="max-width:250px;border:1px solid black" /> -->
-                    <div class="dashboard-widget mb-30  sticky-menu">
-                        <div class="user">
-                            <div class="thumb-area">
-                                <div class="thumb">
-                                    <img :src="avatarUrl" alt="user" style="max-width:100px;max-height:100px;" @error="replaceByDefault">
+    <div class="bg_img">
+        <el-container>
+            <div class="row mt-4" style="max-width:80%;margin:0 auto">
+                <div class="col-sm-3">
+                    <div class="text-center mb-4">
+                        <!-- <b-img id="avatar" :src="myProfile.avatar" rounded="circle" alt="Circle image" style="max-width:250px;border:1px solid black" /> -->
+                        <div class="dashboard-widget mb-30  sticky-menu">
+                            <div class="user">
+                                <div class="thumb-area">
+                                    <div class="thumb">
+                                        <img :src="avatarUrl" alt="user" style="max-width:100px;max-height:100px;" @error="replaceByDefault">
+                                    </div>
+                                    <label class="filebutton profile-pic-edit">
+                                        <p>Edit</p>
+                                        <span><input id="myfile" type="file" @change="handleChangeImage"></span>
+                                    </label>
                                 </div>
-                            </div>
-                            <div class="content">
-                                <input type="file" @change="handleChangeImage">
-                                <p class="username">
-                                    ABC
-                                </p>
-                                <span class="email">abc@gmail.com</span>
-                                <p>
-                                    {{ mapRoleDisplay() }}
-                                </p>
-                                <p v-if="isAlreadyRq && isBidder">
-                                    Ban dang cho duyet len nguoi ban!
-                                </p>
+                                <div class="content">
+                                    <p class="username">
+                                        ABC
+                                    </p>
+                                    <span class="email">abc@gmail.com</span>
+                                    <p>
+                                        {{ mapRoleDisplay() }}
+                                    </p>
+                                    <p v-if="isAlreadyRq && isBidder">
+                                        Ban dang cho duyet len nguoi ban!
+                                    </p>
+                                    <el-button class="custom-button" @click="showChangePassword">
+                                        Change password
+                                    </el-button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-9">
-                <el-row :gutter="0">
-                    <el-col :span="12">
-                        <h1>Profile</h1>
-                    </el-col>
-                    <el-col :span="12" class="text-right">
-                        <el-button v-if="isBidder" :disabled="isAlreadyRq" @click="handleRequestUpgrade">
-                            Yeu cau duoc ban
-                        </el-button>
-                        <el-button @click="showChangePassword">
-                            Change password
-                        </el-button>
-                    </el-col>
-                </el-row>
-                <div>
-                    <hr>
-                    <el-form
-                        ref="rulesProfile"
-                        :model="myProfile"
-                        status-icon
-                        :rules="rulesProfile"
-                        label-width="120px"
-                    >
-                        <el-form-item label-width="auto" prop="firstName">
-                            <el-input v-model="myProfile.firstName" placeholder="First name" />
-                        </el-form-item>
-                        <el-form-item label-width="auto" prop="lastName">
-                            <el-input v-model="myProfile.lastName" placeholder="Last name" />
-                        </el-form-item>
-                        <el-form-item label-width="auto" prop="email">
-                            <el-input v-model="myProfile.email" placeholder="Email" />
-                        </el-form-item>
-                        <el-form-item label-width="auto" prop="birthday">
-                            <el-date-picker
-                                v-model="myProfile.birthday"
-                                type="date"
-                                placeholder="Birthday"
-                                :picker-options="pickerOptions"
-                            />
-                        </el-form-item>
-
-                        <el-form-item v-if="showAddressInput" label-width="auto" prop="address">
-                            <el-input v-model="myProfile.address" placeholder="Address" />
-                        </el-form-item>
+                <div class="col-sm-9">
+                    <el-row :gutter="0">
+                        <el-col :span="12">
+                            <h1 class="title">
+                                Profile
+                            </h1>
+                        </el-col>
+                        <el-col :span="12" class="text-right">
+                            <el-button v-if="isBidder" :disabled="isAlreadyRq" @click="handleRequestUpgrade">
+                                Yeu cau duoc ban
+                            </el-button>
+                        </el-col>
+                    </el-row>
+                    <div>
                         <hr>
-                        <el-button @click="handleSave('rulesProfile')">
-                            Save change
-                        </el-button>
-                    </el-form>
+                        <el-form
+                            ref="rulesProfile"
+                            :model="myProfile"
+                            status-icon
+                            :rules="rulesProfile"
+                            label-width="120px"
+                        >
+                            <el-form-item label-width="auto" prop="firstName">
+                                <el-input v-model="myProfile.firstName" placeholder="First name" />
+                            </el-form-item>
+                            <el-form-item label-width="auto" prop="lastName">
+                                <el-input v-model="myProfile.lastName" placeholder="Last name" />
+                            </el-form-item>
+                            <el-form-item label-width="auto" prop="email">
+                                <el-input v-model="myProfile.email" placeholder="Email" />
+                            </el-form-item>
+                            <el-form-item label-width="auto" prop="birthday">
+                                <el-date-picker
+                                    v-model="myProfile.birthday"
+                                    type="date"
+                                    placeholder="Birthday"
+                                    :picker-options="pickerOptions"
+                                />
+                            </el-form-item>
+
+                            <el-form-item v-if="showAddressInput" label-width="auto" prop="address">
+                                <el-input v-model="myProfile.address" placeholder="Address" />
+                            </el-form-item>
+                            <hr>
+                            <el-button class="custom-save" @click="handleSave('rulesProfile')">
+                                Save change
+                            </el-button>
+                        </el-form>
+                    </div>
                 </div>
             </div>
-        </div>
-        <el-dialog
-            title="Update password"
-            :visible.sync="dialogVisible"
-            width="30%"
-            :show-close="false"
-        >
-            <el-form
-                ref="passwordForm"
-                :model="passwordForm"
-                status-icon
-                :rules="rules"
-                label-width="120px"
+            <el-dialog
+                title="Update password"
+                :visible.sync="dialogVisible"
+                width="30%"
+                :show-close="false"
             >
-                <el-form-item label-width="auto" prop="oldPassword">
-                    <el-input v-model="passwordForm.oldPassword" placeholder="Old Password" type="password" autocomplete="off" />
-                </el-form-item>
-                <el-form-item label-width="auto" prop="password">
-                    <el-input v-model="passwordForm.password" placeholder="Password" type="password" autocomplete="off" />
-                </el-form-item>
-                <el-form-item label-width="auto" prop="rePassword">
-                    <el-input v-model="passwordForm.rePassword" placeholder="Re-Password" type="password" autocomplete="off" />
-                </el-form-item>
+                <el-form
+                    ref="passwordForm"
+                    :model="passwordForm"
+                    status-icon
+                    :rules="rules"
+                    label-width="120px"
+                >
+                    <el-form-item label-width="auto" prop="oldPassword">
+                        <el-input v-model="passwordForm.oldPassword" placeholder="Old Password" type="password" autocomplete="off" />
+                    </el-form-item>
+                    <el-form-item label-width="auto" prop="password">
+                        <el-input v-model="passwordForm.password" placeholder="Password" type="password" autocomplete="off" />
+                    </el-form-item>
+                    <el-form-item label-width="auto" prop="rePassword">
+                        <el-input v-model="passwordForm.rePassword" placeholder="Re-Password" type="password" autocomplete="off" />
+                    </el-form-item>
 
-                <el-form-item>
-                    <el-button type="primary" @click="submitForm('passwordForm')">
-                        Submit
-                    </el-button>
-                    <el-button @click="resetForm('passwordForm')">
-                        Cannel
-                    </el-button>
-                </el-form-item>
-            </el-form>
-        </el-dialog>
-    </el-container>
+                    <el-form-item>
+                        <el-button type="primary" @click="submitForm('passwordForm')">
+                            Submit
+                        </el-button>
+                        <el-button @click="resetForm('passwordForm')">
+                            Cannel
+                        </el-button>
+                    </el-form-item>
+                </el-form>
+            </el-dialog>
+        </el-container>
+    </div>
 </template>
 
 <script lang="ts">
@@ -424,5 +431,77 @@ export default {
     text-align: center;
     margin-bottom: 30px;
 }
+.title {
+  color: #fff;
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  font-size: 2rem;
+}
 
+.bg_img{
+      background: -webkit-linear-gradient(
+    90deg,
+    #5140fe 0%,
+    #7757f7 56%,
+    #9d6ef0 100%
+  );
+}
+
+.custom-button {
+  height: 50px;
+  color: #ffffff;
+  -webkit-border-radius: 30px;
+  -moz-border-radius: 30px;
+  border-radius: 30px;
+  font-weight: 500;
+  font-size: 13px;
+  background: -moz-linear-gradient(90deg, #3da9f5 0%, #683df5 100%);
+  background: -ms-linear-gradient(90deg, #3da9f5 0%, #683df5 100%);
+  background: -webkit-linear-gradient(90deg, #3da9f5 0%, #683df5 100%);
+  box-shadow: -1.04px 4.891px 20px 0px rgb(69 49 183 / 50%);
+  font-family: "Roboto", sans-serif;
+}
+
+.custom-save{
+      height: 50px;
+  -webkit-border-radius: 30px;
+  -moz-border-radius: 30px;
+  border-radius: 30px;
+  font-weight: 500;
+  font-size: 13px;
+background: -webkit-linear-gradient(
+92deg, #ff8359 0%, #ffdf40 100%);
+  font-family: "Roboto", sans-serif;
+}
+
+label.filebutton {
+background: -webkit-linear-gradient(
+92deg, #ff8359 0%, #ffdf40 100%);
+    position: absolute;
+    top: 70px;
+    right: 0;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+  background: -moz-linear-gradient(90deg, #3da9f5 0%, #683df5 100%);
+  background: -ms-linear-gradient(90deg, #3da9f5 0%, #683df5 100%);
+  background: -webkit-linear-gradient(90deg, #3da9f5 0%, #683df5 100%);
+  box-shadow: -1.04px 4.891px 20px 0px rgb(69 49 183 / 50%);
+    border-radius: 50%;
+    color: #ffffff;
+}
+
+label span input {
+    z-index: 999;
+    line-height: 0;
+    font-size: 10px;
+    position: absolute;
+    opacity: 0;
+    filter: alpha(opacity = 0);
+    -ms-filter: "alpha(opacity=0)";
+    cursor: pointer;
+    _cursor: hand;
+    margin: 0;
+    padding:0;
+}
 </style>
