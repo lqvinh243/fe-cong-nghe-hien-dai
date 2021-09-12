@@ -12,12 +12,12 @@
             :ref="formName"
             :model="removeProductForm"
             status-icon
-            :rules="rules"
             label-width="120px"
         >
             <h1 class="my-4">
                 Bạn đang xoá sản phẩm <b>{{ productName }}</b>. Xác nhận xoá?
             </h1>
+
             <el-form-item label-width="auto">
                 <el-button type="primary" @click="submitForm(formName)">
                     Xoá
@@ -39,7 +39,7 @@ export default Vue.extend({
     props: {
         productId: {
             type: String,
-            default: () => null,
+            default: () => null
         },
         productName: {
             type: String,
@@ -47,30 +47,29 @@ export default Vue.extend({
         },
         dialogVisible: {
             type: Boolean,
-            default: false,
-        },
+            default: false
+        }
     },
     data() {
         return {
             formName: 'removeProductForm',
             removeProductForm: {
-                productId: this.productId,
+                productId: this.productId
             },
             submitForm(formName: string) {
-                this.$refs[formName].validate(async (valid: boolean) => {
+                this.$refs[formName].validate(async (valid:boolean) => {
                     if (valid) {
-                        const result = await productService
-                            .bidProduct(this.removeProductForm)
-                            .catch((error) => {
-                                this.$notify.error({
-                                    title: 'Error',
-                                    message: error.message || 'Cannot remove product!',
-                                });
+                        console.log(`ID: ${this.productId}`);
+                        const result = await productService.deleteProduct(this.productId + '1').catch(error => {
+                            this.$notify.error({
+                                title: 'Lỗi',
+                                message: `Không thể xoá sản phẩm ${this.productName}. Vui lòng thử lại!` || error.message
                             });
+                        });
                         if (result) {
                             this.$notify.success({
-                                title: 'Success',
-                                message: 'Remove product successfully!',
+                                title: 'Xoá thành công',
+                                message: `Đã xoá sản phẩm ${this.productName}!`
                             });
                             this.$emit('handelCloseRemove', formName);
                         }
@@ -80,15 +79,20 @@ export default Vue.extend({
             resetForm(formName: string) {
                 this.$refs[formName].resetFields();
                 this.$emit('handelCloseRemove', formName);
-            },
+            }
         };
     },
     watch: {
         productId(val: string) {
             this.removeProductForm.productId = val;
         },
+        productName(val:String) {
+            this.removeProductForm.price = val;
+        }
     },
-    mounted() {},
-    methods: {},
+    mounted() {
+    },
+    methods: {
+    },
 });
 </script>

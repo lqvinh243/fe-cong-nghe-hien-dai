@@ -31,5 +31,9 @@ export const productService = {
 
     createProduct(product: FormData) {
         return $axios.$post('/api/v1/products', product);
+    },
+
+    deleteProduct(id: String) {
+        return $axios.$delete(`/api/v1/products/${id}`);
     }
 };

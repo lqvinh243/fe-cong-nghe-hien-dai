@@ -90,9 +90,8 @@ export default Vue.extend({
         return {
             tableData: [],
             options: [
-                { key: 'mobile', name: 'Điện thoại di động' }, // test
-                { key: 'laptop', name: 'Máy tính xách tay' }, // test
-                { key: 3, name: 'Upgrage request' },
+                { key: '48ebda38-8820-45dd-bf2b-968772738735', name: 'Điện tử' },
+                { key: 2, name: 'Upgrage request' },
             ],
             selectKey: '' as any,
             page: 1,
@@ -135,7 +134,7 @@ export default Vue.extend({
             this.dialogVisible = true;
         },
         async getProducts(key: string = '') {
-            const query = `roleId=${key}&skip=${(this.page - 1) * this.perPage}`;
+            const query = `categoryId=${key}&skip=${(this.page - 1) * this.perPage}`;
             const result = await productService.findProduct(query).catch((error) => {
                 this.$notify.error({
                     title: 'Error',
