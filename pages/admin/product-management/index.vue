@@ -57,7 +57,7 @@
                         title="Xoá sản phẩm"
                         @click="handleRemoveProduct(scope.row.id, scope.row.name, scope.row.url)"
                     >
-                        <img src="~/assets/images/trash-alt-solid.svg" class="format-icon" alt="">                      
+                        <img src="~/assets/images/trash-alt-solid.svg" class="format-icon" alt="">
                     </el-button>
                 </template>
             </el-table-column>
@@ -179,7 +179,7 @@ export default Vue.extend({
         closeRemoveDialog(formName: string) {
             if (formName === 'removeProductForm') this.dialogRemoveVisible = false;
         },
-        refreshData(productId: string){
+        refreshData(productId: string) {
             this.tableData = this.tableData.filter((data: any) => {
                 return data.id !== productId;
             });

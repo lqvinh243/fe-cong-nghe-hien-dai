@@ -18,8 +18,8 @@
                 <b>{{ productInfo.name }}</b>
             </h1>
             <h1 class="my-2">
-                <img :src="productInfo.img" class="format-image" alt="product image" />
-            </h1>            
+                <img :src="productInfo.img" class="format-image" alt="product image">
+            </h1>
             <el-form-item label-width="auto">
                 <el-button type="danger" class="text-white" @click="submitForm(formName)">
                     Xoá
