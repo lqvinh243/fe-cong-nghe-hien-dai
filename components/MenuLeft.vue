@@ -47,7 +47,7 @@ export default Vue.extend({
             { title: 'Category Managerment', icon: 'mdi-forum', url: 'admin/category-management', roleIds: [ROLE_ID.SUPER_ADMIN] },
             { title: 'Product Managerment', icon: 'mdi-forum', url: 'admin/product-management', roleIds: [ROLE_ID.SUPER_ADMIN] },
             { title: 'Upgrade Request Managerment', icon: 'mdi-forum', url: 'admin/upgrade-request-management', roleIds: [ROLE_ID.SUPER_ADMIN] },
-
+            { title: 'Create Product', icon: 'mdi-forum', url: 'create-product', roleIds: [ROLE_ID.SELLER] }
         ],
     }),
 
