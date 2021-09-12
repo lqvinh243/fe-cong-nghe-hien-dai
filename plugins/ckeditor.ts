@@ -1,4 +1,4 @@
 import Vue from 'vue';
-import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+import CKEditor from 'ckeditor4-vue';
 
-Vue.component('DecoupledEditor', DecoupledEditor);
+Vue.use(CKEditor);
