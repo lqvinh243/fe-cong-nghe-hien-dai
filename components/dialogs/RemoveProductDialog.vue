@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        title="Xác Nhận"
+        title="Xác nhận xoá sản phẩm"
         :visible.sync="dialogVisible"
         width="30%"
         :show-close="false"
@@ -14,15 +14,17 @@
             status-icon
             label-width="120px"
         >
-            <h1 class="my-4">
-                Bạn đang xoá sản phẩm <b>{{ productName }}</b>. Xác nhận xoá?
+            <h1 class="my-2">
+                <b>{{ productInfo.name }}</b>
             </h1>
-
+            <h1 class="my-2">
+                <img :src="productInfo.img" class="format-image" alt="product image" />
+            </h1>            
             <el-form-item label-width="auto">
-                <el-button type="primary" @click="submitForm(formName)">
+                <el-button type="danger" class="text-white" @click="submitForm(formName)">
                     Xoá
                 </el-button>
-                <el-button @click="resetForm(formName)">
+                <el-button type="success" class="text-white" @click="resetForm(formName)">
                     Huỷ
                 </el-button>
             </el-form-item>
@@ -41,8 +43,8 @@ export default Vue.extend({
             type: String,
             default: () => null
         },
-        productName: {
-            type: String,
+        productInfo: {
+            type: Object,
             default: null,
         },
         dialogVisible: {
@@ -59,19 +61,19 @@ export default Vue.extend({
             submitForm(formName: string) {
                 this.$refs[formName].validate(async (valid:boolean) => {
                     if (valid) {
-                        console.log(`ID: ${this.productId}`);
-                        const result = await productService.deleteProduct(this.productId + '1').catch(error => {
+                        const result = await productService.deleteProduct(this.productId).catch(error => {
                             this.$notify.error({
                                 title: 'Lỗi',
-                                message: `Không thể xoá sản phẩm ${this.productName}. Vui lòng thử lại!` || error.message
+                                message: `Không thể xoá sản phẩm ${this.productInfo.name}. Vui lòng thử lại!` || error.message
                             });
                         });
                         if (result) {
                             this.$notify.success({
                                 title: 'Xoá thành công',
-                                message: `Đã xoá sản phẩm ${this.productName}!`
+                                message: `Đã xoá sản phẩm ${this.productInfo.name}!`
                             });
                             this.$emit('handelCloseRemove', formName);
+                            this.$emit('handleRefreshData', this.productId);
                         }
                     }
                 });
@@ -96,3 +98,15 @@ export default Vue.extend({
     },
 });
 </script>
+
+<style lang='css'>
+.text-white {
+    color: white;
+    font-weight: bold;
+}
+
+.format-image{
+    width: 300px;
+}
+</style>
+

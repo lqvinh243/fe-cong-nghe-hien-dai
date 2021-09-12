@@ -32,27 +32,32 @@
 
             <el-table-column fixed prop="name" label="Tên Sản Phẩm" />
 
-            <el-table-column fixed prop="status" label="Trạng Thái" />
-
-            <el-table-column fixed="right" label="Hành Động">
+            <el-table-column fixed label="Trạng Thái">
+                <template slot-scope="scope">
+                    {{ mapStatusProduct(scope.row.status) }}
+                </template>
+            </el-table-column>
+            <el-table-column fixed label="Hành Động">
                 <template slot-scope="scope">
                     <el-button
                         round
                         style="color: white"
                         type="primary"
                         :loading="loading"
+                        title="Xem chi tiết"
                         @click="showProductDetail(scope.row.id)"
                     >
-                        Xem
+                        <img src="~/assets/images/eye-solid.svg" class="format-icon" alt="">
                     </el-button>
                     <el-button
                         round
                         style="color: white"
                         type="danger"
                         :loading="loading"
-                        @click="handleRemoveProduct(scope.row.id, scope.row.name)"
+                        title="Xoá sản phẩm"
+                        @click="handleRemoveProduct(scope.row.id, scope.row.name, scope.row.url)"
                     >
-                        Xóa
+                        <img src="~/assets/images/trash-alt-solid.svg" class="format-icon" alt="">                      
                     </el-button>
                 </template>
             </el-table-column>
@@ -70,9 +75,10 @@
         </div>
         <DialogBidPrice
             :product-id="productId"
-            :product-name="productName"
+            :product-info="productInfo"
             :dialog-visible="dialogRemoveVisible"
             @handelCloseRemove="closeRemoveDialog"
+            @handleRefreshData="refreshData"
         />
     </div>
 </template>
@@ -101,7 +107,7 @@ export default Vue.extend({
             dialogRemoveVisible: false,
             loading: false,
             productId: null as string | null,
-            productName: null as string | null,
+            productInfo: {}
         };
     },
     mounted() {
@@ -149,18 +155,49 @@ export default Vue.extend({
         formatDate(date: any) {
             return momment(date).format('k:mm D-M-Y');
         },
+        mapStatusProduct(status: string) {
+            switch (status) {
+            case 'process':
+                return 'Đang diễn ra';
+            case 'end':
+                return 'Đã kết thúc';
+            case 'cancel':
+                return 'Đã huỷ bỏ';
+            default:
+                return 'Chưa tiến hành';
+            }
+        },
         showProductDetail(idProduct: Object) {
             this.$router.push(`/admin/product-management/${idProduct}`);
         },
-        handleRemoveProduct(idProduct: Object, nameProduct: String) {
-            console.log('THAT ID: ' + idProduct);
+        handleRemoveProduct(idProduct: Object, nameProduct: String, imgProduct: String) {
             this.productId = idProduct;
-            this.productName = nameProduct;
+            this.productInfo.name = nameProduct;
+            this.productInfo.img = imgProduct;
             this.dialogRemoveVisible = true;
         },
         closeRemoveDialog(formName: string) {
             if (formName === 'removeProductForm') this.dialogRemoveVisible = false;
         },
+        refreshData(productId: string){
+            this.tableData = this.tableData.filter((data: any) => {
+                return data.id !== productId;
+            });
+        }
     },
 });
 </script>
+
+<style>
+.format-icon{
+    width: 15px;
+    height: 15px;
+}
+
+.center{
+    display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 40%;
+}
+</style>
