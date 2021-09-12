@@ -323,7 +323,6 @@ export default {
                             });
                         });
                     }
-                    console.log(this.myProfile);
 
                     const result = await meService.updateProfile(this.myProfile).catch(error => {
                         this.$notify.error({

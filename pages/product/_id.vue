@@ -126,8 +126,13 @@
                                 <v-layout md12 mt-1>
                                     Người Bán: {{ seller }}
                                 </v-layout>
-                                <v-layout md12 mt-1>
-                                    Mô tả: {{ description }}
+                                <v-layout mt-1>
+                                    <h4> Mô tả: </h4>
+                                </v-layout>
+                                <v-layout v-for="productDesc in description" :key="productDesc" mt-1>
+                                    <h6 ml-4>
+                                        <span style="font-size: 0.8rem; color: #0f0f0f;"> - {{ productDesc }} </span>
+                                    </h6>
                                 </v-layout>
                             </v-list-item-title>
                         </v-list-item-content>
@@ -230,7 +235,12 @@ export default Vue.extend({
                 this.priceCurrent = result.data.priceNow;
                 this.status = result.data.status;
                 this.priceBid = result.data.bidPrice;
-                this.description = result.data.productDescription + '';
+                this.description = [];
+                if (result.data.productDescription) {
+                    result.data.productDescription.forEach((elementDesc:any) => {
+                        this.description.push(elementDesc.data.data.content);
+                    });
+                }
                 const timeNow = momment(new Date());
                 this.timeExpire = timeNow.from(result.data.expiredAt, true);
                 this.seller = `${result.data.seller.firstName} ${result.data.seller.lastName ?? ''}`;

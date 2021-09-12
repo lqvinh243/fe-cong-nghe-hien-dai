@@ -115,6 +115,7 @@
                                             type="date"
                                             placeholder=""
                                             :picker-options="pickerOptions"
+                                            @change="changeExpiredAt"
                                         />
                                     </v-flex>
                                 </v-layout>
@@ -197,6 +198,10 @@ export default Vue.extend({
                     });
                 });
             }
+        },
+
+        changeExpiredAt() {
+            console.log(this.expiredAt);
         },
 
         uploadImageMain() {
