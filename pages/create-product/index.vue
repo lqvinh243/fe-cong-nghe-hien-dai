@@ -80,6 +80,12 @@
                                     v-model="productName"
                                     label="Tên Sản phẩm"
                                 />
+                                <v-autocomplete
+                                    ref="category"
+                                    v-model="selectCategory.selected"
+                                    :items="selectCategory.items"
+                                    label="Danh Mục"
+                                />
                                 <v-layout md12 mt-1>
                                     <v-text-field
                                         v-model="startPrice"
@@ -99,6 +105,19 @@
                                     prefix="$"
                                     type="number"
                                 />
+                                <v-layout md12 mt-1>
+                                    <v-flex md4 mt-2>
+                                        Ngày Gia hạn
+                                    </v-flex>
+                                    <v-flex md2>
+                                        <el-date-picker
+                                            v-model="expiredAt"
+                                            type="date"
+                                            placeholder=""
+                                            :picker-options="pickerOptions"
+                                        />
+                                    </v-flex>
+                                </v-layout>
                                 <v-checkbox
                                     v-model="isExtension"
                                     class="check-box-product"
@@ -119,6 +138,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { categoryService } from '~/services/category';
 import { productService } from '~/services/product';
 
 export default Vue.extend({
@@ -135,7 +155,17 @@ export default Vue.extend({
         priceNow: null,
         listImage: [],
         productName: '',
-        step: null
+        step: null,
+        selectCategory: {
+            selected: null,
+            items: []
+        },
+        expiredAt: new Date(),
+        pickerOptions: {
+            disabledDate(time:Date) {
+                return time.getTime() < Date.now();
+            }
+        }
     }),
     created() {
         this.loadData();
@@ -143,6 +173,30 @@ export default Vue.extend({
 
     methods: {
         loadData() {
+            this.loadCategory();
+        },
+
+        async loadCategory(id: string = '') {
+            let query = '';
+            if (id)
+                query += `parentId=${id}`;
+
+            const result = await categoryService.findCategory(query).catch(error => {
+                this.$notify.error({
+                    title: 'Error',
+                    message: error.message || 'Cannot get category!'
+                });
+            });
+            if (result && result.data.length) {
+                this.selectCategory.selected = null;
+                this.selectCategory.items = [];
+                result.data.forEach((element: any) => {
+                    this.selectCategory.items.push({
+                        text: element.name,
+                        value: element.id
+                    });
+                });
+            }
         },
 
         uploadImageMain() {
@@ -173,12 +227,13 @@ export default Vue.extend({
         },
 
         async handleCreateProduct() {
+            console.log(this.expiredAt);
             const form = new FormData();
             form.append('file', this.image);
             form.append('name', this.productName);
-            form.append('categoryId', '');
+            form.append('categoryId', this.selectCategory.selected);
             form.append('stepPrice', this.step);
-            form.append('expriredAt', '');
+            form.append('expiredAt', this.expiredAt);
             form.append('bidPrice', this.startPrice);
             const result = await productService.createProduct(form)
                 .catch(error => {
@@ -188,6 +243,11 @@ export default Vue.extend({
                     });
                 });
             console.log(result);
+        },
+
+        handleUploadMultiImageSubProduct() {
+            const form = new FormData();
+            form.append('listFile', this.listImage);
         }
     }
 });
