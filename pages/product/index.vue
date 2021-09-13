@@ -142,7 +142,7 @@ export default Vue.extend({
                     });
                 }
 
-                if (resultsBiggest && resultsFavourite) {
+                if (resultsBiggest) {
                     agoliaResult.forEach((product:any) => {
                         let item = resultsBiggest.find((item:any) => item.data.productId === product.id);
                         if (item)
