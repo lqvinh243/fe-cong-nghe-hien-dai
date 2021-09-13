@@ -223,7 +223,7 @@ export default Vue.extend({
 
         async checkFavourite(products: any[]) {
             let productMappings:any[] = [];
-            if (this.$auth.isAuthenticated) {
+            if (this.$auth.isAuthenticated()) {
                 const ids = products.map(item => item.id);
                 const results = await productFavouriteService.getByProductIds({ productIds: ids }).catch(error => {
                     this.$notify.error({
@@ -242,6 +242,7 @@ export default Vue.extend({
                 }
                 else productMappings = products;
             }
+            else productMappings = products;
 
             return productMappings;
         }

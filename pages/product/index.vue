@@ -132,22 +132,26 @@ export default Vue.extend({
                         message: error.message || 'Cannot get bid product!'
                     });
                 });
-                const resultsFavourite = await productFavouriteService.getByProductIds({ productIds }).catch(error => {
-                    this.$notify.error({
-                        title: 'Error',
-                        message: error.message || 'Cannot get product favourite'
+                let resultsFavourite:any | null = null;
+                if (this.$auth.isAuthenticated()) {
+                    resultsFavourite = await productFavouriteService.getByProductIds({ productIds }).catch(error => {
+                        this.$notify.error({
+                            title: 'Error',
+                            message: error.message || 'Cannot get product favourite'
+                        });
                     });
-                });
+                }
 
                 if (resultsBiggest && resultsFavourite) {
                     agoliaResult.forEach((product:any) => {
                         let item = resultsBiggest.find((item:any) => item.data.productId === product.id);
                         if (item)
                             product.bidderProduct = item.data;
-
-                        item = resultsFavourite.data.find((item:any) => item.id === product.id);
-                        if (item)
-                            product.isFavourite = item.isFavourite;
+                        if (resultsFavourite) {
+                            item = resultsFavourite.data.find((item:any) => item.id === product.id);
+                            if (item)
+                                product.isFavourite = item.isFavourite;
+                        }
 
                         this.products.push(product);
                     });
