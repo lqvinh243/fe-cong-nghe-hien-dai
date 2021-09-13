@@ -184,7 +184,7 @@ export default Vue.extend({
 <style>
 .text-name-product {
     line-height: 1.5em;
-    height: 3em;
+    height: 1.4em;
     overflow: hidden;
     white-space: wrap;
     text-overflow: ellipsis;

@@ -4,11 +4,9 @@
             <v-flex>
                 <h1>{{ title }}</h1>
             </v-flex>
-            <v-flex md1>
+            <!-- <v-flex md1>
                 <i v-if="showFavouriteIcon" style="font-size: 2rem; cursor: pointer" :class="isFavourite ? 'el-icon-star-on icon-like-product' :'el-icon-star-off'" @click="handleFavourite" />
-                <!-- <i v-if="likeProduct" class="el-icon-star-on icon-like-product" @click="likeProduct = false" />
-                <i v-if="!likeProduct" style="font-size: 2rem; cursor: pointer" class="el-icon-star-off" @click="likeProduct = true" /> -->
-            </v-flex>
+            </v-flex> -->
         </v-layout>
         <v-divider />
         <v-layout row wrap>
