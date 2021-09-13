@@ -1,7 +1,7 @@
 <template>
     <div class="text-center">
-        <el-row :gutter="20" class="mx-auto mt-4" type="flex" style="max-width:90%">
-            <el-col v-for="item in productBidding" :key="item.id" :span="6">
+        <el-row :gutter="20" class="mx-auto mt-4" style="max-width:80%">
+            <el-col v-for="item in productWin" :key="item.id" :span="6">
                 <product :product="item" />
             </el-col>
         </el-row>
@@ -16,7 +16,7 @@ import Vue from 'vue';
 import { productService } from '~/services/product';
 export default Vue.extend({
     data: () => ({
-        productBidding: [] as any,
+        productWin: [] as any,
         pagination: {
             total: 0,
             skip: 0,
@@ -24,17 +24,17 @@ export default Vue.extend({
         }
     }),
     async mounted() {
-        await this.getProductBidding();
+        await this.findProductByWinner();
     },
     methods: {
-        async getProductBidding() {
-            const result = await productService.findProductBid().catch(error => {
+        async findProductByWinner() {
+            const result = await productService.findProductByWinner().catch(error => {
                 this.$notify.error({
                     title: 'Error',
                     message: error.message || 'Cannot get list favourite product!'
                 });
             });
-            this.productBidding = result.data;
+            this.productWin = result.data;
             this.pagination = result.pagination;
         }
     }

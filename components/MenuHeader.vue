@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-app-bar color="deep-purple accent-4" dense dark>
-            <v-app-bar-nav-icon @click="handleDrawer()" />
+            <v-app-bar-nav-icon v-if="showMenuBar" @click="handleDrawer()" />
 
             <v-toolbar-title>
                 <NuxtLink :to="`/`">
@@ -93,6 +93,10 @@ export default Vue.extend({
     computed: {
         dropdownSelection():any {
             return this.profiles.filter((item:any) => item.isAuth === this.$auth.isAuthenticated());
+        },
+
+        showMenuBar():boolean {
+            return this.$auth.isAuthenticated();
         }
     },
 

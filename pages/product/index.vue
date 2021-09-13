@@ -146,7 +146,7 @@ export default Vue.extend({
                     agoliaResult.forEach((product:any) => {
                         let item = resultsBiggest.find((item:any) => item.data.productId === product.id);
                         if (item)
-                            product.bidderProduct = item.data;
+                            product.bidder = item.data.bidder;
                         if (resultsFavourite) {
                             item = resultsFavourite.data.find((item:any) => item.id === product.id);
                             if (item)

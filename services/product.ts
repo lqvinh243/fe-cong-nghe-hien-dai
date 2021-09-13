@@ -9,6 +9,10 @@ export const productService = {
         return $axios.$get('/api/v1/products/bidding');
     },
 
+    findProductByWinner() {
+        return $axios.$get('/api/v1/products/win');
+    },
+
     getProductDetailById(query: string = '') {
         return $axios.$get(`/api/v1/products/${query}`);
     },

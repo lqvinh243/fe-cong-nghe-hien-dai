@@ -143,6 +143,7 @@
         </v-layout>
         <DialogBidPrice :product-id="id" :price-now="priceCurrent" :price="priceCurrent + stepPrice" :dialog-visible="dialogBidVisible" @handelCloseBid="closeBidDialog" />
         <BidPriceAutoDialog :product-id="id" :price-now="priceCurrent" :price="priceCurrent + stepPrice" :dialog-visible-auto="dialogBidAutoVisible" @handelCloseBid="closeBidDialog" />
+        <ConfirmBuyNowDialog :product-id="id" :price-now="priceCurrent" :dialog-buy-now-visible="dialogBuyNowVisible" @handelCloseBid="closeBidDialog" />
     </div>
 </template>
 
@@ -152,11 +153,12 @@ import momment from 'moment';
 import { ROLE_ID } from '~/commom/enum';
 import BidPriceAutoDialog from '~/components/dialogs/BidPriceAutoDialog.vue';
 import DialogBidPrice from '~/components/dialogs/BidPriceDialog.vue';
+import ConfirmBuyNowDialog from '~/components/dialogs/ConfirmBuyNowDialog.vue';
 import { productService } from '~/services/product';
 import { productFavouriteService } from '~/services/product-favourite';
 
 export default Vue.extend({
-    components: { DialogBidPrice, BidPriceAutoDialog },
+    components: { DialogBidPrice, BidPriceAutoDialog, ConfirmBuyNowDialog },
     data: () => ({
         id: null as string | null,
         selection: null,
@@ -176,6 +178,7 @@ export default Vue.extend({
         isFavourite: false,
         dialogBidVisible: false,
         dialogBidAutoVisible: false,
+        dialogBuyNowVisible: false,
         bidderName: '',
         totalAuc: 0,
     }),
@@ -213,7 +216,7 @@ export default Vue.extend({
 
         handleBuyProduct() {
             this.handleAuthenticated();
-            this.dialogBidVisible = true;
+            this.dialogBuyNowVisible = true;
         },
 
         handleBidProductAuto() {
@@ -296,6 +299,8 @@ export default Vue.extend({
                 this.dialogBidVisible = false;
             else if (formName === 'bidPriceAutoForm')
                 this.dialogBidAutoVisible = false;
+            else if (formName === 'buyNowForm')
+                this.dialogBuyNowVisible = false;
         },
 
         mapStatusProduct(status: string) {

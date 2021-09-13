@@ -91,6 +91,9 @@
                 :visible.sync="dialogVisible"
                 width="30%"
                 :show-close="false"
+                :close-on-click-modal="false"
+                class="text-center"
+                :close-on-press-escape="false"
             >
                 <el-form
                     ref="passwordForm"

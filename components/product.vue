@@ -45,19 +45,26 @@
 
             <div ml-2 mr-2>
                 <div align="left" class="my-3 text-subtitle-1">
-                    Giá Hiện tại: {{ product.priceNow }}
+                    Giá Hiện tại: {{ product.priceNow }}$
                 </div>
 
                 <div align="left" class="text-subtitle-1">
-                    Giá Mua ngay: {{ product.bidPrice === null ? 'San pham nay khong ban': product.bidPrice }}
+                    Giá Mua ngay: {{ product.bidPrice }}$
                 </div>
 
-                <div align="left" class="my-3 text-subtitle-1">
-                    Người giữ Giá: {{ displayNameBidder }}
+                <div v-if="product.status === 'process'" align="left" class="my-3 text-subtitle-1">
+                    Người giữ giá: {{ displayNameBidder }}
+                </div>
+
+                <div v-if="['end','cancel'].includes(product.status)" align="left" class="my-3 text-subtitle-1">
+                    Người chiến thắng: {{ displayNameWinner }}
                 </div>
 
                 <div align="left">
-                    • Thời gian hết hạn: {{ displayFormatExpriedAt }}
+                    Trạng thái {{ displayStatus() }}
+                </div>
+                <div v-if="product.status === 'process'" align="left">
+                    Thời gian hết hạn: {{ displayFormatExpriedAt }}
                 </div>
 
                 <div align="left">
@@ -109,7 +116,11 @@ export default Vue.extend({
             return '';
         },
         displayNameBidder(): string {
-            return this.product && this.product.bidderProduct && this.product.bidderProduct.bidder ? `${this.product.bidderProduct.bidder.firstName} ${this.product.bidderProduct.bidder.lastName ?? ''}`.trim() : 'Hien khong co nguoi dat';
+            return this.product && this.product.bidder ? `${this.product.bidder.firstName} ${this.product.bidder.lastName ?? ''}`.trim() : 'Không có thông tin';
+        },
+
+        displayNameWinner(): string {
+            return this.product && this.product.winner ? `${this.product.winner.firstName} ${this.product.winner.lastName ?? ''}`.trim() : 'Không có thông tin';
         },
 
         displayFormatExpriedAt(): string {
@@ -118,8 +129,11 @@ export default Vue.extend({
         }
     },
 
-    mounted() {
+    created() {
         momment.locale('vi');
+    },
+
+    mounted() {
     },
 
     methods: {
@@ -133,7 +147,6 @@ export default Vue.extend({
 
         async handleFavourite(product: any) {
             this.handleAuthenticated();
-            console.log(product);
 
             const result = await productService.favouriteProduct(product.id).catch(error => {
                 this.$notify.error({
@@ -154,6 +167,15 @@ export default Vue.extend({
             if (!this.$auth.isAuthenticated())
                 return this.$router.push('/login?redirect=' + this.$router.currentRoute.path);
         },
+
+        displayStatus() {
+            switch (this.product.status) {
+            case 'draft': return 'Bản nháp';
+            case 'process': return 'Đang diễn ra';
+            case 'end': return 'Đã kết thúc';
+            case 'cancel': return 'Đã hủy';
+            }
+        }
     },
 
 });

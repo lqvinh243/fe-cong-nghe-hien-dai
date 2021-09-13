@@ -3,7 +3,7 @@
         <div class="main-content">
             <div data-app>
                 <menu-header @emitDrawer="getDrawer" />
-                <menu-left :drawer="drawer">
+                <menu-left :drawer="drawer" @emitDrawer="getDrawer">
                     <div class="col-right" style="overflow: auto;height:calc(100vh - 48px)">
                         <nuxt />
                     </div>
