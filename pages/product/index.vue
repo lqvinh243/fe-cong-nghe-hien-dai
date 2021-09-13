@@ -60,6 +60,7 @@ import product from '~/components/product.vue';
 import eventBus from '~/plugins/event-bus';
 import { categoryService } from '~/services/category';
 import { productService } from '~/services/product';
+import { productFavouriteService } from '~/services/product-favourite';
 // import { mapActions } from 'vuex';
 
 export default Vue.extend({
@@ -125,17 +126,29 @@ export default Vue.extend({
 
             if (agoliaResult) {
                 const productIds = agoliaResult.map((item:any) => item.id);
-                const result = await productService.getBiggestBidByProductIds(productIds).catch(error => {
+                const resultsBiggest = await productService.getBiggestBidByProductIds(productIds).catch(error => {
                     this.$notify.error({
                         title: 'Error',
                         message: error.message || 'Cannot get bid product!'
                     });
                 });
-                if (result) {
+                const resultsFavourite = await productFavouriteService.getByProductIds({ productIds }).catch(error => {
+                    this.$notify.error({
+                        title: 'Error',
+                        message: error.message || 'Cannot get product favourite'
+                    });
+                });
+
+                if (resultsBiggest && resultsFavourite) {
                     agoliaResult.forEach((product:any) => {
-                        const item = result.find((item:any) => item.data.productId === product.id);
+                        let item = resultsBiggest.find((item:any) => item.data.productId === product.id);
                         if (item)
                             product.bidderProduct = item.data;
+
+                        item = resultsFavourite.data.find((item:any) => item.id === product.id);
+                        if (item)
+                            product.isFavourite = item.isFavourite;
+
                         this.products.push(product);
                     });
                 }
@@ -177,6 +190,31 @@ export default Vue.extend({
             });
             if (result && result.data.length)
                 this.categories = result.data;
+        },
+
+        async checkFavourite(products: any[]) {
+            let productMappings:any[] = [];
+            if (this.$auth.isAuthenticated) {
+                const ids = products.map(item => item.id);
+                const results = await productFavouriteService.getByProductIds({ productIds: ids }).catch(error => {
+                    this.$notify.error({
+                        title: 'Error',
+                        message: error.message || 'Cannot get product favourite'
+                    });
+                });
+                if (results && results.data && results.data.length) {
+                    products.forEach(product => {
+                        const item = results.data.find((item:any) => item.id === product.id);
+                        if (item)
+                            product.isFavourite = item.isFavourite;
+
+                        productMappings.push(product);
+                    });
+                }
+                else productMappings = products;
+            }
+
+            return productMappings;
         }
     }
 });

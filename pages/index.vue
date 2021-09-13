@@ -129,6 +129,7 @@
 import Vue from 'vue';
 import product from '~/components/product.vue';
 import { productService } from '~/services/product';
+import { productFavouriteService } from '~/services/product-favourite';
 export default Vue.extend({
     components: { product },
     data: () => ({
@@ -192,7 +193,8 @@ export default Vue.extend({
                         message: error.message || 'Cannot get products!'
                     });
                 });
-            this.listProductLastEnd = result.data;
+            if (result && result.data)
+                this.listProductLastEnd = await this.checkFavourite(result.data);
         },
         async loadTop5ProductAuctionMost() {
             const query = `limit=5&sortType=${this.sortType.AUCTIONS_DESC}`;
@@ -203,7 +205,8 @@ export default Vue.extend({
                         message: error.message || 'Cannot get products!'
                     });
                 });
-            this.listProductAuction = result.data;
+            if (result && result.data)
+                this.listProductAuction = await this.checkFavourite(result.data);
         },
         async loadTop5ProductHighPrice() {
             const query = `limit=5&sortType=${this.sortType.PRICE_DESC}`;
@@ -214,18 +217,33 @@ export default Vue.extend({
                         message: error.message || 'Cannot get products!'
                     });
                 });
-            this.listProductHighPrice = result.data;
+            if (result && result.data)
+                this.listProductHighPrice = await this.checkFavourite(result.data);
         },
-        async getProductExpriedAsc() {
-            const query = `limit=5&sortType=${this.sortType.EXPIRED_ASC}`;
-            const result = await productService.findProduct(query)
-                .catch(error => {
+
+        async checkFavourite(products: any[]) {
+            let productMappings:any[] = [];
+            if (this.$auth.isAuthenticated) {
+                const ids = products.map(item => item.id);
+                const results = await productFavouriteService.getByProductIds({ productIds: ids }).catch(error => {
                     this.$notify.error({
                         title: 'Error',
-                        message: error.message || 'Cannot get products!'
+                        message: error.message || 'Cannot get product favourite'
                     });
                 });
-            this.listProductExpried = result.data;
+                if (results && results.data && results.data.length) {
+                    products.forEach(product => {
+                        const item = results.data.find((item:any) => item.id === product.id);
+                        if (item)
+                            product.isFavourite = item.isFavourite;
+
+                        productMappings.push(product);
+                    });
+                }
+                else productMappings = products;
+            }
+
+            return productMappings;
         }
     }
 });

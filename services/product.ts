@@ -5,6 +5,10 @@ export const productService = {
         return $axios.$get(`/api/v1/products?${query}`);
     },
 
+    findProductBid() {
+        return $axios.$get('/api/v1/products/bidding');
+    },
+
     getProductDetailById(query: string = '') {
         return $axios.$get(`/api/v1/products/${query}`);
     },
