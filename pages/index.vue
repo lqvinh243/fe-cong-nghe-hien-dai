@@ -127,6 +127,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { ROLE_ID } from '~/commom/enum';
 import product from '~/components/product.vue';
 import { productService } from '~/services/product';
 import { productFavouriteService } from '~/services/product-favourite';
@@ -223,7 +224,7 @@ export default Vue.extend({
 
         async checkFavourite(products: any[]) {
             let productMappings:any[] = [];
-            if (this.$auth.isAuthenticated()) {
+            if (this.$auth.isAuthenticated() && this.$auth.isRoles(ROLE_ID.SELLER, ROLE_ID.BIDDER)) {
                 const ids = products.map(item => item.id);
                 const results = await productFavouriteService.getByProductIds({ productIds: ids }).catch(error => {
                     this.$notify.error({

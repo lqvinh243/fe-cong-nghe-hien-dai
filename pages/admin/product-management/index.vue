@@ -3,12 +3,12 @@
         <el-select
             v-model="selectKey"
             class="w-25 my-4"
-            placeholder="Sắp xếp theo loại..."
+            placeholder="Lọc theo trạng thái..."
             filterable
             remote
             reserve-keyword
-            :remote-method="remoteMethod"
             :loading="loadingRemote"
+            @change="handleSelect"
         >
             <el-option
                 v-for="option in options"
@@ -96,8 +96,10 @@ export default Vue.extend({
         return {
             tableData: [],
             options: [
-                { key: '48ebda38-8820-45dd-bf2b-968772738735', name: 'Điện tử' },
-                { key: 2, name: 'Upgrage request' },
+                { key: 'draft', name: 'Chưa tiến hành' },
+                { key: 'process', name: 'Đang diễn ra' },
+                { key: 'end', name: 'Đã kết thúc' },
+                { key: 'cancel', name: 'Đã huỷ bỏ' },
             ],
             selectKey: '' as any,
             page: 1,

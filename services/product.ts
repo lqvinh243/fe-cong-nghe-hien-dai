@@ -13,6 +13,10 @@ export const productService = {
         return $axios.$get('/api/v1/products/win');
     },
 
+    findProductBySeller(query: string) {
+        return $axios.$get(`/api/v1/products/by-seller?${query}`);
+    },
+
     getProductDetailById(query: string = '') {
         return $axios.$get(`/api/v1/products/${query}`);
     },
