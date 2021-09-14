@@ -12,7 +12,7 @@
         </v-layout>
         <v-divider />
         <v-layout row wrap>
-            <v-flex md5>
+            <v-flex md4 ml-4>
                 <v-carousel :show-arrows="false">
                     <v-carousel-item
                         v-for="(item,i) in listProductImage"

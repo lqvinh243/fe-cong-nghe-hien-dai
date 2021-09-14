@@ -47,5 +47,13 @@ export const productService = {
 
     deleteProduct(id: String) {
         return $axios.$delete(`/api/v1/products/${id}`);
+    },
+
+    uploadMultiImageProduct(productId: String, listImage: FormData) {
+        return $axios.$post(`/api/v1/products/${productId}/multiple-image`, listImage);
+    },
+
+    saveProductDescription(productInfo: any) {
+        return $axios.$post('/api/v1/product-descriptions', productInfo);
     }
 };

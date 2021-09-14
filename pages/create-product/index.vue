@@ -61,6 +61,16 @@
                         </div>
                     </div>
                 </v-layout>
+                <v-divider mt-4 />
+                <v-layout>
+                    <h3>Mô tả sản phẩm</h3>
+                </v-layout>
+                <v-layout mt-3>
+                    <client-only>
+                        <ckeditor v-model="editorData" :config="editorConfig" value="Hello, World!" @change="handleChange" />
+                    </client-only>
+                    <!-- <p v-html="editorData" /> -->
+                </v-layout>
             </v-flex>
             <v-flex md1 />
             <v-flex md5>
@@ -80,12 +90,22 @@
                                     v-model="productName"
                                     label="Tên Sản phẩm"
                                 />
-                                <v-autocomplete
-                                    ref="category"
-                                    v-model="selectCategory.selected"
-                                    :items="selectCategory.items"
-                                    label="Danh Mục"
-                                />
+                                <el-select
+                                    v-model="selectCategory"
+                                    class="w-100 my-4"
+                                    placeholder="Danh muc!"
+                                    filterable
+                                    remote
+                                    reserve-keyword
+                                    @change="handleSelectCategory"
+                                >
+                                    <el-option
+                                        v-for="option in categories"
+                                        :key="option.id"
+                                        :label="option.name"
+                                        :value="option.id"
+                                    />
+                                </el-select>
                                 <v-layout md12 mt-1>
                                     <v-text-field
                                         v-model="startPrice"
@@ -115,7 +135,6 @@
                                             type="date"
                                             placeholder=""
                                             :picker-options="pickerOptions"
-                                            @change="changeExpiredAt"
                                         />
                                     </v-flex>
                                 </v-layout>
@@ -139,6 +158,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import momment from 'moment';
 import { categoryService } from '~/services/category';
 import { productService } from '~/services/product';
 
@@ -157,15 +177,18 @@ export default Vue.extend({
         listImage: [],
         productName: '',
         step: null,
-        selectCategory: {
-            selected: null,
-            items: []
-        },
+        selectCategory: '',
         expiredAt: new Date(),
+        expiredAtFormat: null,
         pickerOptions: {
             disabledDate(time:Date) {
                 return time.getTime() < Date.now();
             }
+        },
+        categories: [] as any,
+        editorData: '',
+        editorConfig: {
+            // The configuration of the editor.
         }
     }),
     created() {
@@ -175,6 +198,10 @@ export default Vue.extend({
     methods: {
         loadData() {
             this.loadCategory();
+        },
+
+        handleChange() {
+            console.log(this.editorData);
         },
 
         async loadCategory(id: string = '') {
@@ -188,20 +215,20 @@ export default Vue.extend({
                     message: error.message || 'Cannot get category!'
                 });
             });
-            if (result && result.data.length) {
-                this.selectCategory.selected = null;
-                this.selectCategory.items = [];
-                result.data.forEach((element: any) => {
-                    this.selectCategory.items.push({
-                        text: element.name,
-                        value: element.id
-                    });
-                });
-            }
+            if (result && result.data.length)
+                this.categories = result.data;
         },
 
-        changeExpiredAt() {
-            console.log(this.expiredAt);
+        async handleSelectCategory() {
+            const item = this.categories.find((item:any) => item.id === this.selectCategory);
+            if (item) {
+                if (item.parentId) {
+                    this.products = [];
+                    const filters = `category.id:${item.id}`;
+                    await this.loadData(filters);
+                }
+                await this.loadCategory(this.selectCategory);
+            }
         },
 
         uploadImageMain() {
@@ -231,16 +258,58 @@ export default Vue.extend({
             this.listImage.splice(index, 1);
         },
 
+        validateFormCreateProduct() {
+            let isValidate = true;
+            if (this.listImage.length < 3) {
+                this.$notify.error({
+                    title: 'Error',
+                    message: 'Vui lòng chọn ít nhất 3 hình ảnh phụ'
+                });
+                isValidate = false;
+            }
+            return isValidate;
+        },
+
         async handleCreateProduct() {
-            console.log(this.expiredAt);
+            const isValidate = this.validateFormCreateProduct();
+            if (isValidate) {
+                this.expiredAtFormat = momment(this.expiredAt).format('YYYY-MM-DD');
+                console.log(this.expiredAtFormat);
+                const form = new FormData();
+                form.append('file', this.image);
+                form.append('name', this.productName);
+                form.append('categoryId', this.selectCategory);
+                form.append('stepPrice', this.step);
+                form.append('expiredAt', this.expiredAtFormat);
+                form.append('bidPrice', this.startPrice);
+                const result = await productService.createProduct(form)
+                    .catch(error => {
+                        this.$notify.error({
+                            title: 'Error',
+                            message: error.message || 'Unauthorized!'
+                        });
+                    });
+                console.log(result);
+                if (result) {
+                    // get id {data: '9099d4a3-da30-4ab2-b15e-1886150285b7'}
+                    const id = result.data;
+
+                    // save list image sub
+                    await this.handleUploadMultiImageSubProduct(id);
+
+                    // save info ckeditor
+                    await this.handleSaveProductDescription(id);
+                    this.$router.push(`/create-product/${id}`);
+                }
+            }
+        },
+
+        async handleUploadMultiImageSubProduct(id: String) {
             const form = new FormData();
-            form.append('file', this.image);
-            form.append('name', this.productName);
-            form.append('categoryId', this.selectCategory.selected);
-            form.append('stepPrice', this.step);
-            form.append('expiredAt', this.expiredAt);
-            form.append('bidPrice', this.startPrice);
-            const result = await productService.createProduct(form)
+            this.listImage.forEach((objectImage: any) => {
+                form.append('files', objectImage.image);
+            });
+            const result = await productService.uploadMultiImageProduct(id, form)
                 .catch(error => {
                     this.$notify.error({
                         title: 'Error',
@@ -250,9 +319,21 @@ export default Vue.extend({
             console.log(result);
         },
 
-        handleUploadMultiImageSubProduct() {
-            const form = new FormData();
-            form.append('listFile', this.listImage);
+        async handleSaveProductDescription(id: String) {
+            console.log();
+            const params = {
+                productId: id,
+                content: this.editorData
+            };
+
+            const result = await productService.saveProductDescription(params)
+                .catch(error => {
+                    this.$notify.error({
+                        title: 'Error',
+                        message: error.message || 'Unauthorized!'
+                    });
+                });
+            console.log(result);
         }
     }
 });
