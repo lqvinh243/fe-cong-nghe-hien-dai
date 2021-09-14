@@ -66,9 +66,12 @@
                     <h3>Mô tả sản phẩm</h3>
                 </v-layout>
                 <v-layout mt-3>
-                    <client-only>
+                    <el-button type="primary" style="color:white" @click="handleShowPopupDescription">
+                        Thêm Mô tả
+                    </el-button>
+                    <!-- <client-only>
                         <ckeditor v-model="editorData" :config="editorConfig" value="Hello, World!" @change="handleChange" />
-                    </client-only>
+                    </client-only> -->
                     <!-- <p v-html="editorData" /> -->
                 </v-layout>
             </v-flex>
@@ -144,13 +147,53 @@
                                     :label="`Gia hạn Sản phẩm`"
                                 />
                             </v-list-item-title>
-                            <el-button type="primary" style="color:white" @click="handleCreateProduct">
+                            <el-button v-if="showBtnCreate" type="primary" style="color:white" @click="handleCreateProduct">
                                 Đăng Sản phẩm
                             </el-button>
+                            <div v-else>
+                                <el-button type="primary" style="color:white" @click="handlePublicProduct">
+                                    Public Sản phẩm
+                                </el-button>
+                                <el-button type="primary" style="color:white" @click="handleUpdateProduct">
+                                    Cập nhật Sản phẩm
+                                </el-button>
+                            </div>
                         </v-list-item-content>
                     </v-list-item>
                     <v-card-actions />
                 </v-card>
+                <div class="text-center">
+                    <v-dialog
+                        v-model="dialogCkeditor"
+                        width="500"
+                    >
+                        <v-card>
+                            <v-card-title class="text-h5 grey lighten-2">
+                                Mô tả Sản phẩm
+                            </v-card-title>
+                            <v-card-text>
+                                <client-only>
+                                    <ckeditor v-model="editorData" :config="editorConfig" value="Hello, World!" />
+                                </client-only>
+                            </v-card-text>
+                            <v-divider />
+                            <v-card-actions>
+                                <v-spacer />
+                                <el-button type="primary" style="color: white" @click="handleCloseProductDescription(true)">
+                                    Lưu
+                                </el-button>
+                                <el-button
+                                    type="primary"
+                                    style="color: white"
+                                    text
+                                    @click="handleCloseProductDescription(false)"
+                                >
+                                    Hủy
+                                </el-button>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
+                </div>
             </v-flex>
         </v-layout>
     </div>
@@ -189,7 +232,9 @@ export default Vue.extend({
         editorData: '',
         editorConfig: {
             // The configuration of the editor.
-        }
+        },
+        dialogCkeditor: false,
+        showBtnCreate: true
     }),
     created() {
         this.loadData();
@@ -198,10 +243,7 @@ export default Vue.extend({
     methods: {
         loadData() {
             this.loadCategory();
-        },
-
-        handleChange() {
-            console.log(this.editorData);
+            this.showBtnCreate = true;
         },
 
         async loadCategory(id: string = '') {
@@ -241,6 +283,16 @@ export default Vue.extend({
             this.item.imageUrl = URL.createObjectURL(file);
         },
 
+        handleShowPopupDescription() {
+            this.dialogCkeditor = true;
+        },
+
+        handleCloseProductDescription(isSave: Boolean) {
+            this.dialogCkeditor = false;
+            if (!isSave)
+                this.editorData = '';
+        },
+
         uploadImageSub() {
             this.$refs.inputFileSub.click();
         },
@@ -267,6 +319,15 @@ export default Vue.extend({
                 });
                 isValidate = false;
             }
+
+            if (this.editorData === '' || this.editorData == null) {
+                this.$notify.error({
+                    title: 'Error',
+                    message: 'Vui lòng nhập mô tả sản phẩm'
+                });
+                isValidate = false;
+            }
+
             return isValidate;
         },
 
@@ -299,7 +360,12 @@ export default Vue.extend({
 
                     // save info ckeditor
                     await this.handleSaveProductDescription(id);
-                    this.$router.push(`/create-product/${id}`);
+                    // this.$router.push(`/create-product/${id}`);
+                    // this.$notify.success({
+                    //     title: 'Success',
+                    //     message: `Tạo Sản phẩm ${this.productName} thành công!`
+                    // });
+                    this.showBtnCreate = false;
                 }
             }
         },
@@ -320,7 +386,6 @@ export default Vue.extend({
         },
 
         async handleSaveProductDescription(id: String) {
-            console.log();
             const params = {
                 productId: id,
                 content: this.editorData
@@ -334,6 +399,14 @@ export default Vue.extend({
                     });
                 });
             console.log(result);
+        },
+
+        handlePublicProduct() {
+
+        },
+
+        handleUpdateProduct() {
+
         }
     }
 });

@@ -172,6 +172,10 @@ export default Vue.extend({
             }
         },
 
+        showProductDetail(id: any) {
+            this.$router.push('/create-product/' + id);
+        },
+
         handleFeedback(product: any) {
             this.product = product;
             this.dialogVisible = true;
