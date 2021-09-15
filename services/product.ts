@@ -29,6 +29,10 @@ export const productService = {
         return $axios.$post(`/api/v1/products/${id}/buy`);
     },
 
+    findBidderProduct(query: string = '') {
+        return $axios.$get(`/api/v1/bidder-products?${query}`);
+    },
+
     bidProduct(data: any) {
         return $axios.$post('/api/v1/bidder-products', data);
     },
@@ -39,6 +43,10 @@ export const productService = {
 
     getBiggestBidByProductIds(productIds: string[]) {
         return $axios.$post('/api/v1/bidder-products/biggest/productIds', { productIds });
+    },
+
+    blockBidProduct(id: string) {
+        return $axios.$put(`/api/v1/bidder-products/${id}/block`);
     },
 
     createProduct(product: FormData) {
