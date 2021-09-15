@@ -19,7 +19,7 @@
         </el-select>
         <div class="text-center">
             <el-table :data="products" style="width: 100%">
-                <el-table-column fixed label="Ngày Lên Sàn">
+                <el-table-column fixed label="Ngày Tạo">
                     <template slot-scope="scope">
                         <span>{{ formatDate(scope.row.createdAt) }}</span>
                     </template>
@@ -41,15 +41,17 @@
                 <el-table-column fixed label="Hành Động" class="text-center">
                     <template slot-scope="scope">
                         <el-button
-                            v-if="scope.row.status === 'end'"
+                            :disabled="scope.row.status !== 'end'"
                             round
                             style="color: white"
                             type="primary"
                             :loading="loading"
-                            title="Xem chi tiết"
+                            title="Đánh giá người thắng"
                             @click="handleFeedback(scope.row)"
                         >
-                            <v-icon>{{ 'mdi mdi-comment-processing-outline' }}</v-icon>
+                            <v-icon class="format-icon">
+                                {{ 'mdi mdi-comment-processing-outline' }}
+                            </v-icon>
                             <!-- <img src="~/assets/images/eye-solid.svg" class="format-icon" alt=""> -->
                         </el-button>
                         <el-button
@@ -60,19 +62,24 @@
                             title="Xem chi tiết"
                             @click="showProductDetail(scope.row.id)"
                         >
-                            <img src="~/assets/images/eye-solid.svg" class="format-icon" alt="">
+                            <v-icon class="format-icon">
+                                {{ 'mdi mdi-eye' }}
+                            </v-icon>
                         </el-button>
-                        <el-button
-                            v-if="scope.row.status === 'draft'"
-                            round
-                            style="color: white"
-                            type="danger"
-                            :loading="loading"
-                            title="Xoá sản phẩm"
-                            @click="handleRemoveProduct(scope.row.id, scope.row.name, scope.row.url)"
-                        >
-                            <img src="~/assets/images/trash-alt-solid.svg" class="format-icon" alt="">
-                        </el-button>
+                        <nuxt-link :to="`/seller/bid/${scope.row.id}`">
+                            <el-button
+                                v-if="scope.row.status !== 'draft'"
+                                round
+                                style="color: white"
+                                type="danger"
+                                :loading="loading"
+                                title="Danh sách ngươi đấu giá"
+                            >
+                                <v-icon class="format-icon">
+                                    {{ 'mdi mdi-hammer' }}
+                                </v-icon>
+                            </el-button>
+                        </nuxt-link>
                     </template>
                 </el-table-column>
             </el-table>
@@ -177,8 +184,10 @@ export default Vue.extend({
         },
 
         handleFeedback(product: any) {
-            this.product = product;
-            this.dialogVisible = true;
+            if (product.status === 'end') {
+                this.product = product;
+                this.dialogVisible = true;
+            }
         },
 
         handleCloseDialog(formName: string) {
