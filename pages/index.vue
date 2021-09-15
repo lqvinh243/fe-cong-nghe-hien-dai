@@ -1,5 +1,5 @@
 <template>
-    <v-container
+    <div
         row
         fluid
         style="max-width:80%"
@@ -15,13 +15,6 @@
         </v-layout>
         <v-layout row>
             <client-only>
-                <!-- <v-flex
-                        v-for="(item, index) in listProductLastEnd"
-                        :key="index"
-                        md3
-                        sm6
-                        xs12
-                    > -->
                 <swiper class="swiper" :options="swiperOption">
                     <swiper-slide v-for="(item, index) in listProductLastEnd" :key="index">
                         <product :product="item" />
@@ -29,7 +22,15 @@
                     <div slot="button-prev" class="swiper-button-prev button-swiper" />
                     <div slot="button-next" class="swiper-button-next button-swiper" />
                 </swiper>
-                <!-- </v-flex> -->
+                <!-- <v-flex
+                    v-for="(item, index) in listProductLastEnd"
+                    :key="index"
+                    md3
+                    sm6
+                    xs12
+                >
+                    <product :product="item" />
+                </v-flex> -->
             </client-only>
         </v-layout>
 
@@ -43,13 +44,6 @@
         </v-layout>
         <v-layout row>
             <client-only>
-                <!-- <v-flex
-                        v-for="(item, index) in listProductLastEnd"
-                        :key="index"
-                        md3
-                        sm6
-                        xs12
-                    > -->
                 <swiper class="swiper" :options="swiperOption">
                     <swiper-slide v-for="(item, index) in listProductAuction" :key="index">
                         <product :product="item" />
@@ -57,7 +51,16 @@
                     <div slot="button-prev" class="swiper-button-prev button-swiper" />
                     <div slot="button-next" class="swiper-button-next button-swiper" />
                 </swiper>
-                <!-- </v-flex> -->
+                <!-- <v-flex
+                    v-for="(item, index) in listProductAuction"
+                    v-else
+                    :key="index"
+                    md3
+                    sm6
+                    xs12
+                >
+                    <product :product="item" />
+                </v-flex> -->
             </client-only>
         </v-layout>
 
@@ -69,15 +72,8 @@
                 </nuxt-link>
             </el-button>
         </v-layout>
-        <v-layout row class="m-4">
+        <v-layout row wrap class="m-4">
             <client-only>
-                <!-- <v-flex
-                        v-for="(item, index) in listProductLastEnd"
-                        :key="index"
-                        md3
-                        sm6
-                        xs12
-                    > -->
                 <swiper class="swiper" :options="swiperOption">
                     <swiper-slide v-for="(item, index) in listProductHighPrice" :key="index">
                         <product :product="item" />
@@ -85,7 +81,17 @@
                     <div slot="button-prev" class="swiper-button-prev button-swiper" />
                     <div slot="button-next" class="swiper-button-next button-swiper" />
                 </swiper>
-                <!-- </v-flex> -->
+                <!-- <v-flex
+                    v-for="(item, index) in listProductHighPrice"
+                    v-else
+                    :key="index"
+                    md3
+                    sm6
+                    xs12
+                    class="mx-2"
+                >
+                    <product :product="item" />
+                </v-flex> -->
             </client-only>
         </v-layout>
 
@@ -122,7 +128,7 @@
                 <product :product="item" />
             </v-flex>
         </v-layout> -->
-    </v-container>
+    </div>
 </template>
 
 <script lang="ts">
@@ -151,27 +157,36 @@ export default Vue.extend({
         listProductExpried: [] as any,
         swiperOption: {
             grabCursor: true,
-            slidesPerView: 3,
             navigation: {
                 nextEl: '.swiper-button-next',
                 prevEl: '.swiper-button-prev'
             },
+            slidesPerView: 3,
+            spaceBetween: 50,
+            // freeMode: true,
+            // freeMode: true,
+            // watchSlidesVisibility: true,
+            // watchSlidesProgress: true,
+            loop: true,
             breakpoints: {
                 1024: {
                     slidesPerView: 4,
-                    spaceBetween: 10
+                    spaceBetween: 10,
                 },
                 768: {
                     slidesPerView: 3,
-                    spaceBetween: 10
+                    spaceBetween: 10,
+                    slidesPerColumn: 3
                 },
                 640: {
                     slidesPerView: 2,
-                    spaceBetween: 10
+                    spaceBetween: 10,
+                    slidesPerColumn: 2
                 },
                 320: {
                     slidesPerView: 1,
-                    spaceBetween: 10
+                    spaceBetween: 10,
+                    slidesPerColumn: 1
                 }
             }
         }
@@ -265,9 +280,9 @@ export default Vue.extend({
     margin: 0 auto;
     min-height: 100vh;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+    // justify-content: center;
+    // align-items: center;
+    // text-align: center;
 }
 .title {
     display: block;
