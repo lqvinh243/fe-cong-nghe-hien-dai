@@ -176,17 +176,14 @@ export default Vue.extend({
                 768: {
                     slidesPerView: 3,
                     spaceBetween: 10,
-                    slidesPerColumn: 3
                 },
                 640: {
                     slidesPerView: 2,
                     spaceBetween: 10,
-                    slidesPerColumn: 2
                 },
                 320: {
                     slidesPerView: 1,
                     spaceBetween: 10,
-                    slidesPerColumn: 1
                 }
             }
         }
