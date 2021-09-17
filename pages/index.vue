@@ -13,15 +13,36 @@
                 </nuxt-link>
             </el-button>
         </v-layout>
-        <v-layout row>
+        <v-layout row wrap style="overflow:hidden">
             <client-only>
-                <swiper class="swiper" :options="swiperOption">
-                    <swiper-slide v-for="(item, index) in listProductLastEnd" :key="index">
-                        <product :product="item" />
-                    </swiper-slide>
-                    <div slot="button-prev" class="swiper-button-prev button-swiper" />
-                    <div slot="button-next" class="swiper-button-next button-swiper" />
-                </swiper>
+                <carousel
+                    v-if="listProductHighPrice && listProductHighPrice.length"
+                    :dots="false"
+                    :nav="false"
+                    :loop="false"
+                    :autoplay="false"
+                    :margin="10"
+                    :items="4"
+                    :responsive="{
+                        1024: {
+                            items:4,
+                        },
+                        768: {
+                            items:3,
+                            nav:false
+                        },
+                        640: {
+                            items:2,
+                            nav:false
+                        },
+                        320: {
+                            items:1,
+                            nav:false
+                        }
+                    }"
+                >
+                    <product v-for="(item, index) in listProductHighPrice" :key="index" :product="item" />
+                </carousel>
                 <!-- <v-flex
                     v-for="(item, index) in listProductLastEnd"
                     :key="index"
@@ -42,15 +63,36 @@
                 </nuxt-link>
             </el-button>
         </v-layout>
-        <v-layout row>
+        <v-layout row wrap style="overflow:hidden">
             <client-only>
-                <swiper class="swiper" :options="swiperOption">
-                    <swiper-slide v-for="(item, index) in listProductAuction" :key="index">
-                        <product :product="item" />
-                    </swiper-slide>
-                    <div slot="button-prev" class="swiper-button-prev button-swiper" />
-                    <div slot="button-next" class="swiper-button-next button-swiper" />
-                </swiper>
+                <carousel
+                    v-if="listProductHighPrice && listProductHighPrice.length"
+                    :dots="false"
+                    :nav="false"
+                    :loop="false"
+                    :autoplay="false"
+                    :margin="10"
+                    :items="4"
+                    :responsive="{
+                        1024: {
+                            items:4
+
+                        },
+                        768: {
+                            items:3
+
+                        },
+                        640: {
+                            items:2
+
+                        },
+                        320: {
+                            items:1
+                        }
+                    }"
+                >
+                    <product v-for="(item, index) in listProductHighPrice" :key="index" :product="item" />
+                </carousel>
                 <!-- <v-flex
                     v-for="(item, index) in listProductAuction"
                     v-else
@@ -72,15 +114,36 @@
                 </nuxt-link>
             </el-button>
         </v-layout>
-        <v-layout row wrap class="m-4">
+        <v-layout row wrap class="m-4" style="overflow:hidden">
             <client-only>
-                <swiper class="swiper" :options="swiperOption">
-                    <swiper-slide v-for="(item, index) in listProductHighPrice" :key="index">
-                        <product :product="item" />
-                    </swiper-slide>
-                    <div slot="button-prev" class="swiper-button-prev button-swiper" />
-                    <div slot="button-next" class="swiper-button-next button-swiper" />
-                </swiper>
+                <carousel
+                    v-if="listProductHighPrice && listProductHighPrice.length"
+                    :dots="false"
+                    :nav="false"
+                    :loop="false"
+                    :autoplay="false"
+                    :margin="10"
+                    :items="4"
+                    :responsive="{
+                        1024: {
+                            items:4
+
+                        },
+                        768: {
+                            items:3
+
+                        },
+                        640: {
+                            items:2
+
+                        },
+                        320: {
+                            items:1
+                        }
+                    }"
+                >
+                    <product v-for="(item, index) in listProductHighPrice" :key="index" :product="item" />
+                </carousel>
                 <!-- <v-flex
                     v-for="(item, index) in listProductHighPrice"
                     v-else

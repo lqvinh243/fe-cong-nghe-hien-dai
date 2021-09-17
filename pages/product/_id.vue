@@ -70,8 +70,11 @@
                                 <v-layout md12 my-2>
                                     Bước nhảy: <span class="ml-2 color-primary">{{ stepPrice }}$</span>
                                 </v-layout>
-                                <v-layout md12 my-2>
+                                <v-layout v-if="status ==='process'" md12 my-2>
                                     Thông tin bidder đang đặt giá cao nhất: <span class="ml-2 color-primary">{{ bidderName }}</span>
+                                </v-layout>
+                                <v-layout md12 my-2>
+                                    Thông tin người thắng: <span class="ml-2 color-primary">{{ winnerName }}</span>
                                 </v-layout>
                                 <v-layout md12 my-2>
                                     Ngày đăng sản phẩm: <span class="ml-2 text-info-auction color-primary">{{ formatDate(createdAt) }}</span>
@@ -154,6 +157,7 @@ import { ROLE_ID } from '~/commom/enum';
 import BidPriceAutoDialog from '~/components/dialogs/BidPriceAutoDialog.vue';
 import DialogBidPrice from '~/components/dialogs/BidPriceDialog.vue';
 import ConfirmBuyNowDialog from '~/components/dialogs/ConfirmBuyNowDialog.vue';
+import eventBus from '~/plugins/event-bus';
 import { productService } from '~/services/product';
 import { productFavouriteService } from '~/services/product-favourite';
 
@@ -180,6 +184,7 @@ export default Vue.extend({
         dialogBidAutoVisible: false,
         dialogBuyNowVisible: false,
         bidderName: '',
+        winnerName: '',
         totalAuc: 0,
     }),
 
@@ -201,6 +206,14 @@ export default Vue.extend({
         this.loadProductDetail();
         this.checkFavourite();
         momment.locale('vi');
+        eventBus.$on('product_end', (data:any) => {
+            if (this.id === data.id) {
+                this.status = data.status;
+                this.priceNow = data.price;
+                this.bidder = data.winner;
+                this.winner = data.winner;
+            }
+        });
     },
 
     methods: {
@@ -244,13 +257,13 @@ export default Vue.extend({
                         this.description.push(elementDesc.data.data.content);
                     });
                 }
-                const timeNow = momment(new Date());
-                this.timeExpire = timeNow.from(result.data.expiredAt, true);
+                this.timeExpire = this.formatDateExpired(result.data);
                 this.seller = `${result.data.seller.firstName} ${result.data.seller.lastName ?? ''}`;
                 this.stepPrice = result.data.stepPrice;
                 this.category = result.data.category.name;
                 this.createdAt = result.data.createdAt;
-                this.bidderName = result.data.bidder ? `${result.data.bidder.firstName} ${result.data.bidder.lastName ?? ''}` : 'Khong co thong tin';
+                this.bidderName = result.data.bidder ? `${result.data.bidder.firstName} ${result.data.bidder.lastName ?? ''}` : '_';
+                this.winnerName = result.data.winner ? `${result.data.winner.firstName} ${result.data.winner.lastName ?? ''}` : '_';
                 this.totalAuc = result.data.statistic ? result.data.statistic.auctions : 0;
             }
         },
@@ -312,6 +325,16 @@ export default Vue.extend({
                 return 'Da ket thuc';
             default:
                 return 'Chua tien hanh';
+            }
+        },
+
+        formatDateExpired(row:any) {
+            const timeNow = momment(new Date());
+            switch (row.status) {
+            case 'process':
+                return timeNow.from(row.expiredAt, true);
+            default:
+                return '_';
             }
         },
 

@@ -30,7 +30,7 @@ export default {
         { src: '~/plugins/element-ui' },
         { src: '~/plugins/vuetify' },
         { src: '~/plugins/vue-recapcha' },
-        { src: '~/plugins/vue-owl-carousel', mode: 'client' },
+        { src: '~/plugins/vue-owl-carousel', ssr: false },
         { src: '~plugins/ckeditor', mode: 'client' },
     ],
 

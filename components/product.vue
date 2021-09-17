@@ -13,7 +13,7 @@
         </template>
         <i v-if="showFavouriteIcon" style="float:right; font-size: 1.5rem; cursor: pointer" :class="product.isFavourite ? 'el-icon-star-on icon-like-product' :'el-icon-star-off'" @click="handleFavourite(product)" />
         <img
-            height="170"
+            height="10%"
             :src="logoUrl"
             @error="replaceByDefault"
         >

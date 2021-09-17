@@ -21,7 +21,8 @@
 import Vue from 'vue';
 import MenuHeader from '~/components/MenuHeader.vue';
 import MenuLeft from '~/components/MenuLeft.vue';
-// import { connectWS } from '~/utils/socket';
+import EvenBus from '~/plugins/event-bus';
+import { connectWS } from '~/utils/socket';
 
 export default Vue.extend({
     components: { MenuHeader, MenuLeft },
@@ -35,6 +36,32 @@ export default Vue.extend({
     }),
 
     mounted() {
+        const socket = connectWS(this.$config.wsUrl, 'bid', this.$store.state.auth.accessToken);
+        socket.on('connect', () => {
+            console.log('Bid channel is connected!');
+        });
+
+        socket.on('disconnect', () => {
+            // eslint-disable-next-line no-console
+            console.log('Bid channel is disconnected!');
+        });
+
+        socket.on('bid_infomation_change', (data:any) => {
+            // eslint-disable-next-line no-console
+            console.log(data);
+        });
+
+        socket.on('bid_price_change', (data:any) => {
+            console.log(data);
+            EvenBus.$emit('bid_price_change', data);
+        });
+
+        socket.on('product_end', (data:any) => {
+            console.log(data);
+            EvenBus.$emit('product_end', data);
+        });
+
+        // if (this.$auth.isAuthenticated()) {
         // if (this.$auth.isAuthenticated()) {
         //     const socket = connectWS(this.$config.wsUrl, 'chat', this.$store.state.auth.accessToken);
 
