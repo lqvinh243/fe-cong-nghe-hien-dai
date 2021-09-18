@@ -132,10 +132,8 @@
                                 <v-layout mt-1>
                                     <h4> Mô tả: </h4>
                                 </v-layout>
-                                <v-layout v-for="productDesc in description" :key="productDesc" mt-1>
-                                    <h6 ml-4>
-                                        <span style="font-size: 0.8rem; color: #0f0f0f;"> - {{ productDesc }} </span>
-                                    </h6>
+                                <v-layout>
+                                    <p v-for="(editorItem, index) in description" :key="index" v-html="editorItem" />
                                 </v-layout>
                             </v-list-item-title>
                         </v-list-item-content>

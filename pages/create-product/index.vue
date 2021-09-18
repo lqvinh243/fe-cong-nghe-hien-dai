@@ -53,7 +53,7 @@
                             </div>
                         </div>
                         <input id="file" ref="inputFileSub" type="file" style="display: none;" @change="onChangeImageSub($event)">
-                        <div v-for="(image, index) in listImage" :key="image" class="image-mapper mr-4 mb-4">
+                        <div v-for="(image, index) in listImage" :key="index" class="image-mapper mr-4 mb-4">
                             <img :src="image.imageUrl" class="image-upload">
                             <div class="btn-default" @click="deleteImageSub(index)">
                                 DELETE
@@ -64,6 +64,9 @@
                 <v-divider mt-4 />
                 <v-layout>
                     <h3>Mô tả sản phẩm</h3>
+                </v-layout>
+                <v-layout>
+                    <p v-for="(editorItem, index) in listProductDescription" :key="index" v-html="editorItem" />
                 </v-layout>
                 <v-layout mt-3>
                     <el-button type="primary" style="color:white" @click="handleShowPopupDescription">
@@ -234,7 +237,8 @@ export default Vue.extend({
             // The configuration of the editor.
         },
         dialogCkeditor: false,
-        showBtnCreate: true
+        showBtnCreate: true,
+        listProductDescription: []
     }),
     created() {
         this.loadData();
@@ -311,13 +315,13 @@ export default Vue.extend({
         },
 
         validateFormCreateProduct() {
-            let isValidate = true;
+            const isValidate = true;
             if (this.listImage.length < 3) {
                 this.$notify.error({
                     title: 'Error',
                     message: 'Vui lòng chọn ít nhất 3 hình ảnh phụ'
                 });
-                isValidate = false;
+                return false;
             }
 
             if (this.editorData === '' || this.editorData == null) {
@@ -325,7 +329,7 @@ export default Vue.extend({
                     title: 'Error',
                     message: 'Vui lòng nhập mô tả sản phẩm'
                 });
-                isValidate = false;
+                return false;
             }
 
             return isValidate;
@@ -360,12 +364,28 @@ export default Vue.extend({
 
                     // save info ckeditor
                     await this.handleSaveProductDescription(id);
-                    // this.$router.push(`/create-product/${id}`);
-                    // this.$notify.success({
-                    //     title: 'Success',
-                    //     message: `Tạo Sản phẩm ${this.productName} thành công!`
-                    // });
+                    await this.getListDescriptionProductDrag(id);
+                    this.editorData = '';
                     this.showBtnCreate = false;
+                }
+            }
+        },
+
+        async getListDescriptionProductDrag(id: string) {
+            const result = await productService.getProductDetailById(id)
+                .catch(error => {
+                    this.$notify.error({
+                        title: 'Error',
+                        message: error.message || 'Cannot get product desciption!'
+                    });
+                });
+            console.log(result);
+            if (result) {
+                this.listProductDescription = [];
+                if (result.data.productDescription) {
+                    result.data.productDescription.forEach((elementDesc:any) => {
+                        this.listProductDescription.push(elementDesc.data.data.content);
+                    });
                 }
             }
         },

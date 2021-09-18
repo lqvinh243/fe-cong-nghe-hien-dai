@@ -447,6 +447,7 @@ export default {
     #7757f7 56%,
     #9d6ef0 100%
   );
+  height: calc(100vh - 48px);
 }
 
 .custom-button {
