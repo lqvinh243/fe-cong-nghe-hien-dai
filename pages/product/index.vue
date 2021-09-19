@@ -89,6 +89,9 @@ export default Vue.extend({
         selectCategory: '',
         breadcrumb: []
     }),
+    destroyed() {
+        eventBus.$off('CHANGE_QUERY_SEARCH');
+    },
     async mounted() {
         const agoliaApp = process.env.agoliaApp ?? '';
         const agoliaApiKey = process.env.agoliaApiKey ?? '';

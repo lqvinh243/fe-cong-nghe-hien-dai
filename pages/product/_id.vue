@@ -46,8 +46,8 @@
                                         </h3>
                                     </el-col>
                                     <el-col :span="6" :offset="6">
-                                        <el-button class="mr-0" :disabled="!isAuthenticated" @click="handleBidProductAuto">
-                                            Dau gia tu dong
+                                        <el-button class="mr-0" :disabled="!isAuthenticated || status !== 'process'" @click="handleBidProductAuto">
+                                            Đấu giá tự động
                                         </el-button>
                                     </el-col>
                                 </el-row>
@@ -59,7 +59,7 @@
                                     Giá hiện tại: <span class="ml-2 color-primary">{{ priceCurrent }}$</span>
                                 </v-layout>
                                 <v-layout md12 my-2>
-                                    Giá Mua ngay: <span class="ml-2 color-primary">{{ priceBid }}$</span>
+                                    Giá Mua ngay: <span v-if="priceBid" class="ml-2 color-primary">{{ priceBid }}$</span> <span v-else class="ml-2 color-primary">_</span>
                                 </v-layout>
                                 <v-layout md12 my-2>
                                     Tình trạng: <span class="ml-2 color-primary">{{ mapStatusProduct(status) }}</span>
@@ -71,7 +71,7 @@
                                     Bước nhảy: <span class="ml-2 color-primary">{{ stepPrice }}$</span>
                                 </v-layout>
                                 <v-layout v-if="status ==='process'" md12 my-2>
-                                    Thông tin bidder đang đặt giá cao nhất: <span class="ml-2 color-primary">{{ bidderName }}</span>
+                                    Thông tin người giữ giá : <span class="ml-2 color-primary">{{ bidderName }}</span>
                                 </v-layout>
                                 <v-layout md12 my-2>
                                     Thông tin người thắng: <span class="ml-2 color-primary">{{ winnerName }}</span>
@@ -86,7 +86,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-card-actions>
-                        <el-button :disabled="!isAuthenticated" style="width: 100%;margin-top:1rem; font-weight: bold; color:white" type="primary" :loading="loading" @click="handleBidProduct">
+                        <el-button :disabled="!isAuthenticated || status !== 'process'" style="width: 100%;margin-top:1rem; font-weight: bold; color:white" type="primary" :loading="loading" @click="handleBidProduct">
                             ĐẤU GIÁ
                         </el-button>
                         <el-button
@@ -94,7 +94,7 @@
                             style="width: 100%;margin-top:1rem; font-weight: bold; color:white"
                             type="danger"
                             :loading="loading"
-                            :disabled="!isAuthenticated"
+                            :disabled="!isAuthenticated || status !== 'process'"
                             @click="handleBuyProduct"
                         >
                             MUA NGAY
@@ -170,7 +170,7 @@ export default Vue.extend({
         priceCurrent: 0,
         status: '' as any,
         priceBid: null as number | null,
-        description: '' as any,
+        description: [] as any,
         timeExpire: 0,
         seller: '' as any,
         likeProduct: false as boolean,
@@ -197,13 +197,11 @@ export default Vue.extend({
             return this.$auth.isAuthenticated();
         }
     },
-    mounted() {
-        this.id = this.$route.params.id;
-        if (!this.id)
-            return this.$router.push('/404');
-        this.loadProductDetail();
-        this.checkFavourite();
-        momment.locale('vi');
+    destroyed() {
+        eventBus.$off('product_end');
+        eventBus.$off('bid_price_change');
+    },
+    created() {
         eventBus.$on('product_end', (data:any) => {
             if (this.id === data.id) {
                 this.status = data.status;
@@ -212,6 +210,20 @@ export default Vue.extend({
                 this.winner = data.winner;
             }
         });
+        eventBus.$on('bid_price_change', (data:any) => {
+            if (this.id === data.id) {
+                this.priceCurrent = data.price;
+                this.bidder = data.bidder;
+            }
+        });
+    },
+    mounted() {
+        this.id = this.$route.params.id;
+        if (!this.id)
+            return this.$router.push('/404');
+        this.loadProductDetail();
+        this.checkFavourite();
+        momment.locale('vi');
     },
 
     methods: {
@@ -252,7 +264,7 @@ export default Vue.extend({
                 this.description = [];
                 if (result.data.productDescription) {
                     result.data.productDescription.forEach((elementDesc:any) => {
-                        this.description.push(elementDesc.data.data.content);
+                        this.description.push(elementDesc);
                     });
                 }
                 this.timeExpire = this.formatDateExpired(result.data);

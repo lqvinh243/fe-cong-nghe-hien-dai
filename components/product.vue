@@ -14,6 +14,7 @@
         <i v-if="showFavouriteIcon" style="float:right; font-size: 1.5rem; cursor: pointer" :class="product.isFavourite ? 'el-icon-star-on icon-like-product' :'el-icon-star-off'" @click="handleFavourite(product)" />
         <img
             height="170"
+            class="mx-auto"
             :src="logoUrl"
             @error="replaceByDefault"
         >
@@ -63,7 +64,7 @@
                 <div align="left">
                     Trạng thái {{ displayStatus() }}
                 </div>
-                <div v-if="product.status === 'process'" align="left">
+                <div align="left">
                     Thời gian hết hạn: {{ displayFormatExpriedAt }}
                 </div>
 
@@ -125,7 +126,12 @@ export default Vue.extend({
 
         displayFormatExpriedAt(): string {
             const timeNow = momment(new Date());
-            return timeNow.from(this.product.expiredAt, true);
+            switch (this.product.status) {
+            case 'process':
+                return timeNow.from(this.product.expiredAt, true);
+            default:
+                return '_';
+            }
         }
     },
 

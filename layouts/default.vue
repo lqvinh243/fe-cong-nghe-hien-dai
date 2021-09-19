@@ -48,15 +48,19 @@ export default Vue.extend({
 
         socket.on('bid_infomation_change', (data:any) => {
             // eslint-disable-next-line no-console
+            console.log('bid_infomation_change');
             console.log(data);
+            EvenBus.$emit('bid_infomation_change', data);
         });
 
         socket.on('bid_price_change', (data:any) => {
+            console.log('bid_price_change');
             console.log(data);
             EvenBus.$emit('bid_price_change', data);
         });
 
         socket.on('product_end', (data:any) => {
+            console.log('product_end');
             console.log(data);
             EvenBus.$emit('product_end', data);
         });

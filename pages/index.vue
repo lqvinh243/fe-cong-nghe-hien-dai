@@ -17,6 +17,7 @@
             <client-only>
                 <carousel
                     v-if="listProductHighPrice && listProductHighPrice.length"
+                    class="text-center"
                     :dots="false"
                     :nav="false"
                     :loop="false"
@@ -218,46 +219,6 @@ export default Vue.extend({
             PRICE_DESC: 'price_desc'
         },
         listProductExpried: [] as any,
-        swiperOption: {
-            pagination: true,
-            grabCursor: true,
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev'
-            },
-            // slidesPerView: 3,
-            // spaceBetween: 50,
-            // freeMode: true,
-            // freeMode: true,
-            // watchSlidesVisibility: true,
-            watchSlidesProgress: true,
-            loop: true,
-            breakpoints: {
-                1024: {
-                    slidesPerView: 4,
-                    spaceBetween: 10,
-                    loop: true,
-
-                },
-                768: {
-                    slidesPerView: 3,
-                    spaceBetween: 10,
-                    loop: true,
-
-                },
-                640: {
-                    slidesPerView: 2,
-                    spaceBetween: 10,
-                    loop: true,
-
-                },
-                320: {
-                    slidesPerView: 1,
-                    spaceBetween: 10,
-                    loop: true,
-                }
-            }
-        }
     }),
     async mounted() {
         await this.loadData();
