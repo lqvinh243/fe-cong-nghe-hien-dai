@@ -17,8 +17,12 @@
                 Giá chiến thắng {{ productData && productData.priceNow }}$
             </h1>
 
-            <h1 class="my-4">
-                Người chiến thắng {{ displayWinerName }}
+            <h1 v-if="!isFeedbackSeller" class="my-4">
+                Người chiến thắng {{ displayWinnerName }}
+            </h1>
+
+            <h1 v-else class="my-4">
+                Người bán {{ displaySellerName }}
             </h1>
 
             <el-switch
@@ -58,6 +62,10 @@ export default Vue.extend({
         dialogVisible: {
             type: Boolean,
             default: false
+        },
+        isFeedbackSeller: {
+            type: Boolean,
+            default: () => false
         }
     },
     data() {
@@ -79,19 +87,23 @@ export default Vue.extend({
         };
     },
     computed: {
-        displayWinerName(): string {
-            return this.productData && this.productData.winner ? `${this.productData.winner.firstName} ${this.productData.winner.lastName ?? ''}`.trim() : '';
+        displayWinnerName(): string {
+            return this.productData && this.productData.winner ? `${this.productData.winner.firstName} ${this.productData.winner.lastName ?? ''}`.trim() : '_';
+        },
+
+        displaySellerName():string {
+            return this.productData && this.productData.seller ? `${this.productData.seller.firstName} ${this.productData.seller.lastName ?? ''}`.trim() : '_';
         }
     },
     watch: {
-        product(val:any) {
+        async product(val:any) {
             this.productData = val;
             this.formData.productId = val.id;
-            this.checkReadyFeedback();
+            await this.checkReadyFeedback();
         },
     },
-    mounted() {
-        this.checkReadyFeedback();
+    async  mounted() {
+        await this.checkReadyFeedback();
     },
     methods: {
         async  submitForm(formName: string) {
@@ -116,7 +128,6 @@ export default Vue.extend({
         },
 
         async checkReadyFeedback() {
-            console.log(this.formData);
             if (this.formData.productId) {
                 const result = await productFeedbackService.getByProduct(this.formData.productId).catch((error:any) => {
                     this.$notify.error({
@@ -129,7 +140,15 @@ export default Vue.extend({
                     this.formData.content = result.data.content;
                     this.isReady = true;
                 }
+                else
+                    this.resetFormData();
             }
+        },
+
+        resetFormData() {
+            this.formData.type = true;
+            this.formData.content = '';
+            this.isReady = false;
         }
     },
 });
