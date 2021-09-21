@@ -17,11 +17,6 @@
             <client-only>
                 <carousel
                     v-if="listProductHighPrice && listProductHighPrice.length"
-                    class="text-center"
-                    :dots="false"
-                    :nav="false"
-                    :loop="false"
-                    :autoplay="false"
                     :margin="10"
                     :items="4"
                     :responsive="{
@@ -44,15 +39,6 @@
                 >
                     <product v-for="(item, index) in listProductHighPrice" :key="index" :product="item" />
                 </carousel>
-                <!-- <v-flex
-                    v-for="(item, index) in listProductLastEnd"
-                    :key="index"
-                    md3
-                    sm6
-                    xs12
-                >
-                    <product :product="item" />
-                </v-flex> -->
             </client-only>
         </v-layout>
 
@@ -94,16 +80,6 @@
                 >
                     <product v-for="(item, index) in listProductHighPrice" :key="index" :product="item" />
                 </carousel>
-                <!-- <v-flex
-                    v-for="(item, index) in listProductAuction"
-                    v-else
-                    :key="index"
-                    md3
-                    sm6
-                    xs12
-                >
-                    <product :product="item" />
-                </v-flex> -->
             </client-only>
         </v-layout>
 
@@ -145,53 +121,8 @@
                 >
                     <product v-for="(item, index) in listProductHighPrice" :key="index" :product="item" />
                 </carousel>
-                <!-- <v-flex
-                    v-for="(item, index) in listProductHighPrice"
-                    v-else
-                    :key="index"
-                    md3
-                    sm6
-                    xs12
-                    class="mx-2"
-                >
-                    <product :product="item" />
-                </v-flex> -->
             </client-only>
         </v-layout>
-
-    <!-- <v-layout row wrap>
-            <h2>Top 5 sản phẩm có nhiều lượt ra giá nhất</h2>
-        </v-layout>
-        <v-layout
-            row
-            wrap
-        >
-            <v-flex
-                v-for="(item, index) in listProductAuction"
-                :key="index"
-                md3
-                sm6
-            >
-                <product :product="item" />
-            </v-flex>
-        </v-layout>
-        <v-layout row wrap>
-            <h2>Top 5 sản phẩm có giá cao nhất</h2>
-        </v-layout>
-        <v-layout
-            row
-            wrap
-        >
-            <v-flex
-                v-for="(item, index) in listProductHighPrice"
-                :key="index"
-                md3
-                sm6
-                xs12
-            >
-                <product :product="item" />
-            </v-flex>
-        </v-layout> -->
     </div>
 </template>
 
@@ -309,9 +240,9 @@ export default Vue.extend({
     margin: 0 auto;
     min-height: 100vh;
     display: flex;
-    // justify-content: center;
-    // align-items: center;
-    // text-align: center;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 .title {
     display: block;
@@ -338,4 +269,10 @@ export default Vue.extend({
 .button-swiper::after {
     font-size:25px
 }
+
+ >.owl-stage{
+    transform:none !important;
+    transition: none !important;
+    width: auto !important;
+  }
 </style>

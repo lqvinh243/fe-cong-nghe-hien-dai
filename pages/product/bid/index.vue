@@ -5,7 +5,7 @@
                 <product :product="item" />
             </el-col>
         </el-row>
-        <el-button type="primary" style="width:10%">
+        <el-button v-if="showLoadMore" type="primary" style="width:10%" @click="loadMore">
             Load more
         </el-button>
     </div>
@@ -20,22 +20,33 @@ export default Vue.extend({
         pagination: {
             total: 0,
             skip: 0,
-            limit: 0
+            limit: 1
         }
     }),
+
+    computed: {
+        showLoadMore() {
+            return this.pagination.total > this.pagination.skip + this.pagination.limit;
+        }
+    },
     async mounted() {
         await this.getProductBidding();
     },
     methods: {
         async getProductBidding() {
-            const result = await productService.findProductBid().catch(error => {
+            const result = await productService.findProductBid(this.pagination).catch(error => {
                 this.$notify.error({
                     title: 'Error',
                     message: error.message || 'Cannot get list favourite product!'
                 });
             });
-            this.productBidding = result.data;
+            this.productBidding = this.productBidding.concat(result.data);
             this.pagination = result.pagination;
+        },
+
+        async loadMore() {
+            this.pagination.skip += this.pagination.limit;
+            await this.getProductBidding();
         }
     }
 });

@@ -5,8 +5,8 @@ export const productService = {
         return $axios.$get(`/api/v1/products?${query}`);
     },
 
-    findProductBid() {
-        return $axios.$get('/api/v1/products/bidding');
+    findProductBid(data: any = {}) {
+        return $axios.$get(`/api/v1/products/bidding?skip=${data.skip}&limit=${data.limit}`);
     },
 
     findProductByWinner() {

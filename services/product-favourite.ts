@@ -1,8 +1,8 @@
 import { $axios } from '~/utils/api';
 
 export const productFavouriteService = {
-    find() {
-        return $axios.$get('/api/v1/products/favourite');
+    find(data: any = {}) {
+        return $axios.$get(`/api/v1/products/favourite?skip=${data.skip}&limit=${data.limit}`);
     },
 
     getByProductIds(data: any) {

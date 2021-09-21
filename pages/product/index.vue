@@ -39,15 +39,13 @@
             <el-breadcrumb-item v-for="(item,index) in breadcrumb" :key="index">
                 {{ item.name }}
             </el-breadcrumb-item>
-            <!-- <el-breadcrumb-item>promotion list</el-breadcrumb-item>
-            <el-breadcrumb-item>promotion detail</el-breadcrumb-item> -->
         </el-breadcrumb>
         <el-row :gutter="20" class=" mt-4">
             <el-col v-for="item in products" :key="item.id" :span="6">
                 <product :product="item" />
             </el-col>
         </el-row>
-        <el-button type="primary" style="width:10%">
+        <el-button v-if="nbPages > page+1" type="primary" style="width:10%" @click="loadMore">
             Load more
         </el-button>
     </div>
@@ -69,10 +67,12 @@ export default Vue.extend({
         selection: null,
         loading: false,
         products: [] as any,
-        limit: 5,
+        page: 0,
+        hitsPerPage: 2,
         agoliaIndex: null as any,
         agoliaTimeIndex: null as any,
         agoliaPriceIndex: null as any,
+        nbPages: 0,
         keyword: '',
         options: [
             {
@@ -87,7 +87,8 @@ export default Vue.extend({
         selectKey: null as any,
         categories: [] as any,
         selectCategory: '',
-        breadcrumb: []
+        breadcrumb: [],
+        categoryId: ''
     }),
     destroyed() {
         eventBus.$off('CHANGE_QUERY_SEARCH');
@@ -110,20 +111,25 @@ export default Vue.extend({
     },
     methods: {
         async loadData(filters: string = '') {
-            console.log(filters);
             let agoliaResult:any[] = [];
             if (this.selectKey === 'asc(priceNow)') {
                 await this.agoliaPriceIndex.search(this.keyword, {
-                    filters
-                }).then(({ hits }:any) => {
+                    filters,
+                    page: this.page,
+                    hitsPerPage: this.hitsPerPage,
+                }).then(({ nbPages, hits }:any) => {
                     agoliaResult = hits;
+                    this.nbPages = nbPages;
                 });
             }
             else {
                 await this.agoliaTimeIndex.search(this.keyword, {
-                    filters
-                }).then(({ hits }:any) => {
+                    filters,
+                    page: this.page,
+                    hitsPerPage: this.hitsPerPage,
+                }).then(({ nbPages, hits }:any) => {
                     agoliaResult = hits;
+                    this.nbPages = nbPages;
                 });
             }
 
@@ -161,10 +167,18 @@ export default Vue.extend({
                 }
             }
         },
+        async loadMore() {
+            this.page++;
+            let filters = '';
+            if (this.categoryId)
+                filters = `category.id:${this.categoryId}`;
+            await this.loadData(filters);
+        },
         showProductDetail() {
         },
         async handleSelect() {
             this.$nuxt.$loading.start();
+            this.page = 0;
             this.products = [];
             await this.loadData();
             this.$nuxt.$loading.finish();
@@ -179,12 +193,15 @@ export default Vue.extend({
                 if (item.parentId) {
                     this.products = [];
                     const filters = `category.id:${item.id}`;
+                    this.categoryId = item.id;
                     await this.loadData(filters);
                 }
                 await this.loadCategory(this.selectCategory);
             }
         },
         async loadCategory(id: string = '') {
+            this.keyword = '';
+            this.page = 0;
             let query = '';
             if (id)
                 query += `parentId=${id}`;
