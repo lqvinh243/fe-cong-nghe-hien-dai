@@ -102,6 +102,8 @@ export default Vue.extend({
         this.keyword = this.$route.query.query;
         this.loadData();
         eventBus.$on('CHANGE_QUERY_SEARCH', (val:string) => {
+            this.selectKey = null;
+            this.selectCategory = null;
             this.products = [];
             this.keyword = val;
             this.loadData();

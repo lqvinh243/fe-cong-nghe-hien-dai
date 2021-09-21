@@ -16,28 +16,15 @@
         <v-layout row wrap style="overflow:hidden">
             <client-only>
                 <carousel
-                    v-if="listProductHighPrice && listProductHighPrice.length"
-                    :margin="10"
-                    :items="4"
-                    :responsive="{
-                        1024: {
-                            items:4,
-                        },
-                        768: {
-                            items:3,
-                            nav:false
-                        },
-                        640: {
-                            items:2,
-                            nav:false
-                        },
-                        320: {
-                            items:1,
-                            nav:false
-                        }
-                    }"
+                    v-if="listProductAuction && listProductAuction.length"
+                    :per-page="4"
+                    :per-page-custom="[[1024,4],[768,3],[640,2],[320,1]]"
+                    :space-padding="10"
+                    :pagination-padding="20"
                 >
-                    <product v-for="(item, index) in listProductHighPrice" :key="index" :product="item" />
+                    <Slide v-for="(item, index) in listProductAuction" :key="index" class="mx-1">
+                        <product :product="item" />
+                    </Slide>
                 </carousel>
             </client-only>
         </v-layout>
@@ -52,34 +39,19 @@
         </v-layout>
         <v-layout row wrap style="overflow:hidden">
             <client-only>
-                <carousel
-                    v-if="listProductHighPrice && listProductHighPrice.length"
-                    :dots="false"
-                    :nav="false"
-                    :loop="false"
-                    :autoplay="false"
-                    :margin="10"
-                    :items="4"
-                    :responsive="{
-                        1024: {
-                            items:4
-
-                        },
-                        768: {
-                            items:3
-
-                        },
-                        640: {
-                            items:2
-
-                        },
-                        320: {
-                            items:1
-                        }
-                    }"
-                >
-                    <product v-for="(item, index) in listProductHighPrice" :key="index" :product="item" />
-                </carousel>
+                <client-only>
+                    <carousel
+                        v-if="listProductHighPrice && listProductHighPrice.length"
+                        :per-page="4"
+                        :per-page-custom="[[1024,4],[768,3],[640,2],[320,1]]"
+                        :space-padding="10"
+                        :pagination-padding="20"
+                    >
+                        <Slide v-for="(item, index) in listProductHighPrice" :key="index" class="mx-1">
+                            <product :product="item" />
+                        </Slide>
+                    </carousel>
+                </client-only>
             </client-only>
         </v-layout>
 
@@ -95,31 +67,14 @@
             <client-only>
                 <carousel
                     v-if="listProductHighPrice && listProductHighPrice.length"
-                    :dots="false"
-                    :nav="false"
-                    :loop="false"
-                    :autoplay="false"
-                    :margin="10"
-                    :items="4"
-                    :responsive="{
-                        1024: {
-                            items:4
-
-                        },
-                        768: {
-                            items:3
-
-                        },
-                        640: {
-                            items:2
-
-                        },
-                        320: {
-                            items:1
-                        }
-                    }"
+                    :per-page="4"
+                    :per-page-custom="[[1024,4],[768,3],[640,2],[320,1]]"
+                    :space-padding="10"
+                    :pagination-padding="20"
                 >
-                    <product v-for="(item, index) in listProductHighPrice" :key="index" :product="item" />
+                    <Slide v-for="(item, index) in listProductHighPrice" :key="index" class="mx-1">
+                        <product :product="item" />
+                    </Slide>
                 </carousel>
             </client-only>
         </v-layout>
@@ -132,6 +87,7 @@ import { ROLE_ID } from '~/commom/enum';
 import product from '~/components/product.vue';
 import { productService } from '~/services/product';
 import { productFavouriteService } from '~/services/product-favourite';
+
 export default Vue.extend({
     components: { product },
     data: () => ({
@@ -270,9 +226,4 @@ export default Vue.extend({
     font-size:25px
 }
 
- >.owl-stage{
-    transform:none !important;
-    transition: none !important;
-    width: auto !important;
-  }
 </style>

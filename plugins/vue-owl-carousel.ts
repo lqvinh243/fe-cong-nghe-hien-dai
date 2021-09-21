@@ -1,4 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/naming-convention */
 import Vue from 'vue';
-import OwlCarousel from 'vue-owl-carousel';
+import VueCarousel, { Slide } from 'vue-carousel';
+// import { Carousel, Slide } from 'vue-carousel';
 
-Vue.component('Carousel', OwlCarousel);
+export default () => {
+    Vue.component('Slide', Slide);
+    Vue.use(VueCarousel);
+};

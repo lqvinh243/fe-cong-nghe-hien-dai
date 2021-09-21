@@ -2,7 +2,7 @@
     <v-card
         :key="product.id"
         :loading="loading"
-        class="mx-auto my-12 md3 ml-2"
+        class="mx-auto my-12 md3 ml-2 text-center"
     >
         <template slot="progress">
             <v-progress-linear

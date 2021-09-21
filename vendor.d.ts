@@ -1,2 +1,2 @@
 declare module 'ckeditor4-vue'
-declare module 'vue-owl-carousel'
+declare module 'vue-carousel'

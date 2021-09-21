@@ -87,7 +87,7 @@ export default {
         vendor: [
             'element-ui',
             'jquery',
-            'ckeditor4-vue'
+            'ckeditor4-vue',
         ],
         babel: {
             compact: true
