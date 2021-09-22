@@ -19,5 +19,13 @@ export const authService = {
 
     verifyCapcha(response: string) {
         return $axios.$post('/api/v1/auths/verify-capcha', { response });
+    },
+
+    forgotPassword(data: any) {
+        return $axios.$post('/api/v1/auths/forgot-password', data);
+    },
+
+    resetPassword(data: any) {
+        return $axios.$post('/api/v1/auths/reset-password', data);
     }
 };

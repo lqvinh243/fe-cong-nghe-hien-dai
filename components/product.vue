@@ -50,7 +50,7 @@
                 </div>
 
                 <div align="left" class="text-subtitle-1">
-                    Giá Mua ngay: {{ product.bidPrice }}$
+                    Giá Mua ngay: {{ product.bidPrice ? `${product.bidPrice}$` : '_' }}
                 </div>
 
                 <div v-if="product.status === 'process'" align="left" class="my-3 text-subtitle-1">

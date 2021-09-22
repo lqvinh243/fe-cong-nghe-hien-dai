@@ -17,6 +17,7 @@
                     cache-items
                     class="mx-4"
                     flat
+                    :dense="true"
                     hide-no-data
                     hide-details
                     label="Nhập tên, điện thoại, máy tính..."
@@ -24,32 +25,7 @@
                 />
             </div>
             <v-spacer />
-            <!-- <v-menu offset-y>
-                <template #activator="{ on, attrs }">
-                    <v-btn
-                        color="primary"
-                        dark
-                        v-bind="attrs"
-                        v-on="on"
-                    >
-                        Danh mục
-                    </v-btn>
-                </template>
-                <v-list>
-                    <v-list-item
-                        v-for="(item, index) in items"
-                        :key="index"
-                    >
-                        <v-list-item-title>
-                            <NuxtLink :to="`/${item.id}`">
-                                {{ item.title }}
-                            </NuxtLink>
-                        </v-list-item-title>
-                    </v-list-item>
-                </v-list>
-            </v-menu> -->
-
-            <v-menu bottom>
+            <v-menu offset-y>
                 <template #activator="{ on, attrs }">
                     <v-btn icon v-bind="attrs" v-on="on">
                         <v-avatar>
@@ -84,7 +60,11 @@ export default Vue.extend({
             { title: 'Điện thoại di động', id: 'mobile' },
             { title: 'Máy tính xách tay', id: 'laptop' }
         ],
-        profiles: [{ title: 'Login', id: 'login', isAuth: false }, { title: 'Profile', id: 'my-profile', isAuth: true }, { title: 'Logout', id: 'logout', isAuth: true }],
+        profiles: [
+            { title: 'Đăng nhập', id: 'login', isAuth: false },
+            { title: 'Đăng ký', id: 'regsiter', isAuth: false },
+            { title: 'Profile', id: 'my-profile', isAuth: true },
+            { title: 'Logout', id: 'logout', isAuth: true }],
         listSearch: [],
         loading: false,
         search: null,

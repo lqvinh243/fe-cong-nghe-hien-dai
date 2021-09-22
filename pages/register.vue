@@ -5,26 +5,26 @@
                 <b-col cols="8" style="background-color:#fff">
                     <div class="section-header" action="#" style="max-width:80%;margin:0 auto;margin-top:10%;">
                         <h1 class="text-center title mb-3">
-                            Sign up
+                            Đăng ký
                         </h1>
                         <p>
-                            We're happy you're here!
+                            Vui lòng nhập đầy đủ thông tin dưới đây
                         </p>
                         <el-form ref="ruleForm" :model="registerModel" :rules="rules" label-width="120px" class="demo-ruleForm">
                             <el-form-item label-width="auto" prop="firstName">
-                                <el-input v-model="registerModel.firstName" placeholder="First name" />
+                                <el-input v-model="registerModel.firstName" placeholder="Tên" />
                             </el-form-item>
                             <el-form-item label-width="auto" prop="lastName">
-                                <el-input v-model="registerModel.lastName" placeholder="Last name" />
+                                <el-input v-model="registerModel.lastName" placeholder="Họ tên" />
                             </el-form-item>
                             <el-form-item label-width="auto" prop="address">
-                                <el-input v-model="registerModel.address" placeholder="Address" />
+                                <el-input v-model="registerModel.address" placeholder="Địa chỉ" />
                             </el-form-item>
                             <el-form-item label-width="auto" prop="email">
-                                <el-input v-model="registerModel.email" placeholder="Email" />
+                                <el-input v-model="registerModel.email" placeholder="Địa chỉ Email" />
                             </el-form-item>
                             <el-form-item label-width="auto" prop="Password">
-                                <el-input v-model="registerModel.password" type="password" placeholder="Password" />
+                                <el-input v-model="registerModel.password" type="password" placeholder="Mật khẩu" />
                             </el-form-item>
                             <vue-recaptcha
                                 ref="recaptcha"
@@ -41,7 +41,7 @@
                                 :loading="loading"
                                 @click="handleResiter('ruleForm')"
                             >
-                                Register
+                                Đăng ký
                             </el-button>
                         </el-form>
                     </div>
@@ -49,13 +49,13 @@
                 <b-col class="right-side">
                     <div style="max-width: 100%">
                         <h1 class="text-center mb-3 title">
-                            ALREADY HAVE AN ACCOUNT?
+                            ĐÃ CÓ TÀI KHOẢN?
                         </h1>
                         <p class="text-center">
-                            Log in and go to your Dashboard
+                            Đăng nhập ngay để thực hiện đấu giá
                         </p>
                         <nuxt-link to="/login" style="color: #fff" class="custom-button transparent">
-                            Login
+                            Đăng nhập
                         </nuxt-link>
                     </div>
                 </b-col>
@@ -86,7 +86,7 @@ export default Vue.extend({
 
     data: () => ({
         sitekey: '6LeqPkEcAAAAADQ9itOzqznCafxpgKCqfzFWEJve',
-        title: 'Register',
+        title: 'Đăng ký',
         email: '',
         password: '',
         loginMessage: '',
@@ -125,7 +125,6 @@ export default Vue.extend({
     head(): object {
         return {
             title: this.title,
-            titleTemplate: '%s - Bid',
             bodyAttrs: {
                 class: 'theme-default page-login',
                 'data-layout': 'blank',

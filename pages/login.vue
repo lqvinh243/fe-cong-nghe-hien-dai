@@ -6,9 +6,9 @@
                     <div style="max-width: 80%">
                         <div class="section-header">
                             <h1 class="text-center mb-3 title" style="margin-top:10%">
-                                HI, THERE
+                                Xin chào
                             </h1>
-                            <p>You can log in to your account here.</p>
+                            <p>Nhập tài khoản và mật khẩu của bạn để đăng nhập.</p>
                         </div>
                         <el-form
                             ref="ruleForm"
@@ -20,7 +20,7 @@
                             <el-form-item label-width="auto" prop="email">
                                 <el-input
                                     v-model="loginModel.email"
-                                    placeholder="Email Address"
+                                    placeholder="Địa chỉ Email"
                                 />
                             </el-form-item>
 
@@ -28,11 +28,13 @@
                                 <el-input
                                     v-model="loginModel.password"
                                     type="password"
-                                    placeholder="Password"
+                                    placeholder="Mật khẩu"
                                 />
                             </el-form-item>
                             <div class="text-center mt-2">
-                                <a href="#"> Forgot password</a>
+                                <nuxt-link to="/forgot-password">
+                                    Quên mật khẩu
+                                </nuxt-link>
                             </div>
                             <el-button
                                 class="custom-button mb-3"
@@ -41,7 +43,7 @@
                                 :loading="loading"
                                 @click="login('ruleForm')"
                             >
-                                Log in
+                                Đăng nhập
                             </el-button>
                         </el-form>
                     </div>
@@ -49,13 +51,13 @@
                 <b-col class="right-side">
                     <div style="max-width: 100%">
                         <h1 class="text-center mb-3 title">
-                            NEW HERE
+                            Chưa có tài khoản?
                         </h1>
                         <p class="text-center">
-                            Sign up and create your Account
+                            Nhấn đăng ký để sử dụng dịch vụ của chúng tôi
                         </p>
                         <nuxt-link to="/register" style="color: #fff" class="custom-button transparent">
-                            Sign up
+                            Đăng ký
                         </nuxt-link>
                     </div>
                 </b-col>
@@ -75,8 +77,7 @@ export default Vue.extend({
     middleware: ['non-authentication'],
     data() {
         return {
-            title: 'Login',
-            loginMessage: '',
+            title: 'Đăng nhập',
             loading: false,
             loginModel: {
                 email: '',
@@ -105,7 +106,7 @@ export default Vue.extend({
     head(): object {
         return {
             title: this.title,
-            titleTemplate: '%s - Bid',
+            titleTemplate: '',
             bodyAttrs: {
                 class: 'theme-default page-login',
                 'data-layout': 'blank',
