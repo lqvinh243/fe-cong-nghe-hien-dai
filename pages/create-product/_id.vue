@@ -10,14 +10,73 @@
         </v-layout>
         <v-divider />
         <v-layout row wrap>
-            <v-flex md4 ml-4>
-                <v-carousel :show-arrows="false">
-                    <v-carousel-item
-                        v-for="(item,i) in listProductImage"
-                        :key="i"
-                        :src="item.url"
-                    />
-                </v-carousel>
+            <v-flex md5 mt-5>
+                <v-layout>
+                    <div id="preview">
+                        <!-- <v-card
+                            style="padding: 0 auto"
+                            class="mx-auto mt-4"
+                            outlined
+                        >
+                            <img v-if="item.imageUrl" mt-4 :src="item.imageUrl" class="image-upload" />
+                        </v-card> -->
+                        <div class="box-thumbnail-avatar mt-3">
+                            <div v-if="item.imageUrl" class="image-mapper">
+                                <img v-if="item.imageUrl" mt-4 :src="item.imageUrl" class="image-upload">
+                                <div class="btn-default" @click="uploadImageMain">
+                                    EDIT
+                                </div>
+                            </div>
+                            <div v-else class="upload-image">
+                                <button id="addMedia" class="btn-add" @click="uploadImageMain">
+                                    <span>+</span>
+                                </button>
+                                <div class="btn-default">
+                                    UPLOAD A PHOTO
+                                </div>
+                            </div>
+                            <input id="file" ref="inputFileMain" type="file" style="display: none;" @change="onChange($event)">
+                        </div>
+                    </div>
+                </v-layout>
+                <v-layout row mt-5>
+                    <h3>Upload Hình phụ Sản phẩm</h3>
+                </v-layout>
+                <v-layout row wrap mt-4>
+                    <div class="box-thumbnail-avatar list-image-sub mr-4">
+                        <div class="upload-image">
+                            <button id="addMedia" class="btn-add" @click="uploadImageSub">
+                                <span>+</span>
+                            </button>
+                            <div class="btn-default">
+                                UPLOAD A PHOTO
+                            </div>
+                        </div>
+                        <input id="file" ref="inputFileSub" type="file" style="display: none;" @change="onChangeImageSub($event)">
+                        <div v-for="(image, index) in listImage" :key="index" class="image-mapper mr-4 mb-4">
+                            <img :src="image.imageUrl" class="image-upload">
+                            <div class="btn-default" @click="deleteImageSub(index)">
+                                DELETE
+                            </div>
+                        </div>
+                    </div>
+                </v-layout>
+                <v-divider mt-4 />
+                <v-layout>
+                    <h3>Mô tả sản phẩm</h3>
+                </v-layout>
+                <v-layout>
+                    <p v-for="(editorItem, index) in listProductDescription" :key="index" v-html="editorItem" />
+                </v-layout>
+                <v-layout mt-3>
+                    <el-button type="primary" style="color:white" @click="handleShowPopupDescription">
+                        Thêm Mô tả
+                    </el-button>
+                    <!-- <client-only>
+                        <ckeditor v-model="editorData" :config="editorConfig" value="Hello, World!" @change="handleChange" />
+                    </client-only> -->
+                    <!-- <p v-html="editorData" /> -->
+                </v-layout>
             </v-flex>
             <v-flex md1 />
             <v-flex md5 mt-4>
@@ -43,16 +102,11 @@
                                             Thông tin Đấu giá
                                         </h3>
                                     </el-col>
-                                    <el-col :span="6" :offset="6">
-                                        <el-button class="mr-0" :disabled="!isAuthenticated" @click="handleBidProductAuto">
-                                            Dau gia tu dong
-                                        </el-button>
-                                    </el-col>
                                 </el-row>
 
                                 <v-divider />
                             </div>
-                            <v-list-item-title class="text-h5 mb-1">
+                            <!-- <v-list-item-title class="text-h5 mb-1">
                                 <v-layout md12 my-2>
                                     Giá hiện tại: <span class="ml-2 color-primary">{{ priceCurrent }}$</span>
                                 </v-layout>
@@ -77,24 +131,85 @@
                                 <v-layout md12 my-2>
                                     Số lượt ra giá hiện tại: <span class="ml-2 text-info-auction color-primary">{{ totalAuc }}</span>
                                 </v-layout>
-                            </v-list-item-title>
+                            </v-list-item-title> -->
+                            <v-list-item three-line>
+                                <v-list-item-content style="margin-right:0 !important">
+                                    <div class="text-overline">
+                                        <h3>Thông tin Sản phẩm</h3>
+                                        <v-divider />
+                                    </div>
+                                    <v-list-item-title class="text-h5 mb-1">
+                                        <v-text-field
+                                            v-model="productName"
+                                            label="Tên Sản phẩm"
+                                        />
+                                        <el-select
+                                            v-model="selectCategory"
+                                            class="w-100 my-4"
+                                            placeholder="Danh muc!"
+                                            filterable
+                                            remote
+                                            reserve-keyword
+                                            @change="handleSelectCategory"
+                                        >
+                                            <el-option
+                                                v-for="option in categories"
+                                                :key="option.id"
+                                                :label="option.name"
+                                                :value="option.id"
+                                            />
+                                        </el-select>
+                                        <v-layout md12 mt-1>
+                                            <v-text-field
+                                                v-model="startPrice"
+                                                label="Giá Khởi điểm"
+                                                prefix="$"
+                                                type="number"
+                                            />
+                                        </v-layout>
+                                        <v-text-field
+                                            v-model="step"
+                                            label="Bước giá"
+                                            type="number"
+                                        />
+                                        <v-text-field
+                                            v-model="bidPrice"
+                                            label="Giá Mua ngay"
+                                            prefix="$"
+                                            type="number"
+                                        />
+                                        <v-layout md12 mt-1>
+                                            <v-flex md4 mt-2>
+                                                Ngày Gia hạn
+                                            </v-flex>
+                                            <v-flex md2>
+                                                <el-date-picker
+                                                    v-model="expiredAt"
+                                                    type="date"
+                                                    placeholder=""
+                                                    :picker-options="pickerOptions"
+                                                />
+                                            </v-flex>
+                                        </v-layout>
+                                        <v-checkbox
+                                            v-model="isExtension"
+                                            class="check-box-product"
+                                            :label="`Gia hạn Sản phẩm`"
+                                        />
+                                    </v-list-item-title>
+                                    <div>
+                                        <el-button type="primary" style="color:white" @click="handlePublicProduct">
+                                            Public Sản phẩm
+                                        </el-button>
+                                        <el-button type="primary" style="color:white" @click="handleUpdateProduct">
+                                            Cập nhật Sản phẩm
+                                        </el-button>
+                                    </div>
+                                </v-list-item-content>
+                            </v-list-item>
+                            <v-card-actions />
                         </v-list-item-content>
                     </v-list-item>
-                    <v-card-actions>
-                        <el-button :disabled="!isAuthenticated" style="width: 100%;margin-top:1rem; font-weight: bold; color:white" type="primary" :loading="loading" @click="handleBidProduct">
-                            ĐẤU GIÁ
-                        </el-button>
-                        <el-button
-                            v-if="showBuyNow"
-                            style="width: 100%;margin-top:1rem; font-weight: bold; color:white"
-                            type="danger"
-                            :loading="loading"
-                            :disabled="!isAuthenticated"
-                            @click="handleBuyProduct"
-                        >
-                            MUA NGAY
-                        </el-button>
-                    </v-card-actions>
                     <p v-if="!isAuthenticated" class="text-center" style="font-size:1rem">
                         Please <nuxt-link to="/login">
                             login
@@ -112,11 +227,6 @@
                 >
                     <v-list-item three-line>
                         <v-list-item-content style="margin-right:0 !important">
-                            <div class="text-overline">
-                                <h3>Thông tin Sản phẩm</h3>
-                                <v-divider />
-                            </div>
-
                             <v-list-item-title class="text-h5 mb-1">
                                 <v-layout md12 mt-1>
                                     Danh mục: {{ category }}
@@ -169,6 +279,8 @@ export default Vue.extend({
         seller: '' as any,
         likeProduct: false as boolean,
         stepPrice: 0 as number,
+        productId: null,
+        categories: [] as any,
         category: '' as string,
         createdAt: null,
         isFavourite: false,
@@ -177,6 +289,31 @@ export default Vue.extend({
         dialogBuyNowVisible: false,
         bidderName: '',
         totalAuc: 0,
+        productName: '',
+        selectCategory: '',
+        startPrice: null,
+        bidPrice: null,
+        expiredAt: new Date(),
+        expiredAtFormat: null,
+        pickerOptions: {
+            disabledDate(time:Date) {
+                return time.getTime() < Date.now();
+            }
+        },
+        isExtension: false,
+        step: null,
+        item: {
+            image: null,
+            imageUrl: null
+        },
+        listImage: [],
+        editorData: '',
+        editorConfig: {
+            // The configuration of the editor.
+        },
+        dialogCkeditor: false,
+        showBtnCreate: true,
+        listProductDescription: []
     }),
 
     computed: {
@@ -205,21 +342,6 @@ export default Vue.extend({
                 return this.$router.push('/login?redirect=' + this.$router.currentRoute.path);
         },
 
-        handleBidProduct() {
-            this.handleAuthenticated();
-            this.dialogBidVisible = true;
-        },
-
-        handleBuyProduct() {
-            this.handleAuthenticated();
-            this.dialogBuyNowVisible = true;
-        },
-
-        handleBidProductAuto() {
-            this.handleAuthenticated();
-            this.dialogBidAutoVisible = true;
-        },
-
         async loadProductDetail() {
             const result = await productService.getProductDetailById(this.id)
                 .catch(error => {
@@ -229,26 +351,102 @@ export default Vue.extend({
                     });
                 });
             if (result) {
+                console.log(result);
                 this.listProductImage = result.data.productImages;
                 this.title = result.data.name;
+                this.productId = result.data.id;
+                this.productName = result.data.name;
                 this.priceCurrent = result.data.priceNow;
                 this.status = result.data.status;
-                this.priceBid = result.data.bidPrice;
+                this.bidPrice = result.data.bidPrice;
+                this.isExtension = result.data.isExtendedExpired;
                 this.description = [];
-                if (result.data.productDescription) {
-                    result.data.productDescription.forEach((elementDesc:any) => {
-                        this.description.push(elementDesc.data.data.content);
-                    });
-                }
                 const timeNow = momment(new Date());
                 this.timeExpire = timeNow.from(result.data.expiredAt, true);
                 this.seller = `${result.data.seller.firstName} ${result.data.seller.lastName ?? ''}`;
-                this.stepPrice = result.data.stepPrice;
+                this.step = result.data.stepPrice;
                 this.category = result.data.category.name;
                 this.createdAt = result.data.createdAt;
-                this.bidderName = result.data.bidder ? `${result.data.bidder.firstName} ${result.data.bidder.lastName ?? ''}` : 'Khong co thong tin';
-                this.totalAuc = result.data.statistic ? result.data.statistic.auctions : 0;
+                // this.bidderName = result.data.bidder ? `${result.data.bidder.firstName} ${result.data.bidder.lastName ?? ''}` : 'Khong co thong tin';
+                // this.totalAuc = result.data.statistic ? result.data.statistic.auctions : 0;
+                // if (result.data.productDescription) {
+                //     // this.imageUrl = ;
+                //     this.image = result.data.productDescription[0].url;
+                //     this.item.imageUrl = result.data.productDescription[0].url;
+                //     result.data.productDescription.forEach((elementDesc:any) => {
+                //         this.description.push(elementDesc.data.data.content);
+                //     });
+                // }
             }
+        },
+
+        async handlePublicProduct() {
+            const result = await productService.publicProduct(this.productId)
+                .catch(error => {
+                    this.$notify.error({
+                        title: 'Error',
+                        message: error.message || 'Cannot public product!'
+                    });
+                });
+            if (result)
+                console.log(result);
+        },
+
+        handleUpdateProduct() {
+
+        },
+
+        async handleSelectCategory() {
+            const item = this.categories.find((item:any) => item.id === this.selectCategory);
+            if (item) {
+                if (item.parentId) {
+                    this.products = [];
+                    const filters = `category.id:${item.id}`;
+                    await this.loadData(filters);
+                }
+                await this.loadCategory(this.selectCategory);
+            }
+        },
+
+        uploadImageMain() {
+            this.$refs.inputFileMain.click();
+        },
+
+        onChange(e: any) {
+            const file = e.target.files[0];
+            if (file) {
+                this.image = file;
+                this.item.imageUrl = URL.createObjectURL(file);
+            }
+        },
+
+        handleShowPopupDescription() {
+            this.dialogCkeditor = true;
+        },
+
+        handleCloseProductDescription(isSave: Boolean) {
+            this.dialogCkeditor = false;
+            if (!isSave)
+                this.editorData = '';
+        },
+
+        uploadImageSub() {
+            this.$refs.inputFileSub.click();
+        },
+
+        onChangeImageSub(e: any) {
+            const file = e.target.files[0];
+            if (file) {
+                const fileUrl = URL.createObjectURL(file);
+                this.listImage.push({
+                    image: file,
+                    imageUrl: fileUrl
+                });
+            }
+        },
+
+        deleteImageSub(index: number) {
+            this.listImage.splice(index, 1);
         },
 
         formatPrice(value: any) {
@@ -269,24 +467,6 @@ export default Vue.extend({
                     });
                 });
                 this.isFavourite = result.data;
-            }
-        },
-
-        async handleFavourite() {
-            this.handleAuthenticated();
-
-            const result = await productService.favouriteProduct(this.id).catch(error => {
-                this.$notify.error({
-                    title: 'Error',
-                    message: error.message || 'Cannot favourite product!'
-                });
-            });
-            if (result) {
-                this.$notify.success({
-                    title: 'Success',
-                    message: !this.isFavourite ? 'Favourite product successfully!' : 'Unfavourite product successfully!'
-                });
-                this.isFavourite = !this.isFavourite;
             }
         },
 

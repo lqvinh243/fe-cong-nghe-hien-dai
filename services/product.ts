@@ -63,5 +63,9 @@ export const productService = {
 
     saveProductDescription(productInfo: any) {
         return $axios.$post('/api/v1/product-descriptions', productInfo);
+    },
+
+    publicProduct(productId: String) {
+        return $axios.$get(`/api/v1/products/${productId}/process`);
     }
 };
