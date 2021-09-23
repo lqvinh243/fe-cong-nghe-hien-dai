@@ -54,6 +54,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import algoliasearch from 'algoliasearch';
+import { ROLE_ID } from '~/commom/enum';
 import product from '~/components/product.vue';
 import eventBus from '~/plugins/event-bus';
 import { categoryService } from '~/services/category';
@@ -144,7 +145,7 @@ export default Vue.extend({
                     });
                 });
                 let resultsFavourite:any | null = null;
-                if (this.$auth.isAuthenticated()) {
+                if (this.$auth.isRoles(ROLE_ID.SELLER, ROLE_ID.BIDDER)) {
                     resultsFavourite = await productFavouriteService.getByProductIds({ productIds }).catch(error => {
                         this.$notify.error({
                             title: 'Error',
@@ -220,7 +221,7 @@ export default Vue.extend({
 
         async checkFavourite(products: any[]) {
             let productMappings:any[] = [];
-            if (this.$auth.isAuthenticated) {
+            if (this.$auth.isRoles(ROLE_ID.SELLER, ROLE_ID.BIDDER)) {
                 const ids = products.map(item => item.id);
                 const results = await productFavouriteService.getByProductIds({ productIds: ids }).catch(error => {
                     this.$notify.error({

@@ -9,7 +9,7 @@
             <h2>Top 5 sản phẩm gần kết thúc</h2>
             <el-button type="text" class="ml-auto mr-0" style=" text-decoration: underline;">
                 <nuxt-link to="/product">
-                    Xem them
+                    Xem thêm
                 </nuxt-link>
             </el-button>
         </v-layout>
@@ -33,7 +33,7 @@
             <h2>Top 5 sản phẩm có nhiều lượt ra giá nhất</h2>
             <el-button type="text" class="ml-auto mr-0 " style=" text-decoration: underline;">
                 <nuxt-link to="/product">
-                    Xem them
+                    Xem thêm
                 </nuxt-link>
             </el-button>
         </v-layout>
@@ -59,7 +59,7 @@
             <h2>Top 5 sản phẩm có giá cao nhất</h2>
             <el-button type="text" class="ml-auto mr-0 " style=" text-decoration: underline;">
                 <nuxt-link to="/product">
-                    Xem them
+                    Xem thêm
                 </nuxt-link>
             </el-button>
         </v-layout>

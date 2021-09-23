@@ -25,7 +25,7 @@
         >
             <el-table-column
                 fixed
-                label="Date created"
+                label="Ngày yêu cầu"
             >
                 <template slot-scope="scope">
                     <span>{{ formatDate(scope.row.createdAt) }}</span>
@@ -33,7 +33,7 @@
             </el-table-column>
             <el-table-column
                 fixed
-                label="Email"
+                label="Địa chỉ Email"
             >
                 <template slot-scope="scope">
                     <span>{{ scope.row.bidder.email }}</span>
@@ -42,7 +42,7 @@
 
             <el-table-column
                 fixed
-                label="First Name"
+                label="Tên"
             >
                 <template slot-scope="scope">
                     <span>{{ scope.row.bidder.firstName }}</span>
@@ -50,7 +50,7 @@
             </el-table-column>
             <el-table-column
                 fixed
-                label="Last Name"
+                label="Họ"
             >
                 <template slot-scope="scope">
                     <span>{{ scope.row.bidder.lastName }}</span>
@@ -59,7 +59,7 @@
 
             <el-table-column
                 fixed
-                label="Address"
+                label="Địa chỉ"
             >
                 <template slot-scope="scope">
                     <span>{{ scope.row.bidder.address }}</span>
@@ -67,19 +67,19 @@
             </el-table-column>
             <el-table-column
                 fixed
-                label="Status"
+                label="Trạng thái"
             >
                 <template slot-scope="scope">
                     <span>{{ mapStatusDisplay(scope.row.status) }}</span>
                 </template>
             </el-table-column>
             <el-table-column
-                label="Operations"
+                label="Hành động"
                 align="center"
             >
                 <template slot-scope="scope">
                     <el-button :disabled="scope.row.status === 'accepted'" type="primary" @click="handleAccepted(scope.row.id)">
-                        Accept
+                        Đồng ý
                     </el-button>
                     <!-- <el-button type="text" @click="handleViewProfile">
                         Detail
@@ -110,9 +110,9 @@ export default {
         return {
             tableData: [],
             options: [
-                { key: 'pending', name: 'Pending' },
-                { key: 'accepted', name: 'Accepted' },
-                { key: 'rejected', name: 'Rejected' }
+                { key: 'pending', name: 'Đang chờ duyệt' },
+                { key: 'accepted', name: 'Đã duyệt' },
+                { key: 'rejected', name: 'Đã từ chối' }
             ],
             selectKey: '' as any,
             page: 1,
@@ -120,6 +120,9 @@ export default {
             perPage: 10,
             loadingRemote: false
         };
+    },
+    head: {
+        title: 'Quản lí nâng cấp'
     },
     mounted() {
         this.$nextTick(async () => {
@@ -177,11 +180,11 @@ export default {
         mapStatusDisplay(status: string) {
             switch (status) {
             case 'pending':
-                return 'Dang cho duyet';
+                return 'Đang chờ duyệt';
             case 'accepted':
-                return 'Da duyet';
+                return 'Đã duyệt';
             case 'rejected':
-                return 'Da tu choi';
+                return 'Đã từ chối';
             }
         }
     }

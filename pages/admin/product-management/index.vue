@@ -1,6 +1,6 @@
 <template>
     <div style="max-width: 80%; margin: 0 auto">
-        <el-select
+        <!-- <el-select
             v-model="selectKey"
             class="w-25 my-4"
             placeholder="Lọc theo trạng thái..."
@@ -16,8 +16,8 @@
                 :label="option.name"
                 :value="option.key"
             />
-        </el-select>
-        <el-table :data="tableData" style="width: 100%">
+        </el-select> -->
+        <el-table :data="tableData" style="width: 100%;margin-top:2rem" height="500">
             <el-table-column fixed label="Ngày Lên Sàn">
                 <template slot-scope="scope">
                     <span>{{ formatDate(scope.row.createdAt) }}</span>
@@ -104,7 +104,7 @@ export default Vue.extend({
             selectKey: '' as any,
             page: 1,
             total: 10,
-            perPage: 10,
+            perPage: 5,
             loadingRemote: false,
             dialogRemoveVisible: false,
             loading: false,
@@ -125,24 +125,20 @@ export default Vue.extend({
         },
         handleSelect() {
             this.$nuxt.$loading.start();
-            if (this.selectKey !== 3) this.getProducts(this.selectKey);
+            this.getProducts(this.selectKey);
             this.$nuxt.$loading.finish();
         },
         remoteMethod(query: string) {
             console.log(query);
         },
-        handleChangePage() {
-            console.log(this.page);
+        async handleChangePage() {
+            await this.getProducts();
         },
         deleteRow(index: number, rows: any) {
             rows.splice(index, 1);
         },
-        editRow(id: string) {
-            console.log(id);
-            this.dialogVisible = true;
-        },
         async getProducts(key: string = '') {
-            const query = `categoryId=${key}&skip=${(this.page - 1) * this.perPage}`;
+            const query = `statuses=${key}&skip=${(this.page - 1) * this.perPage}&limit=${this.perPage}`;
             const result = await productService.findProduct(query).catch((error) => {
                 this.$notify.error({
                     title: 'Error',

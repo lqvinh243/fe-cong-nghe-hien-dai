@@ -1,13 +1,8 @@
 <template>
     <div grid-list-lg fluid class="container-fluid ml-4 mt-5">
         <v-layout row>
-            <v-flex>
-                <h1>{{ title }}</h1>
-            </v-flex>
             <v-flex md1>
                 <i v-if="showFavouriteIcon" style="font-size: 2rem; cursor: pointer" :class="isFavourite ? 'el-icon-star-on icon-like-product' :'el-icon-star-off'" @click="handleFavourite" />
-                <!-- <i v-if="likeProduct" class="el-icon-star-on icon-like-product" @click="likeProduct = false" />
-                <i v-if="!likeProduct" style="font-size: 2rem; cursor: pointer" class="el-icon-star-off" @click="likeProduct = true" /> -->
             </v-flex>
         </v-layout>
         <v-divider />
@@ -20,9 +15,18 @@
                         :src="item.url"
                     />
                 </v-carousel>
+                <v-layout mt-4>
+                    <h4> Mô tả sản phẩm: </h4>
+                </v-layout>
+                <v-layout>
+                    <div v-for="(item, index) in description" :key="index">
+                        <p>Thời gian : {{ formatDate(item.createdAt) }}</p>
+                        <p v-html="item.content" />
+                    </div>
+                </v-layout>
             </v-flex>
             <v-flex md1 />
-            <v-flex md5 mt-4>
+            <v-flex md5>
                 <v-card
                     elevation="24"
                     max-width="444"
@@ -31,15 +35,18 @@
                 <v-layout md12 mt-1>
                     <span class="color-primary-header" />
                 </v-layout>
+                <v-flex>
+                    <h1>{{ title }}</h1>
+                </v-flex>
                 <v-card
                     style="padding: 0 auto"
-                    class="mx-auto"
+                    class="mx-auto mt-4"
                     outlined
                 >
                     <v-list-item three-line>
                         <v-list-item-content style="margin-right:0 !important">
                             <div class="text-overline">
-                                <el-row :gutter="20">
+                                <el-row>
                                     <el-col :span="12">
                                         <h3 class="pt-3">
                                             Thông tin Đấu giá
@@ -54,7 +61,7 @@
                                     Giá hiện tại: <span class="ml-2 color-primary">{{ priceCurrent }}$</span>
                                 </v-layout>
                                 <v-layout md12 my-2>
-                                    Giá Mua ngay: <span class="ml-2 color-primary">{{ priceBid }}$</span>
+                                    Giá Mua ngay: <span v-if="priceBid" class="ml-2 color-primary">{{ priceBid }}$</span> <span v-else class="ml-2 color-primary">_</span>
                                 </v-layout>
                                 <v-layout md12 my-2>
                                     Tình trạng: <span class="ml-2 color-primary">{{ mapStatusProduct(status) }}</span>
@@ -65,8 +72,11 @@
                                 <v-layout md12 my-2>
                                     Bước nhảy: <span class="ml-2 color-primary">{{ stepPrice }}$</span>
                                 </v-layout>
+                                <v-layout v-if="status ==='process'" md12 my-2>
+                                    Thông tin người giữ giá : <span class="ml-2 color-primary">{{ bidderName }}</span>
+                                </v-layout>
                                 <v-layout md12 my-2>
-                                    Thông tin bidder đang đặt giá cao nhất: <span class="ml-2 color-primary">{{ bidderName }}</span>
+                                    Thông tin người thắng: <span class="ml-2 color-primary">{{ winnerName }}</span>
                                 </v-layout>
                                 <v-layout md12 my-2>
                                     Ngày đăng sản phẩm: <span class="ml-2 text-info-auction color-primary">{{ formatDate(createdAt) }}</span>
@@ -77,14 +87,6 @@
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-                    <p v-if="!isAuthenticated" class="text-center" style="font-size:1rem">
-                        Please <nuxt-link to="/login">
-                            login
-                        </nuxt-link>
-                        or <nuxt-link to="/register">
-                            register
-                        </nuxt-link> to bidding!
-                    </p>
                 </v-card>
 
                 <v-card
@@ -106,9 +108,6 @@
                                 <v-layout md12 mt-1>
                                     Người Bán: {{ seller }}
                                 </v-layout>
-                                <v-layout md12 mt-1>
-                                    Mô tả: {{ description }}
-                                </v-layout>
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
@@ -116,6 +115,9 @@
                 </v-card>
             </v-flex>
         </v-layout>
+        <DialogBidPrice :product-id="id" :price-now="priceCurrent" :price="priceCurrent + stepPrice" :dialog-visible="dialogBidVisible" @handelCloseBid="closeBidDialog" />
+        <BidPriceAutoDialog :product-id="id" :price-now="priceCurrent" :price="priceCurrent + stepPrice" :dialog-visible-auto="dialogBidAutoVisible" @handelCloseBid="closeBidDialog" />
+        <ConfirmBuyNowDialog :product-id="id" :price-now="priceCurrent" :dialog-buy-now-visible="dialogBuyNowVisible" @handelCloseBid="closeBidDialog" />
     </div>
 </template>
 
@@ -123,10 +125,15 @@
 import Vue from 'vue';
 import momment from 'moment';
 import { ROLE_ID } from '~/commom/enum';
+import BidPriceAutoDialog from '~/components/dialogs/BidPriceAutoDialog.vue';
+import DialogBidPrice from '~/components/dialogs/BidPriceDialog.vue';
+import ConfirmBuyNowDialog from '~/components/dialogs/ConfirmBuyNowDialog.vue';
+import eventBus from '~/plugins/event-bus';
 import { productService } from '~/services/product';
 import { productFavouriteService } from '~/services/product-favourite';
 
 export default Vue.extend({
+    components: { DialogBidPrice, BidPriceAutoDialog, ConfirmBuyNowDialog },
     data: () => ({
         id: null as string | null,
         selection: null,
@@ -136,7 +143,7 @@ export default Vue.extend({
         priceCurrent: 0,
         status: '' as any,
         priceBid: null as number | null,
-        description: '' as any,
+        description: [] as any,
         timeExpire: 0,
         seller: '' as any,
         likeProduct: false as boolean,
@@ -144,8 +151,13 @@ export default Vue.extend({
         category: '' as string,
         createdAt: null,
         isFavourite: false,
+        dialogBidVisible: false,
+        dialogBidAutoVisible: false,
+        dialogBuyNowVisible: false,
         bidderName: '',
+        winnerName: '',
         totalAuc: 0,
+        isStricten: false
     }),
 
     computed: {
@@ -157,7 +169,27 @@ export default Vue.extend({
         },
         isAuthenticated():boolean {
             return this.$auth.isAuthenticated();
-        }
+        },
+    },
+    destroyed() {
+        eventBus.$off('product_end');
+        eventBus.$off('bid_price_change');
+    },
+    created() {
+        eventBus.$on('product_end', (data:any) => {
+            if (this.id === data.id) {
+                this.status = data.status;
+                this.priceNow = data.price;
+                this.bidder = data.winner;
+                this.winner = data.winner;
+            }
+        });
+        eventBus.$on('bid_price_change', (data:any) => {
+            if (this.id === data.id) {
+                this.priceCurrent = data.price;
+                this.bidder = data.bidder;
+            }
+        });
     },
     mounted() {
         this.id = this.$route.params.id;
@@ -174,12 +206,27 @@ export default Vue.extend({
                 return this.$router.push('/login?redirect=' + this.$router.currentRoute.path);
         },
 
+        handleBidProduct() {
+            this.handleAuthenticated();
+            this.dialogBidVisible = true;
+        },
+
+        handleBuyProduct() {
+            this.handleAuthenticated();
+            this.dialogBuyNowVisible = true;
+        },
+
+        handleBidProductAuto() {
+            this.handleAuthenticated();
+            this.dialogBidAutoVisible = true;
+        },
+
         async loadProductDetail() {
             const result = await productService.getProductDetailById(this.id)
-                .catch(error => {
+                .catch(_error => {
                     this.$notify.error({
-                        title: 'Error',
-                        message: error.message || 'Cannot get product detail!'
+                        title: 'Lỗi',
+                        message: 'Không thể lấy chi tiết sản phẩm!'
                     });
                 });
             if (result) {
@@ -188,21 +235,22 @@ export default Vue.extend({
                 this.priceCurrent = result.data.priceNow;
                 this.status = result.data.status;
                 this.priceBid = result.data.bidPrice;
-                this.description = result.data.productDescription + '';
-                const timeNow = momment(new Date());
-                this.timeExpire = timeNow.from(result.data.expiredAt, true);
+                this.description = [];
+                if (result.data.productDescription) {
+                    result.data.productDescription.forEach((elementDesc:any) => {
+                        this.description.push(elementDesc);
+                    });
+                }
+                this.timeExpire = this.formatDateExpired(result.data);
                 this.seller = `${result.data.seller.firstName} ${result.data.seller.lastName ?? ''}`;
                 this.stepPrice = result.data.stepPrice;
                 this.category = result.data.category.name;
                 this.createdAt = result.data.createdAt;
-                this.bidderName = result.data.bidder ? `${result.data.bidder.firstName} ${result.data.bidder.lastName ?? ''}` : 'Khong co thong tin';
+                this.bidderName = result.data.bidder ? `${result.data.bidder.firstName} ${result.data.bidder.lastName ?? ''}` : '_';
+                this.winnerName = result.data.winner ? `${result.data.winner.firstName} ${result.data.winner.lastName ?? ''}` : '_';
                 this.totalAuc = result.data.statistic ? result.data.statistic.auctions : 0;
+                this.isStricten = !!result.data.isStricten;
             }
-        },
-
-        formatPrice(value: any) {
-            const val = (value / 1).toFixed(0).replace(',', '.');
-            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         },
 
         formatDate(date:any) {
@@ -211,10 +259,10 @@ export default Vue.extend({
 
         async checkFavourite() {
             if (this.$auth.isRoles(ROLE_ID.BIDDER, ROLE_ID.SELLER)) {
-                const result = await productFavouriteService.getByBidder(this.id).catch(error => {
+                const result = await productFavouriteService.getByBidder(this.id).catch(_error => {
                     this.$notify.error({
-                        title: 'Error',
-                        message: error.message || 'Cannot check favourite product'
+                        title: 'Lỗi',
+                        message: 'Không thể kiểm tra sản phẩm yêu thích!'
                     });
                 });
                 this.isFavourite = result.data;
@@ -224,16 +272,16 @@ export default Vue.extend({
         async handleFavourite() {
             this.handleAuthenticated();
 
-            const result = await productService.favouriteProduct(this.id).catch(error => {
+            const result = await productService.favouriteProduct(this.id).catch(_error => {
                 this.$notify.error({
-                    title: 'Error',
-                    message: error.message || 'Cannot favourite product!'
+                    title: 'Lỗi',
+                    message: 'Không thể thêm vào danh mục yêu thích!'
                 });
             });
             if (result) {
                 this.$notify.success({
-                    title: 'Success',
-                    message: !this.isFavourite ? 'Favourite product successfully!' : 'Unfavourite product successfully!'
+                    title: 'Thành công',
+                    message: !this.isFavourite ? 'Thêm vào danh mục yêu thích thành công!' : 'Xóa bỏ khỏi danh mục yêu thích thành công!'
                 });
                 this.isFavourite = !this.isFavourite;
             }
@@ -244,17 +292,29 @@ export default Vue.extend({
                 this.dialogBidVisible = false;
             else if (formName === 'bidPriceAutoForm')
                 this.dialogBidAutoVisible = false;
+            else if (formName === 'buyNowForm')
+                this.dialogBuyNowVisible = false;
         },
 
         mapStatusProduct(status: string) {
             switch (status) {
             case 'process':
-                return 'Dang dien ra';
+                return 'Đang diễn ra';
             case 'end':
             case 'cancel':
-                return 'Da ket thuc';
+                return 'Đã kết thúc';
             default:
-                return 'Chua tien hanh';
+                return 'Chưa tiến hành';
+            }
+        },
+
+        formatDateExpired(row:any) {
+            const timeNow = momment(new Date());
+            switch (row.status) {
+            case 'process':
+                return timeNow.from(row.expiredAt, true);
+            default:
+                return '_';
             }
         },
 

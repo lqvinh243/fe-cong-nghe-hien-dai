@@ -1,22 +1,5 @@
 <template>
-    <div style="max-width:80%;margin:0 auto">
-        <el-select
-            v-model="selectKey"
-            class="w-25 my-4"
-            placeholder="Please select role!"
-            filterable
-            remote
-            reserve-keyword
-            :remote-method="remoteMethod"
-            :loading="loadingRemote"
-        >
-            <el-option
-                v-for="option in options"
-                :key="option.key"
-                :label="option.name"
-                :value="option.key"
-            />
-        </el-select>
+    <div style="max-width:80%;margin:0 auto;margin-top:2rem">
         <el-table
             :data="tableData"
             style="width: 100%"
@@ -27,24 +10,27 @@
             />
             <el-table-column
                 prop="name"
-                label="Name"
+                label="Tên danh mục"
             />
 
             <el-table-column
                 prop="parentName"
-                label="Parent name"
-            />
-
-            <el-table-column
-                fixed="right"
-                label="Operations"
+                label="Tên danh mục cha"
             >
                 <template slot-scope="scope">
-                    <el-button type="text" @click.native.prevent="editRow(scope.row.id)">
-                        Edit
+                    <span>{{ scope.row.parent ?scope.row.parent.name :'_' }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column
+                fixed="right"
+                label="Hành động"
+            >
+                <template slot-scope="scope">
+                    <el-button type="text" @click.native.prevent="editRow(scope.row)">
+                        Chỉnh sửa
                     </el-button>
-                    <el-button type="text" @click.native.prevent="deleteRow(scope.$index, tableData)">
-                        Remove
+                    <el-button type="text" @click.native.prevent="deleteRow(scope.row)">
+                        Xóa
                     </el-button>
                 </template>
             </el-table-column>
@@ -65,56 +51,96 @@
             :visible.sync="dialogVisible"
             width="30%"
         >
-            <el-input placeholder="Please input" />
+            <el-input v-model="category.name" placeholder="Please input" />
             <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">Cancel</el-button>
-                <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>
+                <el-button @click="dialogVisible = false">Hủy bỏ</el-button>
+                <el-button type="primary" @click="handleSaveEdit">Xác nhận</el-button>
             </span>
         </el-dialog>
     </div>
 </template>
 
 <script lang="ts">
+import { categoryService } from '~/services/category';
 export default {
     middleware: ['authentication'],
     data() {
         return {
             tableData: [
-                {
-                    id: '1',
-                    name: 'abc',
-                    parentName: 'a'
-                }
-            ],
-            options: [
-                { key: 1, name: 'Seller' },
-                { key: 2, name: 'Bidder' },
-                { key: 3, name: 'Upgrage request' }
             ],
             selectKey: '',
             page: 1,
             total: 10,
             perPage: 5,
             loadingRemote: false,
-            dialogVisible: false
+            dialogVisible: false,
+            category: {
+                name: ''
+            }
         };
     },
+    async mounted() {
+        await this.load();
+    },
     methods: {
+        async load() {
+            const query = `isIgnoreParent=true&skip=${(this.page - 1) * this.perPage}&limit=${this.perPage}`;
+            const result = await categoryService.findCategory(query).catch(_error => {
+                this.$notify.error({ title: 'Lỗi', message: 'Không thể tải danh mục sản phẩm' });
+            });
+            this.tableData = result.data;
+            this.total = result.pagination.total;
+        },
         handleClick() {
             console.log('click');
         },
         remoteMethod(query: string) {
             console.log(query);
         },
-        handleChangePage() {
-            console.log(this.page);
+        async  handleChangePage() {
+            await this.load();
         },
-        deleteRow(index:number, rows:any) {
-            rows.splice(index, 1);
+        async deleteRow(category:any) {
+            const result = await categoryService.delete(category.id).catch((error:any) => {
+                console.log(error);
+                this.$notify.error({
+                    title: 'Lỗi',
+                    message: error.message || 'Không thể xóa danh mục sản phẩm'
+                });
+            });
+            if (result && result.data) {
+                this.$notify.success({
+                    title: 'Thành công',
+                    message: 'Xóa danh mục sản phẩm thành công'
+                });
+            }
         },
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        editRow(id: string) {
+        editRow(category: any) {
             this.dialogVisible = true;
+            this.category = category;
+        },
+        async handleSaveEdit() {
+            if (this.category) {
+                const result = await categoryService.update(this.category.id, { name: this.category.name }).catch(_error => {
+                    this.$notify.error({
+                        title: 'Lỗi',
+                        message: 'Không thể cập nhật danh mục sản phẩm'
+                    });
+                });
+                if (result && result.data) {
+                    this.$notify.success({
+                        title: 'Thành công',
+                        message: 'Cập nhật danh mục sản phẩm thành công'
+                    });
+                    this.tableData = this.tableData.map((item:any) => {
+                        if (item.parentId === this.category.id)
+                            item.parent.name = this.category.name;
+
+                        return item;
+                    });
+                    this.dialogVisible = false;
+                }
+            }
         }
     }
 };

@@ -53,7 +53,7 @@
                                         </h3>
                                     </el-col>
                                     <el-col :span="6" :offset="6">
-                                        <el-button class="ml-auto" :disabled="!isAuthenticated || status !== 'process'" @click="handleBidProductAuto">
+                                        <el-button class="ml-auto" :disabled="!isAuthenticated || status !== 'process' || !showFavouriteIcon" @click="handleBidProductAuto">
                                             Đấu giá tự động
                                         </el-button>
                                     </el-col>
@@ -101,7 +101,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-card-actions>
-                        <el-button :disabled="!isAuthenticated || status !== 'process'" style="width: 100%;margin-top:1rem; font-weight: bold; color:white" type="primary" :loading="loading" @click="handleBidProduct">
+                        <el-button :disabled="!isAuthenticated || status !== 'process' || !showFavouriteIcon" style="width: 100%;margin-top:1rem; font-weight: bold; color:white" type="primary" :loading="loading" @click="handleBidProduct">
                             ĐẤU GIÁ
                         </el-button>
                         <el-button
@@ -109,7 +109,7 @@
                             style="width: 100%;margin-top:1rem; font-weight: bold; color:white"
                             type="danger"
                             :loading="loading"
-                            :disabled="!isAuthenticated || status !== 'process'"
+                            :disabled="!isAuthenticated || status !== 'process' || !showFavouriteIcon"
                             @click="handleBuyProduct"
                         >
                             MUA NGAY
@@ -205,7 +205,7 @@ export default Vue.extend({
         },
         isAuthenticated():boolean {
             return this.$auth.isAuthenticated();
-        }
+        },
     },
     destroyed() {
         eventBus.$off('product_end');
