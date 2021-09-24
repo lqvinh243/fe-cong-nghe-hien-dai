@@ -13,13 +13,6 @@
             <v-flex md5 mt-5>
                 <v-layout>
                     <div id="preview">
-                        <!-- <v-card
-                            style="padding: 0 auto"
-                            class="mx-auto mt-4"
-                            outlined
-                        >
-                            <img v-if="item.imageUrl" mt-4 :src="item.imageUrl" class="image-upload" />
-                        </v-card> -->
                         <div class="box-thumbnail-avatar mt-3">
                             <div v-if="item.imageUrl" class="image-mapper">
                                 <img v-if="item.imageUrl" mt-4 :src="item.imageUrl" class="image-upload">
@@ -53,9 +46,9 @@
                             </div>
                         </div>
                         <input id="file" ref="inputFileSub" type="file" style="display: none;" @change="onChangeImageSub($event)">
-                        <div v-for="(image, index) in listImage" :key="index" class="image-mapper mr-4 mb-4">
-                            <img :src="image.imageUrl" class="image-upload">
-                            <div class="btn-default" @click="deleteImageSub(index)">
+                        <div v-for="(image, index) in listImage" :key="image.id" class="image-mapper mr-4 mb-4">
+                            <img :src="image.url" class="image-upload">
+                            <div class="btn-default" @click="deleteImageSub(image.id, index)">
                                 DELETE
                             </div>
                         </div>
@@ -65,17 +58,18 @@
                 <v-layout>
                     <h3>Mô tả sản phẩm</h3>
                 </v-layout>
-                <v-layout>
-                    <p v-for="(editorItem, index) in listProductDescription" :key="index" v-html="editorItem" />
+                <v-layout v-for="editorItem in listProductDescription" :key="editorItem.id" mt-4>
+                    <v-flex md-6>
+                        <p v-html="editorItem.content" />
+                    </v-flex>
+                    <v-flex md-6>
+                        <el-button type="danger" circle icon="el-icon-delete" style="color:white" @click="removeProductDesc(editorItem.id)" />
+                    </v-flex>
                 </v-layout>
                 <v-layout mt-3>
                     <el-button type="primary" style="color:white" @click="handleShowPopupDescription">
                         Thêm Mô tả
                     </el-button>
-                    <!-- <client-only>
-                        <ckeditor v-model="editorData" :config="editorConfig" value="Hello, World!" @change="handleChange" />
-                    </client-only> -->
-                    <!-- <p v-html="editorData" /> -->
                 </v-layout>
             </v-flex>
             <v-flex md1 />
@@ -106,32 +100,6 @@
 
                                 <v-divider />
                             </div>
-                            <!-- <v-list-item-title class="text-h5 mb-1">
-                                <v-layout md12 my-2>
-                                    Giá hiện tại: <span class="ml-2 color-primary">{{ priceCurrent }}$</span>
-                                </v-layout>
-                                <v-layout md12 my-2>
-                                    Giá Mua ngay: <span class="ml-2 color-primary">{{ priceBid }}$</span>
-                                </v-layout>
-                                <v-layout md12 my-2>
-                                    Tình trạng: <span class="ml-2 color-primary">{{ mapStatusProduct(status) }}</span>
-                                </v-layout>
-                                <v-layout md12 my-2>
-                                    Thời gian con lai: <span class="ml-2 color-primary">{{ timeExpire }}</span>
-                                </v-layout>
-                                <v-layout md12 my-2>
-                                    Bước nhảy: <span class="ml-2 color-primary">{{ stepPrice }}$</span>
-                                </v-layout>
-                                <v-layout md12 my-2>
-                                    Thông tin bidder đang đặt giá cao nhất: <span class="ml-2 color-primary">{{ bidderName }}</span>
-                                </v-layout>
-                                <v-layout md12 my-2>
-                                    Ngày đăng sản phẩm: <span class="ml-2 text-info-auction color-primary">{{ formatDate(createdAt) }}</span>
-                                </v-layout>
-                                <v-layout md12 my-2>
-                                    Số lượt ra giá hiện tại: <span class="ml-2 text-info-auction color-primary">{{ totalAuc }}</span>
-                                </v-layout>
-                            </v-list-item-title> -->
                             <v-list-item three-line>
                                 <v-list-item-content style="margin-right:0 !important">
                                     <div class="text-overline">
@@ -219,32 +187,38 @@
                         </nuxt-link> to bidding!
                     </p>
                 </v-card>
-
-                <v-card
-                    style="padding: 0 auto"
-                    class="mx-auto mt-4"
-                    outlined
-                >
-                    <v-list-item three-line>
-                        <v-list-item-content style="margin-right:0 !important">
-                            <v-list-item-title class="text-h5 mb-1">
-                                <v-layout md12 mt-1>
-                                    Danh mục: {{ category }}
-                                </v-layout>
-                                <v-layout md12 mt-1>
-                                    Người Bán: {{ seller }}
-                                </v-layout>
-                                <v-layout mt-1>
-                                    <h4> Mô tả: </h4>
-                                </v-layout>
-                                <v-layout>
-                                    <p v-for="(editorItem, index) in description" :key="index" v-html="editorItem" />
-                                </v-layout>
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-card-actions />
-                </v-card>
+                <div class="text-center">
+                    <v-dialog
+                        v-model="dialogCkeditor"
+                        width="500"
+                    >
+                        <v-card>
+                            <v-card-title class="text-h5 grey lighten-2">
+                                Mô tả Sản phẩm
+                            </v-card-title>
+                            <v-card-text>
+                                <client-only>
+                                    <ckeditor v-model="editorData" :config="editorConfig" value="Hello, World!" />
+                                </client-only>
+                            </v-card-text>
+                            <v-divider />
+                            <v-card-actions>
+                                <v-spacer />
+                                <el-button type="primary" style="color: white" @click="handleCloseProductDescription(true)">
+                                    Lưu
+                                </el-button>
+                                <el-button
+                                    type="primary"
+                                    style="color: white"
+                                    text
+                                    @click="handleCloseProductDescription(false)"
+                                >
+                                    Hủy
+                                </el-button>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
+                </div>
             </v-flex>
         </v-layout>
         <DialogBidPrice :product-id="id" :price-now="priceCurrent" :price="priceCurrent + stepPrice" :dialog-visible="dialogBidVisible" @handelCloseBid="closeBidDialog" />
@@ -367,17 +341,24 @@ export default Vue.extend({
                 this.step = result.data.stepPrice;
                 this.category = result.data.category.name;
                 this.createdAt = result.data.createdAt;
-                // this.bidderName = result.data.bidder ? `${result.data.bidder.firstName} ${result.data.bidder.lastName ?? ''}` : 'Khong co thong tin';
-                // this.totalAuc = result.data.statistic ? result.data.statistic.auctions : 0;
-                // if (result.data.productDescription) {
-                //     // this.imageUrl = ;
-                //     this.image = result.data.productDescription[0].url;
-                //     this.item.imageUrl = result.data.productDescription[0].url;
-                //     result.data.productDescription.forEach((elementDesc:any) => {
-                //         this.description.push(elementDesc.data.data.content);
-                //     });
-                // }
+
+                this.item.imageUrl = result.data.productImages[0].url;
+                this.listProductDescription = result.data.productDescription;
+                for (let i = 1; i < result.data.productImages.length; i++)
+                    this.listImage.push(result.data.productImages[i]);
             }
+        },
+
+        async removeProductDesc(descId: string) {
+            const result = await productService.deleteProduct(descId)
+                .catch(error => {
+                    this.$notify.error({
+                        title: 'Error',
+                        message: error.message || 'Cannot delete product description!'
+                    });
+                });
+            if (result)
+                console.log(result);
         },
 
         async handlePublicProduct() {
@@ -424,10 +405,31 @@ export default Vue.extend({
             this.dialogCkeditor = true;
         },
 
-        handleCloseProductDescription(isSave: Boolean) {
+        async handleCloseProductDescription(isSave: Boolean) {
             this.dialogCkeditor = false;
-            if (!isSave)
-                this.editorData = '';
+            if (isSave) {
+                // call api save
+                const content = [];
+                content.push(this.editorData);
+                const params = {
+                    productId: this.productId,
+                    content
+                };
+                const result = await productService.addProductDescription(params)
+                    .catch(error => {
+                        this.$notify.error({
+                            title: 'Error',
+                            message: error.message || 'Cannot add product description!'
+                        });
+                    });
+                console.log(result);
+                if (result && result.data) {
+                    // this.$notify.success({
+                    //     title: 'Thành công',
+                    //     message: 'Xóa danh hình ảnh thành công'
+                    // });
+                }
+            }
         },
 
         uploadImageSub() {
@@ -445,8 +447,21 @@ export default Vue.extend({
             }
         },
 
-        deleteImageSub(index: number) {
+        async deleteImageSub(id: string, index: any) {
             this.listImage.splice(index, 1);
+            const result = await productService.deleteProductImage(id)
+                .catch(error => {
+                    this.$notify.error({
+                        title: 'Error',
+                        message: error.message || 'Cannot delete product image!'
+                    });
+                });
+            if (result && result.data) {
+                this.$notify.success({
+                    title: 'Thành công',
+                    message: 'Xóa danh hình ảnh thành công'
+                });
+            }
         },
 
         formatPrice(value: any) {

@@ -223,7 +223,8 @@ export default Vue.extend({
         },
         dialogCkeditor: false,
         showBtnCreate: true,
-        listProductDescription: []
+        listProductDescription: [],
+        isStricten: true
     }),
     created() {
         this.loadData();
@@ -337,7 +338,9 @@ export default Vue.extend({
                 form.append('expiredAt', this.expiredAtFormat);
                 form.append('bidPrice', this.bidPrice);
                 form.append('startPrice', this.startPrice);
-                form.append('isStricten', JSON.stringify(this.isExtension));
+                form.append('isStricten', JSON.stringify(this.isStricten));
+                form.append('isExtendedExpired', JSON.stringify(this.isExtension));
+
                 const result = await productService.createProduct(form)
                     .catch(error => {
                         this.$notify.error({

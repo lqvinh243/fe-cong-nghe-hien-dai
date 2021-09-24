@@ -65,7 +65,19 @@ export const productService = {
         return $axios.$post('/api/v1/product-descriptions', productInfo);
     },
 
-    publicProduct(productId: String) {
-        return $axios.$get(`/api/v1/products/${productId}/process`);
+    publicProduct(productId: string) {
+        return $axios.$put(`/api/v1/products/${productId}/process`);
+    },
+
+    deleteProductDescription(id: string) {
+        return $axios.$delete(`/api/v1/product-descriptions/${id}`);
+    },
+
+    deleteProductImage(id: string) {
+        return $axios.$delete(`/api/v1/product-images/${id}`);
+    },
+
+    addProductDescription(data: any) {
+        return $axios.$post('/api/v1/product-descriptions/multiple', data);
     }
 };
