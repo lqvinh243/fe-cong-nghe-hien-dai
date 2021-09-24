@@ -8,18 +8,11 @@
         <v-divider />
         <v-layout row mt-5 ml-3>
             <v-flex md5>
-                <v-layout row>
+                <v-layout row class="mt-5">
                     <h3>Upload Hình chính Sản phẩm</h3>
                 </v-layout>
                 <v-layout>
                     <div id="preview">
-                        <!-- <v-card
-                            style="padding: 0 auto"
-                            class="mx-auto mt-4"
-                            outlined
-                        >
-                            <img v-if="item.imageUrl" mt-4 :src="item.imageUrl" class="image-upload" />
-                        </v-card> -->
                         <div class="box-thumbnail-avatar mt-3">
                             <div v-if="item.imageUrl" class="image-mapper">
                                 <img v-if="item.imageUrl" mt-4 :src="item.imageUrl" class="image-upload">
@@ -126,7 +119,7 @@
                                     type="number"
                                 />
                                 <v-text-field
-                                    v-model="priceNow"
+                                    v-model="bidPrice"
                                     label="Giá Mua ngay"
                                     prefix="$"
                                     type="number"
@@ -153,14 +146,6 @@
                             <el-button v-if="showBtnCreate" type="primary" style="color:white" @click="handleCreateProduct">
                                 Đăng Sản phẩm
                             </el-button>
-                            <div v-else>
-                                <el-button type="primary" style="color:white" @click="handlePublicProduct">
-                                    Public Sản phẩm
-                                </el-button>
-                                <el-button type="primary" style="color:white" @click="handleUpdateProduct">
-                                    Cập nhật Sản phẩm
-                                </el-button>
-                            </div>
                         </v-list-item-content>
                     </v-list-item>
                     <v-card-actions />
@@ -219,7 +204,7 @@ export default Vue.extend({
             imageUrl: null
         },
         startPrice: null,
-        priceNow: null,
+        bidPrice: null,
         listImage: [],
         productName: '',
         step: null,
@@ -283,8 +268,10 @@ export default Vue.extend({
 
         onChange(e: any) {
             const file = e.target.files[0];
-            this.image = file;
-            this.item.imageUrl = URL.createObjectURL(file);
+            if (file) {
+                this.image = file;
+                this.item.imageUrl = URL.createObjectURL(file);
+            }
         },
 
         handleShowPopupDescription() {
@@ -303,11 +290,13 @@ export default Vue.extend({
 
         onChangeImageSub(e: any) {
             const file = e.target.files[0];
-            const fileUrl = URL.createObjectURL(file);
-            this.listImage.push({
-                image: file,
-                imageUrl: fileUrl
-            });
+            if (file) {
+                const fileUrl = URL.createObjectURL(file);
+                this.listImage.push({
+                    image: file,
+                    imageUrl: fileUrl
+                });
+            }
         },
 
         deleteImageSub(index: number) {
@@ -346,7 +335,9 @@ export default Vue.extend({
                 form.append('categoryId', this.selectCategory);
                 form.append('stepPrice', this.step);
                 form.append('expiredAt', this.expiredAtFormat);
-                form.append('bidPrice', this.startPrice);
+                form.append('bidPrice', this.bidPrice);
+                form.append('startPrice', this.startPrice);
+                form.append('isStricten', JSON.stringify(this.isExtension));
                 const result = await productService.createProduct(form)
                     .catch(error => {
                         this.$notify.error({
@@ -365,8 +356,9 @@ export default Vue.extend({
                     // save info ckeditor
                     await this.handleSaveProductDescription(id);
                     await this.getListDescriptionProductDrag(id);
-                    this.editorData = '';
-                    this.showBtnCreate = false;
+                    // this.editorData = '';
+                    // this.showBtnCreate = false;
+                    this.$router.push('/create-product/' + id);
                 }
             }
         },
@@ -419,14 +411,6 @@ export default Vue.extend({
                     });
                 });
             console.log(result);
-        },
-
-        handlePublicProduct() {
-
-        },
-
-        handleUpdateProduct() {
-
         }
     }
 });
