@@ -112,7 +112,7 @@ export default Vue.extend({
             else {
                 const imagePrimary = this.product.productImages.find((item :any) => item.isPrimary === true);
                 if (imagePrimary)
-                    return `https://webtest.engineer/node-core/${imagePrimary.url}`;
+                    return `https://storage.webtest.engineer/node-core/${imagePrimary.url}`;
             }
             return '';
         },
