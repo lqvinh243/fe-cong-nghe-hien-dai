@@ -8,6 +8,9 @@
         <el-button v-if="showLoadMore" type="primary" style="width:10%" @click="loadMore">
             Load more
         </el-button>
+        <h1 v-if="!productBidding.length">
+            Không có sản phẩm nào
+        </h1>
     </div>
 </template>
 

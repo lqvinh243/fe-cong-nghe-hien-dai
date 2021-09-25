@@ -62,7 +62,7 @@ export default Vue.extend({
         ],
         profiles: [
             { title: 'Đăng nhập', id: 'login', isAuth: false },
-            { title: 'Đăng ký', id: 'regsiter', isAuth: false },
+            { title: 'Đăng ký', id: 'register', isAuth: false },
             { title: 'Profile', id: 'my-profile', isAuth: true },
             { title: 'Logout', id: 'logout', isAuth: true }],
         listSearch: [],
@@ -120,6 +120,7 @@ export default Vue.extend({
                 this.$router.push('/login');
                 break;
             case 'my-profile':
+            case 'register':
             case 'login':
                 this.$router.push(`/${path}`);
                 break;

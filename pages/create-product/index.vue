@@ -236,10 +236,10 @@ export default Vue.extend({
             this.showBtnCreate = true;
         },
 
-        async loadCategory(id: string = '') {
-            let query = '';
-            if (id)
-                query += `parentId=${id}`;
+        async loadCategory(_id: string = '') {
+            const query = 'isIgnoreParent=true';
+            // if (id)
+            //     query += `parentId=${id}`;
 
             const result = await categoryService.findCategory(query).catch(error => {
                 this.$notify.error({

@@ -53,9 +53,9 @@
                                 :disabled="scope.row.isBlock"
                                 round
                                 style="color: white"
-                                type="primary"
+                                type="danger"
                                 :loading="loading"
-                                title="Đánh giá người thắng"
+                                title="Cấm đấu giá"
                                 @click="handleBlock(scope.row.id)"
                             >
                                 <v-icon class="format-icon">

@@ -33,7 +33,7 @@
 
                 <el-table-column fixed prop="name" label="Tên Sản Phẩm" />
 
-                <el-table-column fixed label="Trạng Thái">
+                <el-table-column width="180" fixed label="Trạng Thái">
                     <template slot-scope="scope">
                         {{ mapStatusProduct(scope.row.status) }}
                     </template>
@@ -41,7 +41,20 @@
                 <el-table-column fixed label="Hành Động" class="text-center">
                     <template slot-scope="scope">
                         <el-button
-                            :disabled="scope.row.status !== 'end'"
+                            :disabled="scope.row.status !== 'end' || scope.row.isReadyCancel"
+                            round
+                            style="color: white"
+                            type="primary"
+                            :loading="loading"
+                            title="Hủy bỏ giao dịch"
+                            @click="handleCancelProduct(scope.row.id)"
+                        >
+                            <v-icon class="format-icon">
+                                {{ 'mdi mdi-account-cancel' }}
+                            </v-icon>
+                        </el-button>
+                        <el-button
+                            :disabled="!['end','cancel'].includes(scope.row.status)"
                             round
                             style="color: white"
                             type="primary"
@@ -52,7 +65,6 @@
                             <v-icon class="format-icon">
                                 {{ 'mdi mdi-comment-processing-outline' }}
                             </v-icon>
-                            <!-- <img src="~/assets/images/eye-solid.svg" class="format-icon" alt=""> -->
                         </el-button>
                         <el-button
                             round
@@ -184,7 +196,7 @@ export default Vue.extend({
         },
 
         handleFeedback(product: any) {
-            if (product.status === 'end') {
+            if (['end', 'cancel'].includes(product.status)) {
                 this.product = product;
                 this.dialogVisible = true;
             }
@@ -195,6 +207,31 @@ export default Vue.extend({
             case 'feedbackForm':
                 this.dialogVisible = false;
             }
+        },
+
+        async  handleCancelProduct(id: string) {
+            await this.$confirm('Việc hủy bỏ sản phẩm sẽ đánh giá xấu người mua với nội dung "Người thắng không thanh toán"?', 'Cảnh báo', {
+                confirmButtonText: 'Xác nhận',
+                cancelButtonText: 'Hủy bỏ',
+                type: 'warning'
+            }).then(async () => {
+                this.$nuxt.$loading.start();
+                const result = await productService.cancelProduct(id).catch(error => {
+                    this.$notify.error({
+                        title: 'Lỗi',
+                        message: error.message || 'Không thể hủy bỏ sản phẩm'
+                    });
+                });
+                if (result && result.data) {
+                    this.$notify.success({
+                        title: 'Thành công',
+                        message: 'Hủy bỏ sản phẩm thành công'
+                    });
+                }
+            }).catch(() => {
+            }); ;
+
+            this.$nuxt.$loading.finish();
         }
     }
 });

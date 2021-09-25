@@ -53,7 +53,7 @@
                                         </h3>
                                     </el-col>
                                     <el-col :span="6" :offset="6">
-                                        <el-button class="ml-auto" :disabled="!isAuthenticated || status !== 'process' || !showFavouriteIcon" @click="handleBidProductAuto">
+                                        <el-button class="ml-auto" :disabled="!isAuthenticated || status !== 'process' || !showFavouriteIcon || sellerId === userId" @click="handleBidProductAuto">
                                             Đấu giá tự động
                                         </el-button>
                                     </el-col>
@@ -101,7 +101,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-card-actions>
-                        <el-button :disabled="!isAuthenticated || status !== 'process' || !showFavouriteIcon" style="width: 100%;margin-top:1rem; font-weight: bold; color:white" type="primary" :loading="loading" @click="handleBidProduct">
+                        <el-button :disabled="!isAuthenticated || status !== 'process' || !showFavouriteIcon || sellerId === userId" style="width: 100%;margin-top:1rem; font-weight: bold; color:white" type="primary" :loading="loading" @click="handleBidProduct">
                             ĐẤU GIÁ
                         </el-button>
                         <el-button
@@ -109,7 +109,7 @@
                             style="width: 100%;margin-top:1rem; font-weight: bold; color:white"
                             type="danger"
                             :loading="loading"
-                            :disabled="!isAuthenticated || status !== 'process' || !showFavouriteIcon"
+                            :disabled="!isAuthenticated || status !== 'process' || !showFavouriteIcon || sellerId === userId"
                             @click="handleBuyProduct"
                         >
                             MUA NGAY
@@ -159,6 +159,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { mapGetters } from 'vuex';
 import momment from 'moment';
 import { ROLE_ID } from '~/commom/enum';
 import BidPriceAutoDialog from '~/components/dialogs/BidPriceAutoDialog.vue';
@@ -181,6 +182,7 @@ export default Vue.extend({
         priceBid: null as number | null,
         description: [] as any,
         timeExpire: 0,
+        sellerId: '',
         seller: '' as any,
         likeProduct: false as boolean,
         stepPrice: 0 as number,
@@ -197,6 +199,7 @@ export default Vue.extend({
     }),
 
     computed: {
+        ...mapGetters('auth', ['userId']),
         showFavouriteIcon():boolean {
             return this.$auth.isRoles(ROLE_ID.BIDDER, ROLE_ID.SELLER);
         },
@@ -247,9 +250,29 @@ export default Vue.extend({
             this.dialogBidVisible = true;
         },
 
-        handleBuyProduct() {
+        async  handleBuyProduct() {
             this.handleAuthenticated();
-            this.dialogBuyNowVisible = true;
+            // this.dialogBuyNowVisible = true;
+            await this.$confirm('Bạn có chắc chắn mua ngay sản phẩm?', 'Xác nhận', {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+            }).then(async () => {
+                const result = await productService.buyProduct(this.id).catch(_error => {
+                    this.$notify.error({
+                        title: 'Lỗi',
+                        message: 'Bạn không thể mua sản phẩm này!'
+                    });
+                });
+                if (result) {
+                    this.$notify.success({
+                        title: 'Thành công',
+                        message: 'Chúc mừng bạn, kết quả sẽ được thông báo qua email!!'
+                    });
+                    this.$forceUpdate();
+                }
+            }).catch(() => {
+            });
         },
 
         handleBidProductAuto() {
@@ -278,6 +301,7 @@ export default Vue.extend({
                     });
                 }
                 this.timeExpire = this.formatDateExpired(result.data);
+                this.sellerId = result.data.seller.id;
                 this.seller = `${result.data.seller.firstName} ${result.data.seller.lastName ?? ''}`;
                 this.stepPrice = result.data.stepPrice;
                 this.category = result.data.category.name;
