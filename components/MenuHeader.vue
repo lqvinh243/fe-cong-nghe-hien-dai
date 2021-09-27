@@ -63,8 +63,8 @@ export default Vue.extend({
         profiles: [
             { title: 'Đăng nhập', id: 'login', isAuth: false },
             { title: 'Đăng ký', id: 'register', isAuth: false },
-            { title: 'Profile', id: 'my-profile', isAuth: true },
-            { title: 'Logout', id: 'logout', isAuth: true }],
+            { title: 'Thông tin cá nhân', id: 'my-profile', isAuth: true },
+            { title: 'Đăng xuất', id: 'logout', isAuth: true }],
         listSearch: [],
         loading: false,
         search: null,

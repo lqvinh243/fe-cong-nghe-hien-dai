@@ -85,18 +85,18 @@ export default Vue.extend({
             },
             rules: {
                 email: [
-                    { required: true, message: 'Please input Email!', trigger: 'blur' },
-                    { type: 'email', message: 'Email is invalid!', trigger: 'blur' },
+                    { required: true, message: 'Vui lòng nhập địa chỉ Email!', trigger: 'blur' },
+                    { type: 'email', message: 'Địa chỉ Email sai định dạng!', trigger: 'blur' },
                 ],
                 password: [
                     {
                         required: true,
-                        message: 'Please input Password!',
+                        message: 'Vui lòng nhập mật khẩu!',
                         trigger: 'blur',
                     },
                     {
                         min: 6,
-                        message: 'Length should be greater than 6!',
+                        message: 'Chiều dài mật khẩu phải lớn hơn 6!',
                         trigger: 'blur',
                     },
                 ],

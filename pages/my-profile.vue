@@ -12,23 +12,21 @@
                                         <img :src="avatarUrl" alt="user" style="max-width:100px;max-height:100px;" @error="replaceByDefault">
                                     </div>
                                     <label class="filebutton profile-pic-edit">
-                                        <p>Edit</p>
+                                        <p>Chỉnh sửa</p>
                                         <span><input id="myfile" type="file" @change="handleChangeImage"></span>
                                     </label>
                                 </div>
                                 <div class="content">
-                                    <p class="username">
-                                        ABC
-                                    </p>
+                                    <p class="username" />
                                     <span class="email">abc@gmail.com</span>
                                     <p>
                                         {{ mapRoleDisplay() }}
                                     </p>
                                     <p v-if="isAlreadyRq && isBidder">
-                                        Ban dang cho duyet len nguoi ban!
+                                        Bạn đang chờ duyệt lên thành người bán
                                     </p>
                                     <el-button class="custom-button" @click="showChangePassword">
-                                        Change password
+                                        Đổi mật khẩu
                                     </el-button>
                                 </div>
                             </div>
@@ -44,7 +42,7 @@
                         </el-col>
                         <el-col :span="12" class="text-right">
                             <el-button v-if="isBidder" :disabled="isAlreadyRq" @click="handleRequestUpgrade">
-                                Yeu cau duoc ban
+                                Yêu cầu được bán
                             </el-button>
                         </el-col>
                     </el-row>
@@ -58,36 +56,36 @@
                             label-width="120px"
                         >
                             <el-form-item label-width="auto" prop="firstName">
-                                <el-input v-model="myProfile.firstName" placeholder="First name" />
+                                <el-input v-model="myProfile.firstName" placeholder="Tên" />
                             </el-form-item>
                             <el-form-item label-width="auto" prop="lastName">
-                                <el-input v-model="myProfile.lastName" placeholder="Last name" />
+                                <el-input v-model="myProfile.lastName" placeholder="Họ và tên đệm" />
                             </el-form-item>
                             <el-form-item label-width="auto" prop="email">
-                                <el-input v-model="myProfile.email" placeholder="Email" />
+                                <el-input v-model="myProfile.email" placeholder="Địa chỉ Email" />
                             </el-form-item>
                             <el-form-item label-width="auto" prop="birthday">
                                 <el-date-picker
                                     v-model="myProfile.birthday"
                                     type="date"
-                                    placeholder="Birthday"
+                                    placeholder="Ngày sinh"
                                     :picker-options="pickerOptions"
                                 />
                             </el-form-item>
 
                             <el-form-item v-if="showAddressInput" label-width="auto" prop="address">
-                                <el-input v-model="myProfile.address" placeholder="Address" />
+                                <el-input v-model="myProfile.address" placeholder="Địa chỉ" />
                             </el-form-item>
                             <hr>
                             <el-button class="custom-save" @click="handleSave('rulesProfile')">
-                                Save change
+                                Lưu thay đổi
                             </el-button>
                         </el-form>
                     </div>
                 </div>
             </div>
             <el-dialog
-                title="Update password"
+                title="Cập nhật mật khẩu"
                 :visible.sync="dialogVisible"
                 width="30%"
                 :show-close="false"
@@ -103,13 +101,13 @@
                     label-width="120px"
                 >
                     <el-form-item label-width="auto" prop="oldPassword">
-                        <el-input v-model="passwordForm.oldPassword" placeholder="Old Password" type="password" autocomplete="off" />
+                        <el-input v-model="passwordForm.oldPassword" placeholder="Mật khẩu cũ" type="password" autocomplete="off" />
                     </el-form-item>
                     <el-form-item label-width="auto" prop="password">
-                        <el-input v-model="passwordForm.password" placeholder="Password" type="password" autocomplete="off" />
+                        <el-input v-model="passwordForm.password" placeholder="Mật khẩu mới" type="password" autocomplete="off" />
                     </el-form-item>
                     <el-form-item label-width="auto" prop="rePassword">
-                        <el-input v-model="passwordForm.rePassword" placeholder="Re-Password" type="password" autocomplete="off" />
+                        <el-input v-model="passwordForm.rePassword" placeholder="Nhập lại mật khẩu mới" type="password" autocomplete="off" />
                     </el-form-item>
 
                     <el-form-item>
@@ -137,12 +135,12 @@ export default {
     data() {
         const validateOldPass = (_rule:any, value:string, callback:any) => {
             if (value === '')
-                callback(new Error('Please input the password'));
+                callback(new Error('Vui lòng nhập mật khẩu cũ!'));
             callback();
         };
         const validatePass = (_rule:any, value:string, callback:any) => {
             if (value === '')
-                callback(new Error('Please input the password'));
+                callback(new Error('Vui lòng nhập mật khẩu mới!'));
             else {
                 const ref = this.$refs.passwordForm as any;
                 const that = this as any;
@@ -154,11 +152,11 @@ export default {
         };
         const validateRePass = (_rule:any, value:string, callback:any) => {
             if (value === '')
-                callback(new Error('Please input the re-password'));
+                callback(new Error('Vui lòng nhập lại mật khẩu mới!'));
             else {
                 const that = this as any;
                 if (that.passwordForm.rePassword !== that.passwordForm.password)
-                    callback(new Error('Two inputs don\'t match!'));
+                    callback(new Error('Mật khẩu nhập lại không khớp!'));
 
                 callback();
             }
@@ -169,10 +167,6 @@ export default {
                     return time.getTime() > Date.now();
                 }
             },
-            options: [
-                { key: 1, value: 'Seller' },
-                { key: 2, value: 'Bidder' }
-            ],
             selectKey: '',
             loadingRemote: false,
             myProfile: {
@@ -203,39 +197,39 @@ export default {
                 firstName: [
                     {
                         required: true,
-                        message: 'Please input First name!',
+                        message: 'Vui lòng nhập tên!',
                         trigger: 'blur',
                     }
                 ],
                 address: [
                     {
                         required: true,
-                        message: 'Please input Address!',
+                        message: 'Vui lòng nhập địa chỉ!',
                         trigger: 'blur',
                     }
                 ],
                 email: [
                     {
                         required: true,
-                        message: 'Please input Email!',
+                        message: 'Vui lòng nhập Email!',
                         trigger: 'blur',
                     },
                     {
                         type: 'email',
-                        message: 'Email is invalid!',
+                        message: 'Email bị sai định dạng!',
                         trigger: 'blur',
                     }
                 ],
                 birthday: [
                     {
                         required: true,
-                        message: 'Please select birthday!',
+                        message: 'Vui lòng nhập sinh nhật!',
                         trigger: 'blur',
                     },
                     {
                         type: 'date',
                         max: new Date(),
-                        message: 'Please select birthday!',
+                        message: 'Ngày sinh bị sai định dạng!',
                         trigger: 'blur',
                     },
                 ]
@@ -349,13 +343,13 @@ export default {
         mapRoleDisplay() {
             switch (this.roleId) {
             case ROLE_ID.SUPER_ADMIN:
-                return 'Quan tri vien';
+                return 'Quản trị viên';
             case ROLE_ID.SELLER:
-                return 'Nguoi ban';
+                return 'NgườiF bán';
             case ROLE_ID.BIDDER:
-                return 'Nguoi mua';
+                return 'Người mua';
             default:
-                return 'Du lieu bi loi';
+                return 'Dữ liệu bị lỗi';
             }
         },
         async handleRequestUpgrade() {

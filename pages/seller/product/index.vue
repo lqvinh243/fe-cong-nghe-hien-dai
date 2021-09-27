@@ -41,6 +41,7 @@
                 <el-table-column fixed label="Hành Động" class="text-center">
                     <template slot-scope="scope">
                         <el-button
+                            v-if="!['draft','process'].includes(scope.row.status)"
                             :disabled="scope.row.status !== 'end' || scope.row.isReadyCancel"
                             round
                             style="color: white"
@@ -80,7 +81,7 @@
                         </el-button>
                         <nuxt-link :to="`/seller/bid/${scope.row.id}`">
                             <el-button
-                                v-if="scope.row.status !== 'draft'"
+                                v-if="!['draft','end','cancel'].includes(scope.row.status)"
                                 round
                                 style="color: white"
                                 type="danger"
