@@ -335,9 +335,8 @@ export default Vue.extend({
                 this.bidPrice = result.data.bidPrice;
                 this.isExtension = result.data.isExtendedExpired;
                 this.description = [];
-                const timeNow = momment(new Date());
-                this.timeExpire = timeNow.from(result.data.expiredAt, true);
-                this.seller = `${result.data.seller.firstName} ${result.data.seller.lastName ?? ''}`;
+                this.expiredAt = result.data.expiredAt;
+                // this.seller = `${result.data.seller.firstName} ${result.data.seller.lastName ?? ''}`;
                 this.step = result.data.stepPrice;
                 this.category = result.data.category.name;
                 this.createdAt = result.data.createdAt;
@@ -369,8 +368,12 @@ export default Vue.extend({
                         message: error.message || 'Cannot public product!'
                     });
                 });
-            if (result)
-                console.log(result);
+            if (result && result.data) {
+                this.$notify.success({
+                    title: 'Success',
+                    message: 'Public product success!'
+                });
+            }
         },
 
         handleUpdateProduct() {

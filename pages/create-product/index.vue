@@ -358,29 +358,9 @@ export default Vue.extend({
 
                     // save info ckeditor
                     await this.handleSaveProductDescription(id);
-                    await this.getListDescriptionProductDrag(id);
                     // this.editorData = '';
                     // this.showBtnCreate = false;
                     this.$router.push('/create-product/' + id);
-                }
-            }
-        },
-
-        async getListDescriptionProductDrag(id: string) {
-            const result = await productService.getProductDetailById(id)
-                .catch(error => {
-                    this.$notify.error({
-                        title: 'Error',
-                        message: error.message || 'Cannot get product desciption!'
-                    });
-                });
-            console.log(result);
-            if (result) {
-                this.listProductDescription = [];
-                if (result.data.productDescription) {
-                    result.data.productDescription.forEach((elementDesc:any) => {
-                        this.listProductDescription.push(elementDesc.data.data.content);
-                    });
                 }
             }
         },
