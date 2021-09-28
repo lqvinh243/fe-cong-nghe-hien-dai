@@ -77,11 +77,15 @@ export const productService = {
         return $axios.$delete(`/api/v1/product-descriptions/${id}`);
     },
 
+    addProductDescription(data: any) {
+        return $axios.$post('/api/v1/product-descriptions/multiple', data);
+    },
+
     deleteProductImage(id: string) {
         return $axios.$delete(`/api/v1/product-images/${id}`);
     },
 
-    addProductDescription(data: any) {
-        return $axios.$post('/api/v1/product-descriptions/multiple', data);
+    addProductImage(data: any) {
+        return $axios.$post('/api/v1/product-images', data);
     }
 };

@@ -58,12 +58,12 @@
                 <v-layout>
                     <h3>Mô tả sản phẩm</h3>
                 </v-layout>
-                <v-layout v-for="editorItem in listProductDescription" :key="editorItem.id" mt-4>
+                <v-layout v-for="(editorItem, index) in listProductDescription" :key="editorItem.id" mt-4>
                     <v-flex md-6>
                         <p v-html="editorItem.content" />
                     </v-flex>
                     <v-flex md-6>
-                        <el-button type="danger" circle icon="el-icon-delete" style="color:white" @click="removeProductDesc(editorItem.id)" />
+                        <el-button type="danger" circle icon="el-icon-delete" style="color:white" @click="removeProductDesc(editorItem.id, index)" />
                     </v-flex>
                 </v-layout>
                 <v-layout mt-3>
@@ -278,7 +278,8 @@ export default Vue.extend({
         step: null,
         item: {
             image: null,
-            imageUrl: null
+            imageUrl: null,
+            id: null
         },
         listImage: [],
         editorData: '',
@@ -340,24 +341,34 @@ export default Vue.extend({
                 this.step = result.data.stepPrice;
                 this.category = result.data.category.name;
                 this.createdAt = result.data.createdAt;
-
-                this.item.imageUrl = result.data.productImages[0].url;
                 this.listProductDescription = result.data.productDescription;
-                for (let i = 1; i < result.data.productImages.length; i++)
-                    this.listImage.push(result.data.productImages[i]);
+
+                // load image
+                result.data.productImages.forEach((element: any) => {
+                    if (element.isPrimary) {
+                        this.item.imageUrl = element.url;
+                        this.item.id = element.id;
+                    } else
+                        this.listImage.push(element);
+                });
             }
         },
 
-        async removeProductDesc(descId: string) {
-            const result = await productService.deleteProduct(descId)
+        async removeProductDesc(descId: string, index: any) {
+            const result = await productService.deleteProductDescription(descId)
                 .catch(error => {
                     this.$notify.error({
                         title: 'Error',
                         message: error.message || 'Cannot delete product description!'
                     });
                 });
-            if (result)
-                console.log(result);
+            if (result && result.data) {
+                this.listProductDescription.splice(index);
+                this.$notify.success({
+                    title: 'Success',
+                    message: 'Delete product description success!'
+                });
+            }
         },
 
         async handlePublicProduct() {
@@ -396,11 +407,53 @@ export default Vue.extend({
             this.$refs.inputFileMain.click();
         },
 
-        onChange(e: any) {
+        async onChange(e: any) {
             const file = e.target.files[0];
             if (file) {
                 this.image = file;
                 this.item.imageUrl = URL.createObjectURL(file);
+
+                // delete image main
+                if (this.item.id)
+                    await this.deleteImageSub(this.item.id, null);
+
+                // save image main
+                await this.uploadImageProduct(true);
+            }
+        },
+
+        async uploadImageProduct(isImageMain: any) {
+            const form = new FormData();
+            form.append('file', this.image);
+            form.append('productId', this.productId);
+            form.append('isPrimary', isImageMain);
+            const result = await productService.addProductImage(form)
+                .catch(error => {
+                    this.$notify.error({
+                        title: 'Error',
+                        message: error.message || 'Cannot upload product image!'
+                    });
+                });
+            if (result && result.data)
+                console.log(result);
+        },
+
+        async deleteImageSub(id: string, index: any) {
+            if (index)
+                this.listImage.splice(index, 1);
+
+            const result = await productService.deleteProductImage(id)
+                .catch(error => {
+                    this.$notify.error({
+                        title: 'Error',
+                        message: error.message || 'Cannot delete product image!'
+                    });
+                });
+            if (result && result.data) {
+                this.$notify.success({
+                    title: 'Thành công',
+                    message: 'Xóa danh hình ảnh thành công'
+                });
             }
         },
 
@@ -446,23 +499,6 @@ export default Vue.extend({
                 this.listImage.push({
                     image: file,
                     imageUrl: fileUrl
-                });
-            }
-        },
-
-        async deleteImageSub(id: string, index: any) {
-            this.listImage.splice(index, 1);
-            const result = await productService.deleteProductImage(id)
-                .catch(error => {
-                    this.$notify.error({
-                        title: 'Error',
-                        message: error.message || 'Cannot delete product image!'
-                    });
-                });
-            if (result && result.data) {
-                this.$notify.success({
-                    title: 'Thành công',
-                    message: 'Xóa danh hình ảnh thành công'
                 });
             }
         },
