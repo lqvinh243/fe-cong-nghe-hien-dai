@@ -348,7 +348,8 @@ export default Vue.extend({
                     if (element.isPrimary) {
                         this.item.imageUrl = element.url;
                         this.item.id = element.id;
-                    } else
+                    }
+                    else
                         this.listImage.push(element);
                 });
             }
@@ -439,21 +440,23 @@ export default Vue.extend({
         },
 
         async deleteImageSub(id: string, index: any) {
-            if (index)
+            if (index >= 0)
                 this.listImage.splice(index, 1);
 
-            const result = await productService.deleteProductImage(id)
-                .catch(error => {
-                    this.$notify.error({
-                        title: 'Error',
-                        message: error.message || 'Cannot delete product image!'
+            if (id) {
+                const result = await productService.deleteProductImage(id)
+                    .catch(error => {
+                        this.$notify.error({
+                            title: 'Error',
+                            message: error.message || 'Cannot delete product image!'
+                        });
                     });
-                });
-            if (result && result.data) {
-                this.$notify.success({
-                    title: 'Thành công',
-                    message: 'Xóa danh hình ảnh thành công'
-                });
+                if (result && result.data) {
+                    this.$notify.success({
+                        title: 'Thành công',
+                        message: 'Xóa danh hình ảnh thành công'
+                    });
+                }
             }
         },
 
@@ -465,11 +468,11 @@ export default Vue.extend({
             this.dialogCkeditor = false;
             if (isSave) {
                 // call api save
-                const content = [];
-                content.push(this.editorData);
+                const contents = [];
+                contents.push(this.editorData);
                 const params = {
                     productId: this.productId,
-                    content
+                    contents
                 };
                 const result = await productService.addProductDescription(params)
                     .catch(error => {
@@ -480,10 +483,19 @@ export default Vue.extend({
                     });
                 console.log(result);
                 if (result && result.data) {
-                    // this.$notify.success({
-                    //     title: 'Thành công',
-                    //     message: 'Xóa danh hình ảnh thành công'
-                    // });
+                    this.$notify.success({
+                        title: 'Thành công',
+                        message: 'Thêm mô tả hình ảnh thành công'
+                    });
+                    const result = await productService.getProductDetailById(this.productId)
+                        .catch(error => {
+                            this.$notify.error({
+                                title: 'Error',
+                                message: error.message || 'Cannot get product detail!'
+                            });
+                        });
+                    if (result)
+                        this.listProductDescription = result.data.productDescription;
                 }
             }
         },
@@ -500,6 +512,8 @@ export default Vue.extend({
                     image: file,
                     imageUrl: fileUrl
                 });
+                // save image sub
+                // await this.uploadImageProduct(false);
             }
         },
 
@@ -578,5 +592,88 @@ export default Vue.extend({
 
     .text-info-auction {
         font-weight: bold;
+    }
+
+    .text-name-product {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    }
+
+    .check-box-product div div label {
+        margin-top: 10px;
+    }
+
+    h1, h3, v-layout {
+        color: #0f0f0f;
+        font-weight: bold;
+    }
+
+    .image-upload {
+        box-shadow: 2px 2px #888888;
+        max-width: 400px;
+        max-height: 400px;
+    }
+
+    .image-mapper {
+        height: 250px;
+        width: 250px;
+        display: block;
+        position: relative;
+        cursor: pointer;
+    }
+
+    .image-mapper img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .image-mapper .btn-default {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    .box-thumbnail-avatar .upload-image {
+        position: relative;
+        height: 250px;
+        width: 250px;
+    }
+
+    .btn-add {
+        background-color: transparent;
+        border: 0;
+        font-family: "HKGrotesk-Light";
+        font-size: 80px;
+        color: #d95842;
+        outline: none;
+    }
+
+    .box-thumbnail-avatar .btn-default {
+        background-color: #fff;
+        border: 0;
+        padding: 7px 18px;
+        font-size: 1rem;
+        line-height: 1rem;
+        letter-spacing: .06rem;
+        color: #d95842;
+        box-shadow: 0 2px 4px 0 hsl(0deg 0% 84% / 50%);
+    }
+
+    .box-thumbnail-avatar .upload-image {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: #f5f5f5;
+    }
+
+    .list-image-sub {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
     }
 </style>
