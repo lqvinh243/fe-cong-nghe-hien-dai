@@ -89,7 +89,7 @@ export const productService = {
         return $axios.$post('/api/v1/product-images', data);
     },
 
-    updateProduct(data: any, productId: string) {
-        return $axios.$put('/api/v1/products/' + productId, data);
+    updateProduct(productId: string, data: any) {
+        return $axios.$put(`/api/v1/products/${productId}`, data);
     }
 };
