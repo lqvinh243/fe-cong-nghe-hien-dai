@@ -54,7 +54,7 @@
                         <p class="text-center">
                             Đăng nhập ngay để thực hiện đấu giá
                         </p>
-                        <nuxt-link to="/login" style="color: #fff" class="custom-button transparent">
+                        <nuxt-link to="/login" style="color: #fff" class="custom-login-button transparent">
                             Đăng nhập
                         </nuxt-link>
                     </div>
@@ -243,6 +243,24 @@ export default Vue.extend({
 
 .custom-button {
   margin-left: 30%;
+  font-size: 16px;
+  height: 50px;
+  color: #ffffff;
+  -webkit-border-radius: 30px;
+  -moz-border-radius: 30px;
+  border-radius: 30px;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 18px;
+  background: -moz-linear-gradient(90deg, #3da9f5 0%, #683df5 100%);
+  background: -ms-linear-gradient(90deg, #3da9f5 0%, #683df5 100%);
+  background: -webkit-linear-gradient(90deg, #3da9f5 0%, #683df5 100%);
+  box-shadow: -1.04px 4.891px 20px 0px rgb(69 49 183 / 50%);
+  font-family: "Roboto", sans-serif;
+}
+
+.custom-login-button {
+  margin-left: 25%;
   font-size: 16px;
   height: 50px;
   color: #ffffff;

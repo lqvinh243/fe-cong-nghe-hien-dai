@@ -3,7 +3,7 @@
         <el-select
             v-model="selectKey"
             class="w-25 my-4"
-            placeholder="Sap xep!"
+            placeholder="Sắp xếp theo"
             filterable
             remote
             reserve-keyword
@@ -12,14 +12,14 @@
             <el-option
                 v-for="option in options"
                 :key="option.key"
-                :label="option.name"
                 :value="option.key"
-            />
+                :label = "option.value"
+            />    
         </el-select>
         <el-select
             v-model="selectCategory"
             class="w-25 my-4"
-            placeholder="Danh muc!"
+            placeholder="Danh mục"
             filterable
             remote
             reserve-keyword
@@ -34,7 +34,7 @@
         </el-select>
         <el-breadcrumb separator="/">
             <el-breadcrumb-item :to="{ path: '/product' }">
-                Home
+                Trang chủ
             </el-breadcrumb-item>
             <el-breadcrumb-item v-for="(item,index) in breadcrumb" :key="index">
                 {{ item.name }}
@@ -78,11 +78,13 @@ export default Vue.extend({
         options: [
             {
                 name: 'Thoi gian giam dan',
-                key: 'asc(expiredAt)'
+                key: 'asc(expiredAt)',
+                value: 'Thời gian giảm dần'
             },
             {
                 name: 'Gia tang dan',
-                key: 'asc(priceNow)'
+                key: 'asc(priceNow)',
+                value: 'Giá tăng dần'
             }
         ],
         selectKey: null as any,

@@ -5,7 +5,7 @@
 
             <v-toolbar-title>
                 <NuxtLink :to="`/`">
-                    <span style="color:white"> Home </span>
+                    <span style="color:white"> Trang chủ </span>
                 </NuxtLink>
             </v-toolbar-title>
             <div class="search-header">
@@ -133,5 +133,9 @@ export default Vue.extend({
 <style scoped>
     .v-autocomplete__content .v-list__tile{
         height: auto;
+    }
+
+    .search-header{
+        width: 30%
     }
 </style>
