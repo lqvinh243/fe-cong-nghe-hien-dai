@@ -58,11 +58,11 @@
                 <v-layout>
                     <h3>Mô tả sản phẩm</h3>
                 </v-layout>
-                <v-layout v-for="(editorItem, index) in listProductDescription" :key="editorItem.id" mt-4>
-                    <v-flex md-6>
+                <v-layout v-for="(editorItem, index) in listProductDescription" :key="editorItem.id" row wrap mt-4>
+                    <v-flex md10>
                         <p v-html="editorItem.content" />
                     </v-flex>
-                    <v-flex md-6>
+                    <v-flex md2>
                         <el-button type="danger" circle icon="el-icon-delete" style="color:white" @click="removeProductDesc(editorItem.id, index)" />
                     </v-flex>
                 </v-layout>
@@ -118,7 +118,6 @@
                                             filterable
                                             remote
                                             reserve-keyword
-                                            @change="handleSelectCategory"
                                         >
                                             <el-option
                                                 v-for="option in categories"
@@ -234,6 +233,7 @@ import { ROLE_ID } from '~/commom/enum';
 import BidPriceAutoDialog from '~/components/dialogs/BidPriceAutoDialog.vue';
 import DialogBidPrice from '~/components/dialogs/BidPriceDialog.vue';
 import ConfirmBuyNowDialog from '~/components/dialogs/ConfirmBuyNowDialog.vue';
+import { categoryService } from '~/services/category';
 import { productService } from '~/services/product';
 import { productFavouriteService } from '~/services/product-favourite';
 
@@ -307,6 +307,7 @@ export default Vue.extend({
         if (!this.id)
             return this.$router.push('/404');
         this.loadProductDetail();
+        this.loadCategory();
         this.checkFavourite();
         momment.locale('vi');
     },
@@ -337,6 +338,8 @@ export default Vue.extend({
                 this.isExtension = result.data.isExtendedExpired;
                 this.description = [];
                 this.expiredAt = result.data.expiredAt;
+                this.startPrice = result.data.startPrice;
+                this.selectCategory = result.data.category.id;
                 // this.seller = `${result.data.seller.firstName} ${result.data.seller.lastName ?? ''}`;
                 this.step = result.data.stepPrice;
                 this.category = result.data.category.name;
@@ -388,20 +391,45 @@ export default Vue.extend({
             }
         },
 
-        handleUpdateProduct() {
+        async handleUpdateProduct() {
+            const form = new FormData();
+            form.append('name', this.productName);
+            form.append('categoryId', this.selectCategory);
+            form.append('stepPrice', this.step);
+            form.append('expiredAt', this.expiredAtFormat);
+            form.append('bidPrice', this.bidPrice);
+            form.append('startPrice', this.startPrice);
+            form.append('isExtendedExpired', JSON.stringify(this.isExtension));
 
+            const result = await productService.updateProduct(form, this.productId)
+                .catch(error => {
+                    this.$notify.error({
+                        title: 'Error',
+                        message: error.message || 'Unauthorized!'
+                    });
+                });
+            if (result && result.data) {
+                this.$notify.success({
+                    title: 'Thành công',
+                    message: 'Cập nhật sản phẩm thành công'
+                });
+            }
+            console.log(result);
         },
 
-        async handleSelectCategory() {
-            const item = this.categories.find((item:any) => item.id === this.selectCategory);
-            if (item) {
-                if (item.parentId) {
-                    this.products = [];
-                    const filters = `category.id:${item.id}`;
-                    await this.loadData(filters);
-                }
-                await this.loadCategory(this.selectCategory);
-            }
+        async loadCategory(_id: string = '') {
+            const query = 'isIgnoreParent=true';
+            // if (id)
+            //     query += `parentId=${id}`;
+
+            const result = await categoryService.findCategory(query).catch(error => {
+                this.$notify.error({
+                    title: 'Error',
+                    message: error.message || 'Cannot get category!'
+                });
+            });
+            if (result && result.data.length)
+                this.categories = result.data;
         },
 
         uploadImageMain() {
@@ -419,13 +447,13 @@ export default Vue.extend({
                     await this.deleteImageSub(this.item.id, null);
 
                 // save image main
-                await this.uploadImageProduct(true);
+                await this.uploadImageProduct(this.image, true);
             }
         },
 
-        async uploadImageProduct(isImageMain: any) {
+        async uploadImageProduct(image: any, isImageMain: any) {
             const form = new FormData();
-            form.append('file', this.image);
+            form.append('file', image);
             form.append('productId', this.productId);
             form.append('isPrimary', isImageMain);
             const result = await productService.addProductImage(form)
@@ -461,6 +489,7 @@ export default Vue.extend({
         },
 
         handleShowPopupDescription() {
+            this.editorData = '';
             this.dialogCkeditor = true;
         },
 
@@ -504,7 +533,7 @@ export default Vue.extend({
             this.$refs.inputFileSub.click();
         },
 
-        onChangeImageSub(e: any) {
+        async onChangeImageSub(e: any) {
             const file = e.target.files[0];
             if (file) {
                 const fileUrl = URL.createObjectURL(file);
@@ -513,7 +542,27 @@ export default Vue.extend({
                     imageUrl: fileUrl
                 });
                 // save image sub
-                // await this.uploadImageProduct(false);
+                await this.uploadImageProduct(file, false);
+                // load image to get id image
+                await this.loadImageSub();
+            }
+        },
+
+        async loadImageSub() {
+            const result = await productService.getProductDetailById(this.productId)
+                .catch(error => {
+                    this.$notify.error({
+                        title: 'Error',
+                        message: error.message || 'Cannot get product detail!'
+                    });
+                });
+            if (result) {
+                // load image
+                this.listImage = [];
+                result.data.productImages.forEach((element: any) => {
+                    if (element.isPrimary === false)
+                        this.listImage.push(element);
+                });
             }
         },
 
