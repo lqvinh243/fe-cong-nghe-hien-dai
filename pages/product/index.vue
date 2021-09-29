@@ -13,8 +13,8 @@
                 v-for="option in options"
                 :key="option.key"
                 :value="option.key"
-                :label = "option.value"
-            />    
+                :label="option.value"
+            />
         </el-select>
         <el-select
             v-model="selectCategory"
