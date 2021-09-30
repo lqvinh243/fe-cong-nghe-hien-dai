@@ -37,7 +37,7 @@
                     <el-row :gutter="0">
                         <el-col :span="12">
                             <h1 class="title">
-                                Profile
+                                Thông tin cá nhân
                             </h1>
                         </el-col>
                         <el-col :span="12" class="text-right">
@@ -111,11 +111,12 @@
                     </el-form-item>
 
                     <el-form-item>
-                        <el-button type="primary" @click="submitForm('passwordForm')">
-                            Submit
-                        </el-button>
+                       
                         <el-button @click="resetForm('passwordForm')">
-                            Cannel
+                            Hủy bỏ
+                        </el-button>
+                         <el-button type="success" @click="submitForm('passwordForm')">
+                            Lưu 
                         </el-button>
                     </el-form-item>
                 </el-form>
@@ -345,7 +346,7 @@ export default {
             case ROLE_ID.SUPER_ADMIN:
                 return 'Quản trị viên';
             case ROLE_ID.SELLER:
-                return 'NgườiF bán';
+                return 'Người bán';
             case ROLE_ID.BIDDER:
                 return 'Người mua';
             default:

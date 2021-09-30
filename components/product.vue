@@ -46,11 +46,11 @@
 
             <div ml-2 mr-2>
                 <div align="left" class="my-3 text-subtitle-1">
-                    Giá Hiện tại: {{ product.priceNow }}$
+                    Giá hiện tại: {{ product.priceNow }}$
                 </div>
 
                 <div align="left" class="text-subtitle-1">
-                    Giá Mua ngay: {{ product.bidPrice ? `${product.bidPrice}$` : '_' }}
+                    Giá mua ngay: {{ product.bidPrice ? `${product.bidPrice}$` : '_' }}
                 </div>
 
                 <div v-if="product.status === 'process'" align="left" class="my-3 text-subtitle-1">
@@ -61,9 +61,9 @@
                     Người chiến thắng: {{ displayNameWinner }}
                 </div>
 
-                <div align="left">
+                <!--<div align="left">
                     Trạng thái {{ displayStatus() }}
-                </div>
+                </div>-->
                 <div align="left">
                     Thời gian hết hạn: {{ displayFormatExpriedAt }}
                 </div>
@@ -71,6 +71,7 @@
                 <div align="left">
                     Danh mục: {{ product.category.name }}
                 </div>
+                
                 <div>
                     <el-button round style="width: 80%;margin-top:1rem; font-weight: bold; color:white" type="primary" :loading="loading" @click="showProductDetail(product.id)">
                         Chi tiết
