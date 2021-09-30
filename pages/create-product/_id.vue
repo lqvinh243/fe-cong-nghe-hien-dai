@@ -392,16 +392,24 @@ export default Vue.extend({
         },
 
         async handleUpdateProduct() {
-            const form = new FormData();
-            form.append('name', this.productName);
-            form.append('categoryId', this.selectCategory);
-            form.append('stepPrice', this.step);
-            form.append('expiredAt', this.expiredAtFormat);
-            form.append('bidPrice', this.bidPrice);
-            form.append('startPrice', this.startPrice);
-            form.append('isExtendedExpired', JSON.stringify(this.isExtension));
-
-            const result = await productService.updateProduct(form, this.productId)
+            // const form = new FormData();
+            // form.append('name', this.productName);
+            // form.append('categoryId', this.selectCategory);
+            // form.append('stepPrice', this.step);
+            // form.append('expiredAt', this.expiredAtFormat);
+            // form.append('bidPrice', this.bidPrice);
+            // form.append('startPrice', this.startPrice);
+            // form.append('isExtendedExpired', JSON.stringify(this.isExtension));
+            const formData = {
+                name: this.productName,
+                categoryId: this.selectCategory,
+                stepPrice: this.step,
+                expiredAt: this.expiredAtFormat,
+                bidPrice: this.bidPrice,
+                startPrice: this.startPrice,
+                isExtendedExpired: JSON.stringify(this.isExtension)
+            };
+            const result = await productService.updateProduct(this.productId, formData)
                 .catch(error => {
                     this.$notify.error({
                         title: 'Error',
