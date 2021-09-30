@@ -71,7 +71,7 @@
                 <div align="left">
                     Danh mục: {{ product.category.name }}
                 </div>
-                
+
                 <div>
                     <el-button round style="width: 80%;margin-top:1rem; font-weight: bold; color:white" type="primary" :loading="loading" @click="showProductDetail(product.id)">
                         Chi tiết

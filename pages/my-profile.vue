@@ -111,12 +111,11 @@
                     </el-form-item>
 
                     <el-form-item>
-                       
                         <el-button @click="resetForm('passwordForm')">
                             Hủy bỏ
                         </el-button>
-                         <el-button type="success" @click="submitForm('passwordForm')">
-                            Lưu 
+                        <el-button type="success" @click="submitForm('passwordForm')">
+                            Lưu
                         </el-button>
                     </el-form-item>
                 </el-form>
