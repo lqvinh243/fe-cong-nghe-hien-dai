@@ -21,6 +21,7 @@
                     :per-page-custom="[[1024,4],[768,3],[640,2],[320,1]]"
                     :space-padding="10"
                     :pagination-padding="20"
+                    
                 >
                     <Slide v-for="(item, index) in listProductAuction" :key="index" class="mx-1">
                         <product :product="item" />
@@ -63,7 +64,7 @@
                 </nuxt-link>
             </el-button>
         </v-layout>
-        <v-layout row wrap class="m-4" style="overflow:hidden">
+        <v-layout row wrap style="overflow:hidden">
             <client-only>
                 <carousel
                     v-if="listProductHighPrice && listProductHighPrice.length"
@@ -226,4 +227,7 @@ export default Vue.extend({
     font-size:25px
 }
 
+.mx-1{
+    flex-basis: 300px
+}
 </style>
