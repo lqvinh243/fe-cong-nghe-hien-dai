@@ -91,5 +91,9 @@ export const productService = {
 
     updateProduct(productId: string, data: any) {
         return $axios.$put(`/api/v1/products/${productId}`, data);
+    },
+
+    getListProductByCategory(categoryId: string) {
+        return $axios.$get(`/api/v1/products?categoryId=${categoryId}&limit=5`);
     }
 };

@@ -151,6 +151,27 @@
                 </v-card>
             </v-flex>
         </v-layout>
+        <v-layout class="mt-4">
+            <h3>Sản phẩm cùng Danh mục</h3>
+        </v-layout>
+        <v-layout row wrap class="mt-4 ml-4" style="overflow:hidden">
+            <client-only>
+                <client-only>
+                    <carousel
+                        v-if="listProductCategory && listProductCategory.length"
+                        :per-page="4"
+                        :per-page-custom="[[1024,4],[768,3],[640,2],[320,1]]"
+                        :space-padding="10"
+                        :pagination-padding="20"
+                    >
+                        <Slide v-for="(item, index) in listProductCategory" :key="index" class="mx-1">
+                            <product :product="item" />
+                        </Slide>
+                    </carousel>
+                </client-only>
+            </client-only>
+        </v-layout>
+
         <DialogBidPrice :product-id="id" :price-now="priceCurrent" :price="priceCurrent + stepPrice" :dialog-visible="dialogBidVisible" @handelCloseBid="closeBidDialog" />
         <BidPriceAutoDialog :product-id="id" :price-now="priceCurrent" :price="priceCurrent + stepPrice" :dialog-visible-auto="dialogBidAutoVisible" @handelCloseBid="closeBidDialog" />
         <ConfirmBuyNowDialog :product-id="id" :price-now="priceCurrent" :dialog-buy-now-visible="dialogBuyNowVisible" @handelCloseBid="closeBidDialog" />
@@ -165,12 +186,13 @@ import { ROLE_ID } from '~/commom/enum';
 import BidPriceAutoDialog from '~/components/dialogs/BidPriceAutoDialog.vue';
 import DialogBidPrice from '~/components/dialogs/BidPriceDialog.vue';
 import ConfirmBuyNowDialog from '~/components/dialogs/ConfirmBuyNowDialog.vue';
+import product from '~/components/product.vue';
 import eventBus from '~/plugins/event-bus';
 import { productService } from '~/services/product';
 import { productFavouriteService } from '~/services/product-favourite';
 
 export default Vue.extend({
-    components: { DialogBidPrice, BidPriceAutoDialog, ConfirmBuyNowDialog },
+    components: { DialogBidPrice, BidPriceAutoDialog, ConfirmBuyNowDialog, product },
     data: () => ({
         id: null as string | null,
         selection: null,
@@ -195,7 +217,8 @@ export default Vue.extend({
         bidderName: '',
         winnerName: '',
         totalAuc: 0,
-        isStricten: false
+        isStricten: false,
+        listProductCategory: []
     }),
 
     computed: {
@@ -310,7 +333,21 @@ export default Vue.extend({
                 this.winnerName = result.data.winner ? `${result.data.winner.firstName} ${result.data.winner.lastName ?? ''}` : '_';
                 this.totalAuc = result.data.statistic ? result.data.statistic.auctions : 0;
                 this.isStricten = !!result.data.isStricten;
+
+                this.loadListProductByCategory(result.data.category.id);
             }
+        },
+
+        async loadListProductByCategory(categoryId: string) {
+            const result = await productService.getListProductByCategory(categoryId)
+                .catch(_error => {
+                    this.$notify.error({
+                        title: 'Lỗi',
+                        message: 'Không thể lấy sản phẩm cùng danh mục!'
+                    });
+                });
+            if (result)
+                this.listProductCategory = result.data;
         },
 
         formatDate(date:any) {
