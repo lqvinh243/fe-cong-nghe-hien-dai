@@ -163,6 +163,11 @@
                                             class="check-box-product"
                                             :label="`Gia hạn Sản phẩm`"
                                         />
+                                        <v-checkbox
+                                            v-model="isStricten"
+                                            class="check-box-product mt-0"
+                                            :label="`Cho phép bidder mới đấu giá`"
+                                        />
                                     </v-list-item-title>
                                     <div>
                                         <el-button type="primary" style="color:white" @click="handlePublicProduct">
@@ -288,7 +293,8 @@ export default Vue.extend({
         },
         dialogCkeditor: false,
         showBtnCreate: true,
-        listProductDescription: []
+        listProductDescription: [],
+        isStricten: false
     }),
 
     computed: {
@@ -336,6 +342,7 @@ export default Vue.extend({
                 this.status = result.data.status;
                 this.bidPrice = result.data.bidPrice;
                 this.isExtension = result.data.isExtendedExpired;
+                this.isStricten = result.data.isStricten;
                 this.description = [];
                 this.expiredAt = result.data.expiredAt;
                 this.startPrice = result.data.startPrice;
@@ -407,7 +414,8 @@ export default Vue.extend({
                 expiredAt: this.expiredAtFormat,
                 bidPrice: this.bidPrice,
                 startPrice: this.startPrice,
-                isExtendedExpired: JSON.stringify(this.isExtension)
+                isExtendedExpired: JSON.stringify(this.isExtension),
+                isStricten: JSON.stringify(this.isStricten),
             };
             const result = await productService.updateProduct(this.productId, formData)
                 .catch(error => {
