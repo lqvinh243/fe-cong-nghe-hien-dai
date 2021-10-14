@@ -49,7 +49,7 @@ export default Vue.extend({
             { title: 'Quản lí nâng cấp thành viên', icon: 'mdi-forum', url: '/admin/upgrade-request-management', roleIds: [ROLE_ID.SUPER_ADMIN] },
             { title: 'Tạo sản phẩm', icon: 'mdi-forum', url: '/create-product', roleIds: [ROLE_ID.SELLER] },
             { title: 'Sản phẩm của tôi', icon: 'mdi-forum', url: '/seller/product', roleIds: [ROLE_ID.SELLER] },
-            { title: 'Sản phẩm đã đấu giá', icon: 'mdi-forum', url: '/product/bid', roleIds: [ROLE_ID.SELLER, ROLE_ID.BIDDER] },
+            { title: 'Sản phẩm đang đấu giá', icon: 'mdi-forum', url: '/product/bid', roleIds: [ROLE_ID.SELLER, ROLE_ID.BIDDER] },
             { title: 'Sản phẩm đã thắng', icon: 'mdi-forum', url: '/product/win', roleIds: [ROLE_ID.SELLER, ROLE_ID.BIDDER] },
         ],
     }),

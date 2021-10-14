@@ -141,7 +141,7 @@
                                         />
                                         <v-text-field
                                             v-model="bidPrice"
-                                            label="Giá Mua ngay"
+                                            label="Giá mua ngay"
                                             prefix="$"
                                             type="number"
                                         />

@@ -66,19 +66,19 @@
                                     Giá hiện tại: <span class="ml-2 color-primary">{{ priceCurrent }}$</span>
                                 </v-layout>
                                 <v-layout md12 my-2>
-                                    Giá Mua ngay: <span v-if="priceBid" class="ml-2 color-primary">{{ priceBid }}$</span> <span v-else class="ml-2 color-primary">_</span>
+                                    Giá mua ngay: <span v-if="priceBid" class="ml-2 color-primary">{{ priceBid }}$</span> <span v-else class="ml-2 color-primary">_</span>
                                 </v-layout>
                                 <v-layout md12 my-2>
                                     Tình trạng: <span class="ml-2 color-primary">{{ mapStatusProduct(status) }}</span>
                                 </v-layout>
                                 <v-layout md12 my-2>
-                                    Thời gian con lai: <span class="ml-2 color-primary">{{ timeExpire }}</span>
+                                    Thời gian còn lại: <span class="ml-2 color-primary">{{ timeExpire }}</span>
                                 </v-layout>
                                 <v-layout md12 my-2>
                                     Bước nhảy: <span class="ml-2 color-primary">{{ stepPrice }}$</span>
                                 </v-layout>
                                 <v-layout v-if="status ==='process'" md12 my-2>
-                                    Thông tin người giữ giá : <span class="ml-2 color-primary">{{ bidderName }}</span>
+                                    Thông tin người giữ giá: <span class="ml-2 color-primary">{{ bidderName }}</span>
                                 </v-layout>
                                 <v-layout md12 my-2>
                                     Thông tin người thắng: <span class="ml-2 color-primary">{{ winnerName }}</span>
@@ -142,7 +142,7 @@
                                     Danh mục: {{ category }}
                                 </v-layout>
                                 <v-layout md12 mt-1>
-                                    Người Bán: {{ seller }}
+                                    Người bán: {{ seller }}
                                 </v-layout>
                             </v-list-item-title>
                         </v-list-item-content>

@@ -11,10 +11,10 @@
                                     <div class="thumb">
                                         <img :src="avatarUrl" alt="user" style="max-width:100px;max-height:100px;" @error="replaceByDefault">
                                     </div>
-                                    <label class="filebutton profile-pic-edit">
+                                    <!--<label class="filebutton profile-pic-edit">
                                         <p>Chỉnh sửa</p>
                                         <span><input id="myfile" type="file" @change="handleChangeImage"></span>
-                                    </label>
+                                    </label>-->
                                 </div>
                                 <div class="content">
                                     <p class="username" />
