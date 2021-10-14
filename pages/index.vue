@@ -21,7 +21,6 @@
                     :per-page-custom="[[1024,4],[768,3],[640,2],[320,1]]"
                     :space-padding="10"
                     :pagination-padding="20"
-                    
                 >
                     <Slide v-for="(item, index) in listProductAuction" :key="index" class="mx-1">
                         <product :product="item" />
