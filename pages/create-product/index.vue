@@ -142,6 +142,11 @@
                                     class="check-box-product"
                                     :label="`Gia hạn Sản phẩm`"
                                 />
+                                <v-checkbox
+                                    v-model="isStricten"
+                                    class="check-box-product mt-0"
+                                    :label="`Cho phép bidder mới đấu giá`"
+                                />
                             </v-list-item-title>
                             <el-button v-if="showBtnCreate" type="primary" style="color:white" @click="handleCreateProduct">
                                 Đăng Sản phẩm
@@ -224,7 +229,7 @@ export default Vue.extend({
         dialogCkeditor: false,
         showBtnCreate: true,
         listProductDescription: [],
-        isStricten: true
+        isStricten: false
     }),
     created() {
         this.loadData();
