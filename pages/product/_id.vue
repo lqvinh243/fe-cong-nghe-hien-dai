@@ -20,7 +20,7 @@
                 </v-layout>
                 <v-layout>
                     <div v-for="(item, index) in description" :key="index">
-                        <p>Thời gian : {{ formatDate(item.createdAt) }}</p>
+                        <!--<p>Thời gian : {{ formatDate(item.createdAt) }}</p>-->
                         <p v-html="item.content" />
                     </div>
                 </v-layout>

@@ -203,4 +203,5 @@ export default Vue.extend({
     cursor: pointer;
     color: red;
 }
+
 </style>
