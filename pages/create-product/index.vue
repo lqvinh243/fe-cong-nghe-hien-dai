@@ -239,6 +239,10 @@ export default Vue.extend({
         loadData() {
             this.loadCategory();
             this.showBtnCreate = true;
+            const date = new Date();
+            // add a day
+            date.setDate(date.getDate() + 1);
+            this.expiredAt = date;
         },
 
         async loadCategory(_id: string = '') {
