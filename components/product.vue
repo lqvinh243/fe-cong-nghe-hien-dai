@@ -61,9 +61,18 @@
                     Người chiến thắng: {{ displayNameWinner }}
                 </div>
 
+                <div align="left" class="my-3 text-subtitle-1">
+                    Số lượt ra giá hiện tại: {{ product.statistic.auctions }}
+                </div>
+
                 <!--<div align="left">
                     Trạng thái {{ displayStatus() }}
                 </div>-->
+                
+                <div align="left">
+                    Ngày đăng sản phẩm: {{ formatDate(product.createdAt) }}
+                </div>
+
                 <div align="left">
                     Thời gian hết hạn: {{ displayFormatExpriedAt }}
                 </div>
@@ -182,6 +191,10 @@ export default Vue.extend({
             case 'end': return 'Đã kết thúc';
             case 'cancel': return 'Đã hủy';
             }
+        },
+
+        formatDate(date:any) {
+            return momment(date).format('k:mm D-M-Y');
         }
     },
 
