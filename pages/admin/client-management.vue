@@ -132,8 +132,7 @@ export default {
             tableData: [],
             options: [
                 { key: '476c11d2-31cf-4a20-8392-514225ae54b2', name: 'Seller' },
-                { key: '476c11d2-31cf-5a20-8392-614225ae54b3', name: 'Bidder' },
-                { key: 3, name: 'Upgrage request' }
+                { key: '476c11d2-31cf-5a20-8392-614225ae54b3', name: 'Bidder' }
             ],
             selectKey: '' as any,
             page: 1,

@@ -27,9 +27,9 @@
             <v-spacer />
             <v-menu offset-y>
                 <template #activator="{ on, attrs }">
-                    <v-p>
+                    <p>
                         Xin chào,&nbsp;
-                    </v-p>
+                    </p>
                     <v-btn icon v-bind="attrs" v-on="on">
                         <v-avatar>
                             <img
