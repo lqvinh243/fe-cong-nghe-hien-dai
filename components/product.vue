@@ -68,7 +68,6 @@
                 <!--<div align="left">
                     Trạng thái {{ displayStatus() }}
                 </div>-->
-                
                 <div align="left">
                     Ngày đăng sản phẩm: {{ formatDate(product.createdAt) }}
                 </div>

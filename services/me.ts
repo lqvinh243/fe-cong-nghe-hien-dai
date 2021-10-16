@@ -11,5 +11,9 @@ export const meService = {
 
     updateProfile(data: any) {
         return $axios.$post('/api/v1/me', data);
+    },
+
+    deleteUserOperation(id: string) {
+        return $axios.$delete(`/api/v1/clients/${id}`);
     }
 };

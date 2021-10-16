@@ -55,7 +55,7 @@
                 label="Operations"
             >
                 <template slot-scope="scope">
-                    <el-button v-if="selectKey == 3" type="text">
+                    <!-- <el-button v-if="selectKey == 3" type="text">
                         Accept
                     </el-button>
                     <el-button type="text" @click="handleClick">
@@ -63,10 +63,49 @@
                     </el-button>
                     <el-button type="text" @click.native.prevent="deleteRow(scope.$index, tableData)">
                         Edit
+                    </el-button> -->
+                    <el-button
+                        round
+                        style="color:white"
+                        type="danger"
+                        title="Xoá sản phẩm"
+                        @click="handleShowRemoveUser(scope.row)"
+                    >
+                        Xóa
                     </el-button>
                 </template>
             </el-table-column>
         </el-table>
+        <div class="text-center">
+            <v-dialog
+                v-model="dialog"
+                width="500"
+            >
+                <v-card>
+                    <v-card-title class="text-h5 grey lighten-2">
+                        Xác nhận
+                    </v-card-title>
+                    <v-card-text>
+                        <h3>Bạn có muốn xóa user <span style="color:red; font-weight: bold;"> {{ labelShowDeleteName }} </span> ?</h3>
+                    </v-card-text>
+                    <v-divider />
+                    <v-card-actions>
+                        <v-spacer />
+                        <el-button type="primary" style="color: white" @click="handleClosePopupRemoveUser(true)">
+                            Xóa
+                        </el-button>
+                        <el-button
+                            type="primary"
+                            style="color: white"
+                            text
+                            @click="handleClosePopupRemoveUser(false)"
+                        >
+                            Hủy
+                        </el-button>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </div>
         <div class="text-center mt-4">
             <el-pagination
                 class="mx-auto mt-2"
@@ -84,6 +123,8 @@
 <script lang="ts">
 import momment from 'moment';
 import { clientService } from '~/services/client';
+import { meService } from '~/services/me';
+
 export default {
     middleware: ['authentication'],
     data() {
@@ -98,7 +139,10 @@ export default {
             page: 1,
             total: 10,
             perPage: 4,
-            loadingRemote: false
+            loadingRemote: false,
+            dialog: false,
+            dataUserInfoDelete: null,
+            labelShowDeleteName: null
         };
     },
     mounted() {
@@ -138,6 +182,33 @@ export default {
                 this.tableData = result.data;
             }
         },
+
+        async handleClosePopupRemoveUser(isSave: Boolean) {
+            this.dialog = false;
+            if (isSave) {
+                const result = await meService.deleteUserOperation(this.dataUserInfoDelete.id)
+                    .catch(error => {
+                        this.$notify.error({
+                            title: 'Error',
+                            message: error.message || 'Cannot delete user!'
+                        });
+                    });
+                if (result && result.data) {
+                    this.$notify.success({
+                        title: 'Thành công',
+                        message: 'Xóa danh hình ảnh thành công'
+                    });
+                    this.getClients();
+                }
+            }
+        },
+
+        handleShowRemoveUser(info: Object) {
+            this.dataUserInfoDelete = info;
+            this.labelShowDeleteName = `${this.dataUserInfoDelete.firstName} ${this.dataUserInfoDelete.lastName}`;
+            this.dialog = true;
+        },
+
         formatDate(date:any) {
             return momment(date).format('k:mm D-M-Y');
         }
