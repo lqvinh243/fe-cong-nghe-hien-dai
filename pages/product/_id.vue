@@ -16,9 +16,9 @@
                     />
                 </v-carousel>
                 <v-layout mt-4>
-                    <h4> Mô tả sản phẩm: </h4>
+                    <h4> Mô tả sản phẩm abc: </h4>
                 </v-layout>
-                <v-layout>
+                <v-layout style="display:block;">
                     <div v-for="(item, index) in description" :key="index">
                         <!--<p>Thời gian : {{ formatDate(item.createdAt) }}</p>-->
                         <p v-html="item.content" />
