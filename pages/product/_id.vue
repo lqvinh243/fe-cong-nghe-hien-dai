@@ -142,7 +142,7 @@
                                     Danh mục: {{ category }}
                                 </v-layout>
                                 <v-layout md12 mt-1>
-                                    Người bán: {{ seller }}
+                                    Người bán: {{ seller }} (Rate {{ rateSeller }}%)
                                 </v-layout>
                             </v-list-item-title>
                         </v-list-item-content>
@@ -206,6 +206,7 @@ export default Vue.extend({
         timeExpire: 0,
         sellerId: '',
         seller: '' as any,
+        rateSeller: null as number | null,
         likeProduct: false as boolean,
         stepPrice: 0 as number,
         category: '' as string,
@@ -311,6 +312,7 @@ export default Vue.extend({
                         message: 'Không thể lấy chi tiết sản phẩm!'
                     });
                 });
+            console.log('result: ' + result);
             if (result) {
                 this.listProductImage = result.data.productImages;
                 this.title = result.data.name;
@@ -333,9 +335,11 @@ export default Vue.extend({
                 this.winnerName = result.data.winner ? `${result.data.winner.firstName} ${result.data.winner.lastName ?? ''}` : '_';
                 this.totalAuc = result.data.statistic ? result.data.statistic.auctions : 0;
                 this.isStricten = !!result.data.isStricten;
-
+                this.rateSeller = result.data.rateSeller ? result.data.rateSeller : 0;
                 this.loadListProductByCategory(result.data.category.id);
             }
+            console.log('priceCurrent: ' + this.priceCurrent);
+            console.log('rateSeller: ' + this.rateSeller);
         },
 
         async loadListProductByCategory(categoryId: string) {
