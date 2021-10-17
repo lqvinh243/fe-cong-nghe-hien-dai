@@ -48,7 +48,7 @@
                     <span>{{ scope.row.bidder.lastName }}</span>
                 </template>
             </el-table-column>
-            
+
             <el-table-column
                 fixed
                 label="Tên"
@@ -57,7 +57,7 @@
                     <span>{{ scope.row.bidder.firstName }}</span>
                 </template>
             </el-table-column>
-            
+
             <el-table-column
                 fixed
                 label="Địa Chỉ"

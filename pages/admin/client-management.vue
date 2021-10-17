@@ -45,7 +45,7 @@
                 fixed
                 prop="firstName"
                 label="Tên"
-            />           
+            />
             <el-table-column
                 fixed
                 prop="address"
