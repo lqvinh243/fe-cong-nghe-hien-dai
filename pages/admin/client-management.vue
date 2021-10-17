@@ -3,7 +3,7 @@
         <el-select
             v-model="selectKey"
             class="w-25 my-4"
-            placeholder="Please select role!"
+            placeholder="Xem theo phân quyền"
             filterable
             remote
             reserve-keyword
@@ -24,35 +24,36 @@
         >
             <el-table-column
                 fixed
-                label="Date created"
+                label="Ngày Tạo"
             >
                 <template slot-scope="scope">
                     <span>{{ formatDate(scope.row.createdAt) }}</span>
                 </template>
             </el-table-column>
             <el-table-column
+                width="250"
                 fixed
                 prop="email"
                 label="Email"
             />
             <el-table-column
                 fixed
-                prop="firstName"
-                label="First Name"
+                prop="lastName"
+                label="Họ"
             />
             <el-table-column
                 fixed
-                prop="lastName"
-                label="Last Name"
-            />
+                prop="firstName"
+                label="Tên"
+            />           
             <el-table-column
                 fixed
                 prop="address"
-                label="Address"
+                label="Địa Chỉ"
             />
             <el-table-column
                 fixed="right"
-                label="Operations"
+                label="Hành Động"
             >
                 <template slot-scope="scope">
                     <!-- <el-button v-if="selectKey == 3" type="text">
@@ -131,8 +132,8 @@ export default {
         return {
             tableData: [],
             options: [
-                { key: '476c11d2-31cf-4a20-8392-514225ae54b2', name: 'Seller' },
-                { key: '476c11d2-31cf-5a20-8392-614225ae54b3', name: 'Bidder' }
+                { key: '476c11d2-31cf-4a20-8392-514225ae54b2', name: 'Người Bán' },
+                { key: '476c11d2-31cf-5a20-8392-614225ae54b3', name: 'Người Mua' }
             ],
             selectKey: '' as any,
             page: 1,

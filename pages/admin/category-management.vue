@@ -10,12 +10,12 @@
             />
             <el-table-column
                 prop="name"
-                label="Tên danh mục"
+                label="Tên Danh Mục"
             />
 
             <el-table-column
                 prop="parentName"
-                label="Tên danh mục cha"
+                label="Tên Danh Mục Cha"
             >
                 <template slot-scope="scope">
                     <span>{{ scope.row.parent ?scope.row.parent.name :'_' }}</span>
@@ -23,7 +23,7 @@
             </el-table-column>
             <el-table-column
                 fixed="right"
-                label="Hành động"
+                label="Hành Động"
             >
                 <template slot-scope="scope">
                     <el-button type="text" @click.native.prevent="editRow(scope.row)">

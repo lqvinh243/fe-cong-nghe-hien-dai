@@ -15,7 +15,7 @@
                                 <el-input v-model="registerModel.firstName" placeholder="Tên" />
                             </el-form-item>
                             <el-form-item label-width="auto" prop="lastName">
-                                <el-input v-model="registerModel.lastName" placeholder="Họ tên" />
+                                <el-input v-model="registerModel.lastName" placeholder="Họ" />
                             </el-form-item>
                             <el-form-item label-width="auto" prop="address">
                                 <el-input v-model="registerModel.address" placeholder="Địa chỉ" />

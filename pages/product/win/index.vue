@@ -2,25 +2,32 @@
     <div style="max-width: 80%; margin: 0 auto">
         <div class="text-center">
             <el-table :data="products" style="width: 100%">
-                <el-table-column fixed label="Ngày Tạo">
+                <el-table-column fixed label="Ngày Đăng">
                     <template slot-scope="scope">
                         <span>{{ formatDate(scope.row.createdAt) }}</span>
                     </template>
                 </el-table-column>
 
-                <el-table-column fixed label="Ngày Hết Hạn">
+                <el-table-column fixed label="Ngày Kết Thúc">
                     <template slot-scope="scope">
-                        <span>{{ formatDateExpired(scope.row) }}</span>
+                        <span>{{ formatDate(scope.row.expiredAt) }}</span>
                     </template>
                 </el-table-column>
 
-                <el-table-column fixed prop="name" label="Tên Sản Phẩm" />
+                <el-table-column width="300" fixed prop="name" label="Tên Sản Phẩm" />
 
-                <el-table-column fixed label="Trạng Thái">
+                <!-- <el-table-column fixed label="Trạng Thái">
                     <template slot-scope="scope">
                         {{ mapStatusProduct(scope.row.status) }}
                     </template>
+                </el-table-column> -->
+
+                <el-table-column fixed label="Giá Mua">
+                    <template slot-scope="scope">
+                        {{ scope.row.bidPrice }}$
+                    </template>
                 </el-table-column>
+
                 <el-table-column fixed label="Hành Động" class="text-center">
                     <template slot-scope="scope">
                         <el-button

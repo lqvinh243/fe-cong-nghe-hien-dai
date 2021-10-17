@@ -18,19 +18,19 @@
             />
         </el-select> -->
         <el-table :data="tableData" style="width: 100%;margin-top:2rem" height="500">
-            <el-table-column fixed label="Ngày Lên Sàn">
+            <el-table-column fixed label="Ngày Đăng">
                 <template slot-scope="scope">
                     <span>{{ formatDate(scope.row.createdAt) }}</span>
                 </template>
             </el-table-column>
 
-            <el-table-column fixed label="Ngày Hết Hạn">
+            <el-table-column fixed label="Ngày Kết Thúc">
                 <template slot-scope="scope">
                     <span>{{ formatDate(scope.row.expiredAt) }}</span>
                 </template>
             </el-table-column>
 
-            <el-table-column fixed prop="name" label="Tên Sản Phẩm" />
+            <el-table-column width="300" fixed prop="name" label="Tên Sản Phẩm" />
 
             <el-table-column fixed label="Trạng Thái">
                 <template slot-scope="scope">

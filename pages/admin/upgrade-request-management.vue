@@ -42,24 +42,25 @@
 
             <el-table-column
                 fixed
-                label="Tên"
-            >
-                <template slot-scope="scope">
-                    <span>{{ scope.row.bidder.firstName }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column
-                fixed
                 label="Họ"
             >
                 <template slot-scope="scope">
                     <span>{{ scope.row.bidder.lastName }}</span>
                 </template>
             </el-table-column>
-
+            
             <el-table-column
                 fixed
-                label="Địa chỉ"
+                label="Tên"
+            >
+                <template slot-scope="scope">
+                    <span>{{ scope.row.bidder.firstName }}</span>
+                </template>
+            </el-table-column>
+            
+            <el-table-column
+                fixed
+                label="Địa Chỉ"
             >
                 <template slot-scope="scope">
                     <span>{{ scope.row.bidder.address }}</span>
@@ -67,19 +68,19 @@
             </el-table-column>
             <el-table-column
                 fixed
-                label="Trạng thái"
+                label="Trạng Thái"
             >
                 <template slot-scope="scope">
                     <span>{{ mapStatusDisplay(scope.row.status) }}</span>
                 </template>
             </el-table-column>
             <el-table-column
-                label="Hành động"
+                label="Hành Động"
                 align="center"
             >
                 <template slot-scope="scope">
                     <el-button :disabled="scope.row.status === 'accepted'" type="primary" @click="handleAccepted(scope.row.id)">
-                        Đồng ý
+                        Đồng Ý
                     </el-button>
                     <!-- <el-button type="text" @click="handleViewProfile">
                         Detail
@@ -148,7 +149,7 @@ export default {
             const query = `statuses=${key}&skip=${(this.page - 1) * this.perPage}&limit=${this.perPage}`;
             const result = await upgradeRequestService.find(query).catch(error => {
                 this.$notify.error({
-                    title: 'Error',
+                    title: 'Lỗi',
                     message: error.message || 'Cannot get client!'
                 });
             });
@@ -163,14 +164,14 @@ export default {
         async  handleAccepted(id: string) {
             const result = await upgradeRequestService.update(id, { status: 'accepted' }).catch(error => {
                 this.$notify.error({
-                    title: 'Error',
-                    message: error.message || 'Cannot upgrade bidder to seller!'
+                    title: 'Lỗi',
+                    message: error.message || 'Không thể nâng cấp người mua thành người bán!'
                 });
             });
             if (result && result.data) {
                 this.$notify.success({
-                    title: 'Success',
-                    message: 'Upgrade bidder to seller successfully!'
+                    title: 'Thành công',
+                    message: 'Nâng cấp người mua thành người bán thành công!'
                 });
                 const item = this.tableData.find((data:any) => data.id === id);
                 if (item)
