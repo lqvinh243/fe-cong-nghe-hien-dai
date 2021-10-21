@@ -78,7 +78,7 @@
                                     Bước nhảy: <span class="ml-2 color-primary">{{ stepPrice }}$</span>
                                 </v-layout>
                                 <v-layout v-if="status ==='process'" md12 my-2>
-                                    Thông tin người giữ giá: <span class="ml-2 color-primary">{{ bidderName }}</span>
+                                    Thông tin người giữ giá: <span class="ml-2 color-primary">{{ maskName(bidderName) }}</span>
                                 </v-layout>
                                 <v-layout md12 my-2>
                                     Thông tin người thắng: <span class="ml-2 color-primary">{{ winnerName }}</span>
@@ -172,7 +172,7 @@
 
                                     <el-table-column fixed label="Tên Người Đấu Giá">
                                         <template slot-scope="scope">
-                                            {{ scope.row.bidder ? `${scope.row.bidder.lastName} ${scope.row.bidder.firstName}`.trim() :'_' }}
+                                            {{ maskName(scope.row.bidder ? `${scope.row.bidder.firstName} ${scope.row.bidder.lastName}`.trim() :'_') }}
                                         </template>
                                     </el-table-column>
 
@@ -352,7 +352,6 @@ export default Vue.extend({
                         message: 'Không thể lấy chi tiết sản phẩm!'
                     });
                 });
-            console.log('result: ' + result);
             if (result) {
                 this.listProductImage = result.data.productImages;
                 this.title = result.data.name;
@@ -378,8 +377,6 @@ export default Vue.extend({
                 this.rateSeller = result.data.rateSeller ? result.data.rateSeller : 0;
                 this.loadListProductByCategory(result.data.category.id);
             }
-            console.log('priceCurrent: ' + this.priceCurrent);
-            console.log('rateSeller: ' + this.rateSeller);
         },
 
         async loadListProductByCategory(categoryId: string) {
@@ -473,6 +470,22 @@ export default Vue.extend({
                 });
                 this.bidderProducts = result.data;
                 this.pagination = result.pagination;
+            }
+        },
+
+        maskName(name: String) {
+            console.log('name: ' + name);
+            if(name === '_') {
+                return name;
+            } else {
+                var firstName = name.split(' ')[0];
+                var lastName = name.split(' ')[1];
+                console.log('firstName: ' + firstName);
+                console.log('lastName: ' + lastName);
+                for (let i = 0; i < lastName.length; i++) {
+                    lastName = lastName.replace(lastName.charAt(i), '*');
+                }
+                return firstName + ' ' + lastName;
             }
         }
     }

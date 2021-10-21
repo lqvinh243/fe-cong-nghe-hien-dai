@@ -54,7 +54,7 @@
                 </div>
 
                 <div v-if="product.status === 'process'" align="left" class="my-3 text-subtitle-1">
-                    Người giữ giá: {{ displayNameBidder }}
+                    Người giữ giá: {{ maskName(displayNameBidder) }}
                 </div>
 
                 <div v-if="['end','cancel'].includes(product.status)" align="left" class="my-3 text-subtitle-1">
@@ -194,6 +194,19 @@ export default Vue.extend({
 
         formatDate(date:any) {
             return momment(date).format('k:mm D-M-Y');
+        },
+
+        maskName(name: String) {
+            if(name === '_') {
+                return name;
+            } else {
+                var firstName = name.split(' ')[0];
+                var lastName = name.split(' ')[1];
+                for (let i = 0; i < lastName.length; i++) {
+                    lastName = lastName.replace(lastName.charAt(i), '*');
+                }
+                return firstName + ' ' + lastName;
+            }
         }
     },
 
