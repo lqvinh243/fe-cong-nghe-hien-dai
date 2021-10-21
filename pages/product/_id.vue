@@ -149,6 +149,44 @@
                     </v-list-item>
                     <v-card-actions />
                 </v-card>
+
+                <v-card
+                    style="padding: 0 auto"
+                    class="mx-auto mt-4"
+                    outlined
+                >
+                    <v-list-item three-line>
+                        <v-list-item-content style="margin-right:0 !important">
+                            <div class="text-overline">
+                                <h3>Lịch Sử Đấu Giá</h3>
+                                <v-divider />
+                            </div>
+
+                            <div class="text-center">
+                                <el-table :data="bidderProducts" style="width: 100%">
+                                    <el-table-column fixed label="Thời Gian Đấu Giá">
+                                        <template slot-scope="scope">
+                                            <span>{{ formatDate(scope.row.updatedAt) }}</span>
+                                        </template>
+                                    </el-table-column>
+
+                                    <el-table-column fixed label="Tên Người Đấu Giá">
+                                        <template slot-scope="scope">
+                                            {{ scope.row.bidder ? `${scope.row.bidder.lastName} ${scope.row.bidder.firstName}`.trim() :'_' }}
+                                        </template>
+                                    </el-table-column>
+
+                                    <el-table-column fixed label="Số Tiền">
+                                        <template slot-scope="scope">
+                                            <span>{{ scope.row.price }}$</span>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </div>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-card-actions />
+                </v-card>
             </v-flex>
         </v-layout>
         <v-layout class="mt-4">
@@ -219,7 +257,8 @@ export default Vue.extend({
         winnerName: '',
         totalAuc: 0,
         isStricten: false,
-        listProductCategory: []
+        listProductCategory: [],
+        bidderProducts: [] as any,
     }),
 
     computed: {
@@ -259,6 +298,7 @@ export default Vue.extend({
         if (!this.id)
             return this.$router.push('/404');
         this.loadProductDetail();
+        this.findBidderProduct();
         this.checkFavourite();
         momment.locale('vi');
     },
@@ -274,7 +314,7 @@ export default Vue.extend({
             this.dialogBidVisible = true;
         },
 
-        async  handleBuyProduct() {
+        async handleBuyProduct() {
             this.handleAuthenticated();
             // this.dialogBuyNowVisible = true;
             await this.$confirm('Bạn có chắc chắn mua ngay sản phẩm?', 'Xác nhận', {
@@ -419,6 +459,22 @@ export default Vue.extend({
             }
         },
 
+        async findBidderProduct(key: boolean | null = null) {
+            if (this.id) {
+                let query = `productId=${this.id}`;
+                if (key)
+                    query += `&isBlock=${key}`;
+
+                const result = await productService.findBidderProduct(query).catch(error => {
+                    this.$notify.error({
+                        title: 'Error',
+                        message: error.message || 'Cannot get list favourite product!'
+                    });
+                });
+                this.bidderProducts = result.data;
+                this.pagination = result.pagination;
+            }
+        }
     }
 });
 </script>
