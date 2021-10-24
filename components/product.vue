@@ -197,14 +197,14 @@ export default Vue.extend({
         },
 
         maskName(name: String) {
-            if(name === '_') {
+            if (name === '_')
                 return name;
-            } else {
-                var firstName = name.split(' ')[0];
-                var lastName = name.split(' ')[1];
-                for (let i = 0; i < lastName.length; i++) {
+            else {
+                const firstName = name.split(' ')[0];
+                let lastName = name.split(' ')[1];
+                for (let i = 0; i < lastName.length; i++)
                     lastName = lastName.replace(lastName.charAt(i), '*');
-                }
+
                 return firstName + ' ' + lastName;
             }
         }
