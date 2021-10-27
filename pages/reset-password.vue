@@ -112,7 +112,7 @@ export default Vue.extend({
     },
     mounted() {
         this.email = this.$route.query.email;
-        this.forgotKey = this.$route.query.forgotKey;
+        this.forgotKey = this.$route.query.key;
         if (!this.email || !this.forgotKey)
             this.$router.push('/');
     },
