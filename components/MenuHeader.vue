@@ -84,7 +84,7 @@ export default Vue.extend({
         },
 
         mapDisplayName(): string {
-            return this.$auth.isAuthenticated() ? `${this.profile.fistName} ${this.profile.lastName ?? ''}`.trim() : 'Guest';
+            return this.$auth.isAuthenticated() ? `${this.profile.firstName} ${this.profile.lastName ?? ''}`.trim() : 'Guest';
         }
     },
 

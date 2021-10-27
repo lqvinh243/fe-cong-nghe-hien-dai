@@ -18,7 +18,7 @@
                                 </div>
                                 <div class="content">
                                     <p class="username" />
-                                    <span class="email">{{ myProfile.email }}F</span>
+                                    <span class="email">{{ myProfile.email }}</span>
                                     <p>
                                         {{ mapRoleDisplay() }}
                                     </p>
