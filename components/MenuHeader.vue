@@ -28,7 +28,7 @@
             <v-menu offset-y>
                 <template #activator="{ on, attrs }">
                     <p>
-                        Xin chào,&nbsp;
+                        Xin chào,&nbsp; {{ mapDisplayName }}
                     </p>
                     <v-btn icon v-bind="attrs" v-on="on">
                         <v-avatar>
@@ -54,7 +54,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import eventBus from '~/plugins/event-bus';
 
 export default Vue.extend({
@@ -74,12 +74,17 @@ export default Vue.extend({
         select: null,
     }),
     computed: {
+        ...mapGetters('auth', ['profile']),
         dropdownSelection():any {
             return this.profiles.filter((item:any) => item.isAuth === this.$auth.isAuthenticated());
         },
 
         showMenuBar():boolean {
             return this.$auth.isAuthenticated();
+        },
+
+        mapDisplayName(): string {
+            return this.$auth.isAuthenticated() ? `${this.profile.fistName} ${this.profile.lastName ?? ''}`.trim() : 'Guest';
         }
     },
 
@@ -96,9 +101,10 @@ export default Vue.extend({
                     else eventBus.$emit('CHANGE_QUERY_SEARCH', val);
                 }
                 this.loading = false;
-            }, 2000);
+            }, 1000);
         },
     },
+
     methods: {
         ...mapActions('auth', [
             'clearAuthentication',
