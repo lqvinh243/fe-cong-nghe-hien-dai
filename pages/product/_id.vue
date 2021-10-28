@@ -16,7 +16,7 @@
                     />
                 </v-carousel>
                 <v-layout mt-4>
-                    <h4> Mô tả sản phẩm abc: </h4>
+                    <h4><b>Mô Tả Sản Phẩm</b></h4>
                 </v-layout>
                 <v-layout style="display:block;">
                     <div v-for="(item, index) in description" :key="index">
@@ -49,7 +49,7 @@
                                 <el-row>
                                     <el-col :span="12">
                                         <h3 class="pt-3">
-                                            Thông tin Đấu giá
+                                            Thông Tin Đấu giá
                                         </h3>
                                     </el-col>
                                     <el-col :span="6" :offset="6">
@@ -133,7 +133,7 @@
                     <v-list-item three-line>
                         <v-list-item-content style="margin-right:0 !important">
                             <div class="text-overline">
-                                <h3>Thông tin Sản phẩm</h3>
+                                <h3>Thông Tin Sản Phẩm</h3>
                                 <v-divider />
                             </div>
 

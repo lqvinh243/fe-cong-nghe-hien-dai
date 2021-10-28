@@ -145,7 +145,7 @@
                                 <v-checkbox
                                     v-model="isStricten"
                                     class="check-box-product mt-0"
-                                    :label="`Cho phép bidder mới đấu giá`"
+                                    :label="`Không cho phép bidder mới đấu giá`"
                                 />
                             </v-list-item-title>
                             <el-button v-if="showBtnCreate" type="primary" style="color:white" @click="handleCreateProduct">

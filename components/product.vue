@@ -58,7 +58,7 @@
                 </div>
 
                 <div v-if="['end','cancel'].includes(product.status)" align="left" class="my-3 text-subtitle-1">
-                    Người chiến thắng: {{ displayNameWinner }}
+                    Người chiến thắng: {{ maskName(displayNameWinner) }}
                 </div>
 
                 <div align="left" class="my-3 text-subtitle-1">
@@ -199,7 +199,7 @@ export default Vue.extend({
         },
 
         maskName(name: String) {
-            if (name === '_')
+            if (name === '_' || name === 'Không có thông tin')
                 return name;
             else {
                 const firstName = name.split(' ')[0];
