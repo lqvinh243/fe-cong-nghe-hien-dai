@@ -92,7 +92,7 @@
                                 <el-select
                                     v-model="selectCategory"
                                     class="w-100 my-4"
-                                    placeholder="Danh muc!"
+                                    placeholder="Danh mục"
                                     filterable
                                     remote
                                     reserve-keyword
@@ -257,7 +257,9 @@ export default Vue.extend({
                 });
             });
             if (result && result.data.length)
-                this.categories = result.data;
+                this.categories = result.data.filter((data: any) => {
+                    return data.parentId !== null;
+                });
         },
 
         async handleSelectCategory() {

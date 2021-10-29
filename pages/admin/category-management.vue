@@ -113,6 +113,9 @@ export default {
                     title: 'Thành công',
                     message: 'Xóa danh mục sản phẩm thành công'
                 });
+                this.tableData = this.tableData.filter((data: any) => {
+                    return data.id !== category.id;
+                });
             }
         },
         editRow(category: any) {

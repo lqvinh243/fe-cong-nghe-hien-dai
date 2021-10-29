@@ -16,13 +16,13 @@
         <v-layout row wrap style="overflow:hidden">
             <client-only>
                 <carousel
-                    v-if="listProductAuction && listProductAuction.length"
+                    v-if="listProductLastEnd && listProductLastEnd.length"
                     :per-page="4"
                     :per-page-custom="[[1024,4],[768,3],[640,2],[320,1]]"
                     :space-padding="10"
                     :pagination-padding="20"
                 >
-                    <Slide v-for="(item, index) in listProductAuction" :key="index" class="mx-1">
+                    <Slide v-for="(item, index) in listProductLastEnd" :key="index" class="mx-1">
                         <product :product="item" />
                     </Slide>
                 </carousel>
@@ -41,13 +41,13 @@
             <client-only>
                 <client-only>
                     <carousel
-                        v-if="listProductHighPrice && listProductHighPrice.length"
+                        v-if="listProductAuction && listProductAuction.length"
                         :per-page="4"
                         :per-page-custom="[[1024,4],[768,3],[640,2],[320,1]]"
                         :space-padding="10"
                         :pagination-padding="20"
                     >
-                        <Slide v-for="(item, index) in listProductHighPrice" :key="index" class="mx-1">
+                        <Slide v-for="(item, index) in listProductAuction" :key="index" class="mx-1">
                             <product :product="item" />
                         </Slide>
                     </carousel>

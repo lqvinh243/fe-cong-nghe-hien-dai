@@ -42,7 +42,7 @@ export default Vue.extend({
         drawerMenuLeft: null,
         items: [
             { title: 'Trang chủ', icon: 'mdi-view-dashboard', url: '/', roleIds: [ROLE_ID.BIDDER, ROLE_ID.SELLER] },
-            { title: 'Danh sách yêu thích', icon: 'mdi-view-dashboard', url: '/product/favourite', roleIds: [ROLE_ID.BIDDER] },
+            { title: 'Danh sách yêu thích', icon: 'mdi-view-dashboard', url: '/product/favourite', roleIds: [ROLE_ID.SELLER, ROLE_ID.BIDDER] },
             { title: 'Quản lí thành viên', icon: 'mdi-forum', url: '/admin/client-management', roleIds: [ROLE_ID.SUPER_ADMIN] },
             { title: 'Quản lí danh mục sản phẩm', icon: 'mdi-forum', url: '/admin/category-management', roleIds: [ROLE_ID.SUPER_ADMIN] },
             { title: 'Quản lí sản phẩm', icon: 'mdi-forum', url: '/admin/product-management', roleIds: [ROLE_ID.SUPER_ADMIN] },

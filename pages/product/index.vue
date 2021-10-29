@@ -188,7 +188,7 @@ export default Vue.extend({
             await this.loadData();
             this.$nuxt.$loading.finish();
         },
-        async  handleSelectCategory() {
+        async handleSelectCategory() {
             const item = this.categories.find((item:any) => item.id === this.selectCategory);
             if (item) {
                 if (this.breadcrumb.length && item.parentId === this.breadcrumb[this.breadcrumb.length - 1].parentId)

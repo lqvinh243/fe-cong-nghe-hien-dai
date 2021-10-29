@@ -468,7 +468,9 @@ export default Vue.extend({
                         message: error.message || 'Cannot get list favourite product!'
                     });
                 });
-                this.bidderProducts = result.data;
+                this.bidderProducts = result.data.filter((data: any) => {
+                    return data.isBlock !== true;
+                });
                 this.pagination = result.pagination;
             }
         },
