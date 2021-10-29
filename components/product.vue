@@ -11,13 +11,20 @@
                 indeterminate
             />
         </template>
-        <i v-if="showFavouriteIcon" style="float:right; font-size: 1.5rem; cursor: pointer" :class="product.isFavourite ? 'el-icon-star-on icon-like-product' :'el-icon-star-off'" @click="handleFavourite(product)" />
-        <img
-            height="170"
-            class="mx-auto"
-            :src="logoUrl"
-            @error="replaceByDefault"
-        >
+        <v-layout>
+            <v-flex md11 />
+            <v-flex md1>
+                <i v-if="showFavouriteIcon" class="mr-1" style="float:right; font-size: 1.5rem; cursor: pointer" :class="product.isFavourite ? 'el-icon-star-on icon-like-product' :'el-icon-star-off'" @click="handleFavourite(product)" />
+            </v-flex>
+        </v-layout>
+        <v-layout>
+            <img
+                height="170"
+                class="mx-auto"
+                :src="logoUrl"
+                @error="replaceByDefault"
+            >
+        </v-layout>
 
         <v-card-title>
             <div class="text-name-product">
