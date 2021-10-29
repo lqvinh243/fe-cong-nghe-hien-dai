@@ -33,7 +33,7 @@
                     <v-btn icon v-bind="attrs" v-on="on">
                         <v-avatar>
                             <img
-                                src="https://cdn.vuetifyjs.com/images/john.jpg"
+                                :src="getAvatar"
                                 alt="John"
                             >
                         </v-avatar>
@@ -85,6 +85,10 @@ export default Vue.extend({
 
         mapDisplayName(): string {
             return this.$auth.isAuthenticated() ? `${this.profile.firstName} ${this.profile.lastName ?? ''}`.trim() : 'Guest';
+        },
+
+        getAvatar(): string {
+            return this.$auth.isAuthenticated() && this.profile.avatar ? this.profile.avatar : 'https://cdn.vuetifyjs.com/images/john.jpg';
         }
     },
 
@@ -114,7 +118,6 @@ export default Vue.extend({
         },
         querySelections(v: any) {
             this.loading = true;
-            // Simulated ajax query
             setTimeout(() => {
                 if (this.$route.path !== '/product')
                     this.$router.push(`/product?query=${v}`);

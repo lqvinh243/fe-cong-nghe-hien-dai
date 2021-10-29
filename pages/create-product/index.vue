@@ -256,10 +256,11 @@ export default Vue.extend({
                     message: error.message || 'Cannot get category!'
                 });
             });
-            if (result && result.data.length)
+            if (result && result.data.length) {
                 this.categories = result.data.filter((data: any) => {
                     return data.parentId !== null;
                 });
+            }
         },
 
         async handleSelectCategory() {

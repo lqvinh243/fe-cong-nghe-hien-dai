@@ -62,7 +62,7 @@
                 </div>
 
                 <div align="left" class="my-3 text-subtitle-1">
-                    Số lượt ra giá hiện tại: {{ product.statistic.auctions }}
+                    Số lượt ra giá hiện tại: {{ (product.productStatistic && product.productStatistic.auctions) || 0 }}
                 </div>
 
                 <!--<div align="left">
