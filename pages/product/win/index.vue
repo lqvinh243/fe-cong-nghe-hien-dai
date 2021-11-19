@@ -153,6 +153,10 @@ export default Vue.extend({
                 return '_';
             }
         },
+
+        showProductDetail(idProduct: Object) {
+            this.$router.push(`/product/${idProduct}`);
+        },
     }
 });
 </script>

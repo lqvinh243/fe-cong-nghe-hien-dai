@@ -100,6 +100,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { mapGetters } from 'vuex';
 import momment from 'moment';
 import { ROLE_ID } from '~/commom/enum';
 import { productService } from '~/services/product';
@@ -119,6 +120,7 @@ export default Vue.extend({
         timeExpire: null
     }),
     computed: {
+        ...mapGetters('auth', ['profile']),
         showFavouriteIcon():boolean {
             return this.$auth.isRoles(ROLE_ID.BIDDER, ROLE_ID.SELLER);
         },
@@ -134,6 +136,7 @@ export default Vue.extend({
             }
             return '';
         },
+
         displayNameBidder(): string {
             return this.product && this.product.bidder ? `${this.product.bidder.firstName} ${this.product.bidder.lastName ?? ''}`.trim() : 'Không có thông tin';
         },
@@ -206,7 +209,8 @@ export default Vue.extend({
         },
 
         maskName(name: String) {
-            if (name === '_' || name === 'Không có thông tin')
+            const mapDisplayName = this.$auth.isAuthenticated() ? `${this.profile.firstName} ${this.profile.lastName ?? ''}`.trim() : 'Guest';
+            if (name === '_' || name === 'Không có thông tin' || name === mapDisplayName)
                 return name;
             else {
                 const firstName = name.split(' ')[0];
